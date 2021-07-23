@@ -10,6 +10,11 @@ var export_level_button = null
 var connect_countries_button = null
 var information_label = null
 
+# Importing Level Functions
+var Level_Funcs = load("Level_Funcs.gd") # Relative path
+onready var LF = Level_Funcs.new()
+
+
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -55,7 +60,8 @@ func _ready():
 	
 	var save_game = File.new()
 	if save_game.file_exists("res://savegame.save"):
-		import_level()
+		LF.import_level(self)
+		LF.draw_lines_between_countries(all_countries)
 
 func update_labels():
 	match phase:
@@ -66,38 +72,6 @@ func update_labels():
 				"Right click on any country to decrease it's current number of troops\n"
 		"connect countries":
 			information_label.text = "Select any two countries to connect them"
-
-func export_level():
-	var save_game = File.new()
-	save_game.open("res://savegame.save", File.WRITE)
-	for country in all_countries.values():
-		save_game.store_line(to_json(country.save()))
-	save_game.close()
-
-func import_level():	
-	# Instantiating countries
-	var save_game = File.new()
-	save_game.open("res://savegame.save", File.READ)
-	while save_game.get_position() < save_game.get_len():
-		var node_data = parse_json(save_game.get_line())
-		var new_country = Country.instance().init(node_data["x"], node_data["y"], node_data["name"])
-		add_country_to_level(new_country)
-		add_child(new_country)
-	
-	# Adding connections
-	save_game.open("res://savegame.save", File.READ)
-	while save_game.get_position() < save_game.get_len():
-		var node_data = parse_json(save_game.get_line())
-		add_connections(node_data["name"], node_data["connections"])
-		for neighbour in all_countries[node_data["name"]].connected_countries:
-			all_countries[node_data["name"]].draw_line_to_country(neighbour)
-
-func add_connections(source_country_name, destination_country_names):
-	for destination_country_name in destination_country_names:
-		all_countries[source_country_name].add_connection(all_countries[destination_country_name])
-
-func add_country_to_level(country):
-	all_countries[country.country_name] = country
 
 func connect_countries():
 	phase = "connect countries"

@@ -109,12 +109,9 @@ func on_click(event):
 							# Check if the opponent has any troops left
 							if Game_Manager.get_next_player().get_num_troops() == 0:
 								Game_Manager.end_game()
-							else:
-								print(Game_Manager.get_next_player().color + " has " + str(Game_Manager.get_next_player().get_num_troops()))
 				return
 
 		"reinforcement":
-			print(num_troops, Game_Manager.curr_player.num_reinforcements)
 			if belongs_to == Game_Manager.curr_player:
 				if event.button_index == BUTTON_LEFT and Game_Manager.curr_player.num_reinforcements > 0:
 					num_troops += 1
@@ -123,6 +120,7 @@ func on_click(event):
 					# Changing to attack phase for the next player
 					if Game_Manager.curr_player.num_reinforcements == 0:
 						Game_Manager.change_to_attack()
+					
 				if event.button_index == BUTTON_RIGHT and num_troops > 0:
 					num_troops -= 1
 					Game_Manager.curr_player.num_reinforcements += 1
