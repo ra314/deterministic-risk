@@ -3,6 +3,7 @@ var game_over = false
 var selected_country = null
 var phase = "attack"
 var round_number = 1
+var curr_level = null
 const max_rounds = 10
 
 var end_attack_button = null
@@ -25,6 +26,8 @@ func change_to_next_player():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	curr_level = get_node("Level 1")
+	
 	# Creating players
 	players = [Player.instance().init("red", 200, 0), Player.instance().init("blue", 400, 0)]
 	for player in players:
@@ -82,34 +85,36 @@ func is_country_neighbour_of_player(test_country, player):
 	return false
 
 func add_random_countries(player, num_countries):
-	# Checking that sufficient number of countries are available
-	var count = 0
-	for country in get_node("Level 1").all_countries.values():
-		count += int(country.belongs_to == null)
-	
-	if count < num_countries:
+	# Checking that sufficient number of countries are available	
+	if curr_level.get_num_neutral_countries() < num_countries:
 		print("not enough countries")
-		get_tree().quit(-1)
+		get_tree().quit()
 	
 	# Adding random countries to the player
 	var num_added_countries = 0
+	var loop_counter = 0
 	while num_added_countries < num_countries:
-		var country = select_random(get_node("Level 1").all_countries.values())
-		#Ensuring that the country is not adjacent to the opponent and is unowned
+		loop_counter += 1
+		var country = select_random(curr_level.all_countries.values())
+		if loop_counter > 1000:
+			print("Not enough countries for all starting countries to be non adjacent.\n1000 iterations completed.")
+			get_tree().quit()
+		
+		# Ensuring that the country is not adjacent to the opponent and is unowned
 		if country.belongs_to == null and not is_country_neighbour_of_player(country, get_next_player()):
 			country.change_ownership_to(player)
 			num_added_countries += 1
 	player.update_labels()
 	
 func is_attack_over():
-	for country in get_node("Level 1").all_countries.values():
+	for country in curr_level.all_countries.values():
 		if country.belongs_to == curr_player and country.num_troops > 1:
 			return false
 	return true
 
 func change_to_reinforcement():	
 	selected_country = null
-	get_node("Level 1").stop_flashing()
+	curr_level.stop_flashing()
 	curr_player.give_reinforcements()
 	
 	end_attack_button.visible = false
@@ -117,9 +122,9 @@ func change_to_reinforcement():
 	phase = "reinforcement"
 
 func change_to_attack():
-	if round_number == 10:
-		end_game()
-		return
+#	if round_number == 10:
+#		end_game()
+#		return
 	
 	change_to_next_player()
 	round_number += 1
@@ -146,7 +151,3 @@ func end_game():
 
 func update_labels():
 	get_node("Label").text = "Player: " + curr_player.color + "\nRound: " + str(round_number)
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass

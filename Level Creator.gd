@@ -1,7 +1,6 @@
-extends Node2D
+extends "res://Level_Funcs.gd"
+
 var phase = "add countries"
-var Country = load("res://Country.tscn")
-var all_countries = {}
 var selected_country = null
 
 var change_curr_troops_button = null
@@ -9,16 +8,6 @@ var add_countries_button = null
 var export_level_button = null
 var connect_countries_button = null
 var information_label = null
-
-# Importing Level Functions
-var Level_Funcs = load("Level_Funcs.gd") # Relative path
-onready var LF = Level_Funcs.new()
-
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready():	
@@ -58,10 +47,11 @@ func _ready():
 	information_label.set_position(Vector2(200, 0))
 	update_labels()
 	
+	# Loading previous save
 	var save_game = File.new()
 	if save_game.file_exists("res://savegame.save"):
-		LF.import_level(self)
-		LF.draw_lines_between_countries(all_countries)
+		.import_level(self)
+		.draw_lines_between_countries()
 
 func update_labels():
 	match phase:
@@ -93,9 +83,5 @@ func _input(event):
 			if coordinate[0] < 150 and coordinate[1] < 100:
 				return
 			var new_country = Country.instance().init(coordinate[0], coordinate[1], hash(OS.get_system_time_msecs()))
-			all_countries[new_country.country_name] =  new_country
+			add_country_to_level(new_country)
 			add_child(new_country)
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
