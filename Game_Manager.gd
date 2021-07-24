@@ -2,8 +2,13 @@ extends Node2D
 var game_over = false
 var selected_country = null
 var phase = "attack"
-var round_number = 1
 var curr_level = null
+
+# Maintains the number of reinforcements a country receives during the reinforcement phase
+# Ensures that more reinforcements can't be removed than are added from any country
+var reinforced_countries = {}
+
+var round_number = 1
 const max_rounds = 10
 
 var end_attack_button = null
@@ -125,6 +130,8 @@ func change_to_attack():
 #	if round_number == 10:
 #		end_game()
 #		return
+	
+	reinforced_countries.clear()
 	
 	change_to_next_player()
 	round_number += 1
