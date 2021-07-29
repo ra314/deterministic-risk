@@ -16,14 +16,10 @@ _global_script_class_icons={
 [application]
 
 config/name="Risky Nodes"
-run/main_scene="res://Game_Manager.tscn"
+run/main_scene="res://Scenes/Game_Manager.tscn"
 config/icon="res://icon.png"
 
 [display]
 
 window/size/width=1920
 window/size/height=1080
-
-[rendering]
-
-environment/default_environment="res://default_env.tres"

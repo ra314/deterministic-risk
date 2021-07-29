@@ -1,4 +1,4 @@
-extends "res://Level_Funcs.gd"
+extends "res://Scripts/Level_Funcs.gd"
 
 var phase = "add countries"
 var selected_country = null

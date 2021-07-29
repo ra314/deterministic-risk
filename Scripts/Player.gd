@@ -22,8 +22,10 @@ func give_reinforcements():
 	update_labels()
 
 func update_labels():
-	get_node("Label").text = "Player: " + color + "\nUnits: " \
-		+ str(get_num_troops()) + "\nReinforcements: " + str(get_num_reinforcements())
+	get_node("Label").text = "Player: " + color + \
+		"\nUnits: " + str(get_num_troops()) + \
+		"\nReinforcements: " + str(num_reinforcements) + "/" + str(get_num_reinforcements()) + \
+		"\nNumber of Countries: " + str(len(owned_countries))
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

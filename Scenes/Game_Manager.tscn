@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://Game_Manager.gd" type="Script" id=1]
-[ext_resource path="res://Level 1.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scripts/Game_Manager.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/Levels/Level 1.tscn" type="PackedScene" id=2]
 
 [node name="Game_Manager" type="Node2D"]
 script = ExtResource( 1 )

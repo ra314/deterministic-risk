@@ -1,4 +1,4 @@
-extends "res://Level_Funcs.gd"
+extends "res://Scripts/Level_Funcs.gd"
 
 func stop_flashing():
 	for country in all_countries.values():
@@ -9,9 +9,8 @@ func _ready():
 	OS.set_window_size(Vector2(1920, 1080))
 	
 	# Loading existing level
-	var save_game = File.new()
-	if save_game.file_exists("res://savegame.save"):
-		.import_level(self)
+	if .import_level(self):
+		print("imported")
 	# Load the default half complete earth level
 	else:
 		.create_default_level(self)

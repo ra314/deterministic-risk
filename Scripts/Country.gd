@@ -1,6 +1,6 @@
 extends Area2D
 
-export var num_troops = 0
+var num_troops = 0
 var belongs_to = null
 var connected_countries = []
 var country_name = null
@@ -56,6 +56,13 @@ func draw_line_to_country(selected_country):
 	add_child(new_line)
 	new_line.add_point(Vector2(0,0))
 	new_line.add_point(selected_country.position - position)
+
+func can_attack():
+	for country in connected_countries:
+		if country.num_troops < num_troops and country.belongs_to != belongs_to:
+			return true
+	return false
+	
 
 func on_click(event):
 	# Level Creator Behaviour
@@ -151,7 +158,10 @@ func add_connection(country):
 # Randomise num_troops
 func randomise_troops():
 	# Distribution 1: 0.5, 2: 0.3, 3: 0.1, 4: 0.1
-	var rand_num = rand_range(0,10)
+	# TODO, HAVE A STATIC GLOBAL rng
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
+	var rand_num = rng.randf_range(0,10)
 	if rand_num < 5:
 		num_troops = 1
 	elif rand_num < 8:

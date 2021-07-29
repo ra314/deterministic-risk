@@ -18,9 +18,14 @@ var round_number_label = null
 var curr_player = null
 var curr_player_index = null
 const num_players = 2
-
-var Player = load("res://Player.tscn")
+var Player = load("res://Scenes/Player.tscn")
 var players = null
+
+var peer = null
+const SERVER_PORT = 9658
+const MAX_PLAYERS = 2
+const SERVER_IP = "127.0.0.1"
+const IS_SERVER = true
 
 func get_next_player():
 	return players[(curr_player_index+1)%num_players]
@@ -29,9 +34,24 @@ func change_to_next_player():
 	curr_player_index = (curr_player_index+1)%num_players
 	curr_player = players[curr_player_index]
 
+func init_multiplayer():
+	if IS_SERVER:
+		peer = NetworkedMultiplayerENet.new()
+		peer.create_server(SERVER_PORT, MAX_PLAYERS)
+		get_tree().network_peer = peer
+	else:
+		peer = NetworkedMultiplayerENet.new()
+		peer.create_client(SERVER_IP, SERVER_PORT)
+		get_tree().network_peer = peer
+
+remote func poppdie():
+	print("started networking boss")
+	
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	curr_level = get_node("Level 1")
+	
+	print(curr_level.all_countries)
 	
 	# Creating players
 	players = [Player.instance().init("red", 200, 0), Player.instance().init("blue", 400, 0)]
@@ -112,8 +132,8 @@ func add_random_countries(player, num_countries):
 	player.update_labels()
 	
 func is_attack_over():
-	for country in curr_level.all_countries.values():
-		if country.belongs_to == curr_player and country.num_troops > 1:
+	for country in curr_player.owned_countries:
+		if country.can_attack():
 			return false
 	return true
 
@@ -127,9 +147,9 @@ func change_to_reinforcement():
 	phase = "reinforcement"
 
 func change_to_attack():
-#	if round_number == 10:
-#		end_game()
-#		return
+	if round_number == 10:
+		end_game()
+		return
 	
 	reinforced_countries.clear()
 	

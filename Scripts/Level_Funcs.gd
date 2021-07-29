@@ -1,6 +1,6 @@
 extends Node2D
 
-var Country = load("res://Country.tscn")
+var Country = load("res://Scenes/Country.tscn")
 var all_countries = {}
 
 func get_num_neutral_countries():
@@ -41,10 +41,33 @@ func export_level():
 		save_game.store_line(to_json(country.save()))
 	save_game.close()
 
+func select_random(array):
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
+	return array[rng.randi() % len(array)]
+
 func import_level(level_node):	
 	# Instantiating countries
 	var save_game = File.new()
-	save_game.open("res://savegame.save", File.READ)
+	
+	# Set up the save locations and sprite references
+	var worlds = [["Crucible", level_node.get_node("Crucible")], \
+		["Earth", level_node.get_node("Earth")], \
+		["No_Mans_Land", level_node.get_node("No_Mans_Land")]]
+	
+	# Check if all the save files exist
+	for world in worlds:
+		print("res://" + world[0] + ".save")
+		if not save_game.file_exists("res://" + world[0] + ".save"):
+			return false
+	
+	# Pick the random world
+	var world = select_random(worlds)
+	# Make visible the sprite of the selected world and get the location of the save
+	var save_file_location = "res://" + world[0] + ".save"
+	world[1].visible = true
+	
+	save_game.open(save_file_location, File.READ)
 	
 	# Going through the json save
 	while save_game.get_position() < save_game.get_len():
@@ -54,10 +77,12 @@ func import_level(level_node):
 		level_node.add_child(new_country)
 	
 	# Adding connections
-	save_game.open("res://savegame.save", File.READ)
+	save_game.open(save_file_location, File.READ)
 	while save_game.get_position() < save_game.get_len():
 		var node_data = parse_json(save_game.get_line())
 		add_connections(node_data["name"], node_data["connections"])
+	
+	return true
 
 # A line to visualize adjacent countries in the level creator
 func draw_lines_between_countries():
