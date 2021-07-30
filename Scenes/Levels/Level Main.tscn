@@ -1,10 +1,11 @@
 [gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Assets/Our World.png" type="Texture" id=1]
-[ext_resource path="res://Scripts/Level 1.gd" type="Script" id=2]
-[ext_resource path="res://Scenes/Drag_Camera.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scripts/Levels/Level 1.gd" type="Script" id=2]
+[ext_resource path="res://Scenes/Levels/Level Components/Drag_Camera.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Assets/Crucible.png" type="Texture" id=4]
 [ext_resource path="res://Assets/No Mans Land.png" type="Texture" id=5]
+
 
 [node name="Level 1" type="Node2D"]
 script = ExtResource( 2 )
@@ -29,3 +30,10 @@ visible = false
 scale = Vector2( 0.5, 0.5 )
 texture = ExtResource( 5 )
 centered = false
+
+[node name="Label" type="Label" parent="."]
+margin_right = 40.0
+margin_bottom = 14.0
+__meta__ = {
+"_edit_use_anchors_": false
+}

@@ -179,7 +179,7 @@ func init(_x, _y, _country_name):
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	Game_Manager = get_parent().get_parent()
+	Game_Manager = get_parent()
 	update_labels()
 
 func stop_flashing():

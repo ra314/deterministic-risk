@@ -8,15 +8,32 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "Node2D",
+"class": "Main",
+"language": "GDScript",
+"path": "res://Scripts/Main.gd"
+}, {
+"base": "HBoxContainer",
+"class": "MenuItem",
+"language": "GDScript",
+"path": "res://Scripts/UI/MenuItem.gd"
+}, {
+"base": "Node2D",
+"class": "SceneManager",
+"language": "GDScript",
+"path": "res://Scripts/Scene_Manager.gd"
+} ]
 _global_script_class_icons={
-
+"Main": "",
+"MenuItem": "",
+"SceneManager": ""
 }
 
 [application]
 
 config/name="Risky Nodes"
-run/main_scene="res://Scenes/Game_Manager.tscn"
+run/main_scene="res://Scenes/Main.tscn"
 config/icon="res://icon.png"
 
 [display]

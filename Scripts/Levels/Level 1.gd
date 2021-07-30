@@ -1,8 +1,13 @@
-extends Node2D
+extends "res://Scripts/Level_Funcs.gd"
+
+func stop_flashing():
+	for country in all_countries.values():
+		country.stop_flashing()
+	
 var game_over = false
 var selected_country = null
 var phase = "attack"
-var curr_level = null
+var curr_level = self
 
 # Maintains the number of reinforcements a country receives during the reinforcement phase
 # Ensures that more reinforcements can't be removed than are added from any country
@@ -18,7 +23,7 @@ var round_number_label = null
 var curr_player = null
 var curr_player_index = null
 const num_players = 2
-var Player = load("res://Scenes/Player.tscn")
+var Player = load("res://Scenes/Levels/Level Components/Player.tscn")
 var players = null
 
 var peer = null
@@ -49,7 +54,12 @@ remote func poppdie():
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	curr_level = get_node("Level 1")
+	# Loading existing level
+	if .import_level(self):
+		print("imported")
+	# Load the default half complete earth level
+	else:
+		.create_default_level(self)
 	
 	print(curr_level.all_countries)
 	
@@ -178,3 +188,4 @@ func end_game():
 
 func update_labels():
 	get_node("Label").text = "Player: " + curr_player.color + "\nRound: " + str(round_number)
+

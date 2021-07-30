@@ -1,6 +1,6 @@
 extends Node2D
 
-var Country = load("res://Scenes/Country.tscn")
+var Country = load("res://Scenes/Levels/Level Components/Country.tscn")
 var all_countries = {}
 
 func get_num_neutral_countries():
