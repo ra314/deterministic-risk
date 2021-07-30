@@ -11,14 +11,14 @@ func get_num_neutral_countries():
 
 func create_default_level(level_node):	
 	# Instantiating countries
-	add_country_to_level(Country.instance().init(50, 50, "Alaska"))
-	add_country_to_level(Country.instance().init(100, 50, "West Canada"))
-	add_country_to_level(Country.instance().init(150, 70, "East Canada"))
-	add_country_to_level(Country.instance().init(100, 100, "USA"))
-	add_country_to_level(Country.instance().init(75, 150, "Mexico"))
-	add_country_to_level(Country.instance().init(120, 200, "Colombia"))
-	add_country_to_level(Country.instance().init(190, 200, "Brazil"))
-	add_country_to_level(Country.instance().init(170, 300, "Argentina"))
+	add_country_to_level(Country.instance().new(50, 50, "Alaska"))
+	add_country_to_level(Country.instance().new(100, 50, "West Canada"))
+	add_country_to_level(Country.instance().new(150, 70, "East Canada"))
+	add_country_to_level(Country.instance().new(100, 100, "USA"))
+	add_country_to_level(Country.instance().new(75, 150, "Mexico"))
+	add_country_to_level(Country.instance().new(120, 200, "Colombia"))
+	add_country_to_level(Country.instance().new(190, 200, "Brazil"))
+	add_country_to_level(Country.instance().new(170, 300, "Argentina"))
 	
 	# Adding connections
 	add_connections("Alaska", ["West Canada"])
@@ -46,26 +46,29 @@ func select_random(array):
 	rng.randomize()
 	return array[rng.randi() % len(array)]
 
-func import_level(level_node):	
+func import_level(level_node, world_str):	
 	# Instantiating countries
 	var save_game = File.new()
 	
 	# Set up the save locations and sprite references
-	var worlds = [["Crucible", level_node.get_node("Crucible")], \
-		["Earth", level_node.get_node("Earth")], \
-		["No_Mans_Land", level_node.get_node("No_Mans_Land")]]
+	var worlds = {"Crucible": level_node.get_node("Crucible"), \
+		"Our World": level_node.get_node("Our World"), \
+		"No Mans Land": level_node.get_node("No Mans Land")}
 	
 	# Check if all the save files exist
 	for world in worlds:
-		print("res://" + world[0] + ".save")
-		if not save_game.file_exists("res://" + world[0] + ".save"):
+		if not save_game.file_exists("res://" + world + ".save"):
+			print("res://" + world + ".save" + " Does not Exist")
 			return false
 	
-	# Pick the random world
-	var world = select_random(worlds)
+	# Pick the random world if the world_str is empty
+	if not world_str:
+		world_str = select_random(worlds.keys())
+	var world = worlds[world_str]
+	
 	# Make visible the sprite of the selected world and get the location of the save
-	var save_file_location = "res://" + world[0] + ".save"
-	world[1].visible = true
+	var save_file_location = "res://" + world_str + ".save"
+	world.visible = true
 	
 	save_game.open(save_file_location, File.READ)
 	

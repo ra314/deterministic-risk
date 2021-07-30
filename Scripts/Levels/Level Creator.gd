@@ -82,6 +82,6 @@ func _input(event):
 			# Dead zone for buttons
 			if coordinate[0] < 150 and coordinate[1] < 100:
 				return
-			var new_country = Country.instance().init(coordinate[0], coordinate[1], hash(OS.get_system_time_msecs()))
+			var new_country = Country.instance().new(coordinate[0], coordinate[1], hash(OS.get_system_time_msecs()))
 			add_country_to_level(new_country)
 			add_child(new_country)

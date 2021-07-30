@@ -51,18 +51,17 @@ func init_multiplayer():
 
 remote func poppdie():
 	print("started networking boss")
-	
-# Called when the node enters the scene tree for the first time.
-func _ready():
+
+func load_world(world_str):
 	# Loading existing level
-	if .import_level(self):
+	if .import_level(self, world_str):
 		print("imported")
 	# Load the default half complete earth level
 	else:
 		.create_default_level(self)
-	
-	print(curr_level.all_countries)
-	
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
 	# Creating players
 	players = [Player.instance().init("red", 200, 0), Player.instance().init("blue", 400, 0)]
 	for player in players:
@@ -110,7 +109,9 @@ func _ready():
 	update_labels()
 
 func select_random(array):
-	return array[randi() % len(array)]
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
+	return array[rng.randi() % len(array)]
 
 # Checks if a country is non adjacent to a player
 func is_country_neighbour_of_player(test_country, player):

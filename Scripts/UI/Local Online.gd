@@ -7,5 +7,6 @@ func _ready():
 	$Local/Button.connect("button_down", self, "_load_scene", ["UI/Level Select"])
 	$Online/Button.connect("button_down", self, "_load_scene",  ["UI/Host Guest"])
 
-func _load_scene(scene):
-	_root.scene_manager._load_scene(scene)
+func _load_scene(scene_str):
+	var scene = _root.scene_manager._load_scene(scene_str)
+	_root.scene_manager._replace_scene(scene)
