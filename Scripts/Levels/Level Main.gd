@@ -158,9 +158,9 @@ func change_to_reinforcement():
 	phase = "reinforcement"
 
 func change_to_attack():
-	if round_number == 10:
-		end_game()
-		return
+#	if round_number == 10:
+#		end_game()
+#		return
 	
 	reinforced_countries.clear()
 	

@@ -8,6 +8,7 @@ var add_countries_button = null
 var export_level_button = null
 var connect_countries_button = null
 var information_label = null
+var world_str = "Our World"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():	
@@ -30,7 +31,7 @@ func _ready():
 	# Button to export level to text
 	export_level_button = Button.new()
 	export_level_button.text = "Export Level to Text"
-	export_level_button.connect("pressed", self, "export_level")
+	export_level_button.connect("pressed", self, "export_level", [world_str])
 	add_child(export_level_button)
 	export_level_button.set_position(Vector2(0, 60))
 	
@@ -49,9 +50,10 @@ func _ready():
 	
 	# Loading previous save
 	var save_game = File.new()
-	if save_game.file_exists("res://savegame.save"):
-		.import_level(self)
-		.draw_lines_between_countries()
+	
+	#Comment out the below lines to have a brand new world
+	.import_level(self, world_str)
+	.draw_lines_between_countries()
 
 func update_labels():
 	match phase:
@@ -82,6 +84,6 @@ func _input(event):
 			# Dead zone for buttons
 			if coordinate[0] < 150 and coordinate[1] < 100:
 				return
-			var new_country = Country.instance().new(coordinate[0], coordinate[1], hash(OS.get_system_time_msecs()))
+			var new_country = Country.instance().init(coordinate[0], coordinate[1], hash(OS.get_system_time_msecs()))
 			add_country_to_level(new_country)
 			add_child(new_country)

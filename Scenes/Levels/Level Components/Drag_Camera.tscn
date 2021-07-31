@@ -2,7 +2,6 @@
 
 [ext_resource path="res://Scripts/Levels/Level Components/Camera2D.gd" type="Script" id=1]
 
-
 [node name="Camera2D" type="Camera2D"]
 position = Vector2( 959.794, 540.088 )
 current = true

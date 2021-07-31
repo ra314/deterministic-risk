@@ -33,9 +33,9 @@ func create_default_level(level_node):
 	for country in all_countries.values():
 		level_node.add_child(country)
 
-func export_level():
+func export_level(save_name):
 	var save_game = File.new()
-	save_game.open("res://savegame.save", File.WRITE)
+	save_game.open("res://" + save_name + ".save", File.WRITE)
 	# Converting each country to a json and dumping them all
 	for country in all_countries.values():
 		save_game.store_line(to_json(country.save()))
