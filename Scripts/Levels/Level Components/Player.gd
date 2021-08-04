@@ -2,6 +2,14 @@ extends Node2D
 var owned_countries = []
 var num_reinforcements = 0
 var color = null
+var network_id = null
+
+func save():
+	var save_dict = {}
+	save_dict["network_id"] = network_id
+	save_dict["color"] = color
+	save_dict["num_reinforcements"] = num_reinforcements
+	return save_dict
 
 func init(_color, _x, _y):
 	self.color = _color
@@ -22,7 +30,13 @@ func give_reinforcements():
 	update_labels()
 
 func update_labels():
-	get_node("Label").text = "Player: " + color + \
+	var player_name = "Player: "
+	if network_id != null:
+		if network_id == 1:
+			player_name = "Host: "
+		else:
+			player_name = "Guest: "
+	get_node("Label").text = player_name + color + \
 		"\nUnits: " + str(get_num_troops()) + \
 		"\nReinforcements: " + str(num_reinforcements) + "/" + str(get_num_reinforcements()) + \
 		"\nNumber of Countries: " + str(len(owned_countries))

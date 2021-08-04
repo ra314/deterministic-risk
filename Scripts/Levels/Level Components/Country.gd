@@ -30,11 +30,14 @@ func change_ownership_to(player):
 	if belongs_to != null:
 		belongs_to.owned_countries.erase(self)
 	belongs_to = player
-	player.owned_countries.append(self)
 	
-	# Visual Update
-	player.update_labels()
-	get_node("Sprite").change_color_to(player.color)
+	if player != null:
+		player.owned_countries.append(self)
+		# Visual Update
+		player.update_labels()
+		get_node("Sprite").change_color_to(player.color)
+	else:
+		get_node("Sprite").change_color_to("gray")
 
 func update_labels():
 	# Level Creator Behaviour
@@ -186,6 +189,13 @@ func stop_flashing():
 	get_node("Sprite").modulate = Color(1,1,1)
 	time_since_last_flash = 0
 	self.flashing = false
+
+# Synchronise the country over network
+func synchronise(_num_troops, _belongs_to):
+	num_troops = _num_troops
+	if belongs_to != _belongs_to:
+		change_ownership_to(_belongs_to)
+	update_labels()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

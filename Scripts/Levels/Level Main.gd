@@ -1,5 +1,8 @@
 extends "res://Scripts/Level_Funcs.gd"
 
+onready var _root: Main = get_tree().get_root().get_node("Main")
+const sync_period = 2
+
 func stop_flashing():
 	for country in all_countries.values():
 		country.stop_flashing()
@@ -26,32 +29,6 @@ const num_players = 2
 var Player = load("res://Scenes/Levels/Level Components/Player.tscn")
 var players = null
 
-var peer = null
-const SERVER_PORT = 9658
-const MAX_PLAYERS = 2
-const SERVER_IP = "127.0.0.1"
-const IS_SERVER = true
-
-func get_next_player():
-	return players[(curr_player_index+1)%num_players]
-
-func change_to_next_player():
-	curr_player_index = (curr_player_index+1)%num_players
-	curr_player = players[curr_player_index]
-
-func init_multiplayer():
-	if IS_SERVER:
-		peer = NetworkedMultiplayerENet.new()
-		peer.create_server(SERVER_PORT, MAX_PLAYERS)
-		get_tree().network_peer = peer
-	else:
-		peer = NetworkedMultiplayerENet.new()
-		peer.create_client(SERVER_IP, SERVER_PORT)
-		get_tree().network_peer = peer
-
-remote func poppdie():
-	print("started networking boss")
-
 func load_world(world_str):
 	# Loading existing level
 	if .import_level(self, world_str):
@@ -63,14 +40,14 @@ func load_world(world_str):
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# Creating players
-	players = [Player.instance().init("red", 200, 0), Player.instance().init("blue", 400, 0)]
-	for player in players:
+	players = {"red": Player.instance().init("red", 200, 0), "blue": Player.instance().init("blue", 400, 0)}
+	for player in players.values():
 		add_child(player)
 	
 	# Randomizing players
 	randomize()
 	curr_player_index = randi() % num_players
-	curr_player = players[curr_player_index]
+	curr_player = players.values()[curr_player_index]
 	
 	# Randomly allocating countries
 	add_random_countries(get_next_player(), 4)
@@ -105,8 +82,41 @@ func _ready():
 	end_reinforcement_button.visible = false
 	end_reinforcement_button.set_position(Vector2(100, 0))
 	
-	get_node("Label").set_position(Vector2(get_viewport().size.x/2, 0))
+	# Buttons to select if host plays as red or blue
+	get_node("Play Red").connect("button_down", self, "set_host_color", ["red"])
+	get_node("Play Blue").connect("button_down", self, "set_host_color", ["blue"])
+	
+	# Label keeping track of current player and round number
+	get_node("Player and Round Tracker").set_position(Vector2(get_viewport().size.x/2, 0))
 	update_labels()
+
+func get_next_player():
+	return players.values()[(curr_player_index+1)%num_players]
+
+func change_to_next_player():
+	# Wait 1 extra second to ensure syncronisation
+	yield(get_tree().create_timer(sync_period+1), "timeout")
+	curr_player_index = (curr_player_index+1)%num_players
+	curr_player = players.values()[curr_player_index]
+	
+	var player_info = []
+	for player in players.values():
+		player_info.append(player.save())
+	rpc_id(curr_player.network_id, "synchronise_players_and_round", curr_player_index, round_number, player_info)
+
+func set_host_color(color):
+	# Assigning network ids to the players
+	players[color].network_id = _root.players["host"]
+	var other_color = "blue"
+	if color == "blue":
+		other_color = "red"
+	players[other_color].network_id = _root.players["guest"]
+	rpc("remove_color_select_buttons")
+
+remotesync func  remove_color_select_buttons():
+	# Hiding the buttons
+	get_node("Play Red").queue_free()
+	get_node("Play Blue").queue_free()
 
 func select_random(array):
 	var rng = RandomNumberGenerator.new()
@@ -158,10 +168,12 @@ func change_to_reinforcement():
 	phase = "reinforcement"
 
 func change_to_attack():
+	# Round limit
 #	if round_number == 10:
 #		end_game()
 #		return
 	
+	# Cleaning up the dictionary that was tracking where reinforcements were placed
 	reinforced_countries.clear()
 	
 	change_to_next_player()
@@ -175,7 +187,7 @@ func change_to_attack():
 func get_player_with_most_troops():
 	var player_with_most_troops = null
 	var max_num_troops = 0
-	for player in players:
+	for player in players.values():
 		if player.get_num_troops() > max_num_troops:
 			player_with_most_troops = player
 			max_num_troops = player.get_num_troops()
@@ -185,8 +197,48 @@ func end_game():
 	end_attack_button.visible = false
 	end_reinforcement_button.visible = false
 	phase = "game over"
-	get_node("Label").text = get_player_with_most_troops().color + " Wins"
+	get_node("Player and Round Tracker").text = get_player_with_most_troops().color + " Wins"
 
 func update_labels():
-	get_node("Label").text = "Player: " + curr_player.color + "\nRound: " + str(round_number)
+	get_node("Player and Round Tracker").text = "Player: " + curr_player.color + "\nRound: " + str(round_number)
 
+# Network synchronisation
+remote func synchronise_country(country_name, num_troops, color):
+	var player = null
+	if color != "gray":
+		player = players[color]
+	all_countries[country_name].synchronise(num_troops, player)
+
+remote func synchronise_players_and_round(_curr_player_index, _round_number, player_info):
+	for player in player_info:
+		var curr_player = players[player["color"]]
+		curr_player.network_id = player["network_id"]
+		curr_player.num_reinforcements = player["num_reinforcements"]
+		curr_player.update_labels()
+	round_number = _round_number
+	curr_player_index = _curr_player_index
+	curr_player = players.values()[curr_player_index]
+	update_labels()
+
+var time_since_sync = 0
+func _process(delta):
+	time_since_sync += delta
+	if time_since_sync > sync_period:
+		print("syncing")
+		
+		var network_id = _root.players["guest"]
+		if get_next_player().network_id != null:
+			network_id = get_next_player().network_id
+		
+		for country in all_countries.values():
+			var color = "gray"
+			if country.belongs_to != null:
+				color = country.belongs_to.color
+			rpc_id(network_id, "synchronise_country", country.country_name, country.num_troops, color)
+		
+		var player_info = []
+		for player in players.values():
+			player_info.append(player.save())
+		rpc_id(network_id, "synchronise_players_and_round", curr_player_index, round_number, player_info)
+		
+		time_since_sync = 0

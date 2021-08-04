@@ -30,9 +30,29 @@ scale = Vector2( 0.5, 0.5 )
 texture = ExtResource( 5 )
 centered = false
 
-[node name="Label" type="Label" parent="."]
+[node name="Player and Round Tracker" type="Label" parent="."]
 margin_right = 40.0
 margin_bottom = 14.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Play Red" type="Button" parent="."]
+margin_left = 116.211
+margin_top = 807.023
+margin_right = 183.211
+margin_bottom = 837.023
+text = "Host plays as Red"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Play Blue" type="Button" parent="."]
+margin_left = 114.779
+margin_top = 842.823
+margin_right = 244.779
+margin_bottom = 872.823
+text = "Host plays as Blue"
 __meta__ = {
 "_edit_use_anchors_": false
 }

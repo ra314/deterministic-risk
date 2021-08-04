@@ -4,13 +4,13 @@ onready var _root: Main = get_tree().get_root().get_node("Main")
 
 # Called when the node enters the scene tree for the first time.
 func _ready(): 
-	$Local/Button.connect("button_down", self, "_load_scene", ["UI/Level Select"])
-	$Online/Button.connect("button_down", self, "_load_scene",  ["UI/Host Guest"])
+	$Connect/Button.connect("button_down", self, "_load_scene", ["UI/Waiting"])
 
 func _load_scene(scene_str):
-	# Dirty workaround to check if the pressed button was Online
-	if scene_str == "UI/Host Guest":
-		_root.online_game = true
+	# Slicing out the IP address
+	var server_IP = $TextEdit.text.right(4)
+	_root.guest(server_IP)
+	print(server_IP)
 	
 	var scene = _root.scene_manager._load_scene(scene_str)
 	_root.scene_manager._replace_scene(scene)

@@ -10,6 +10,4 @@ func _ready():
 	get_node("Random").connect("button_down", self, "_load_scene", ["Levels/Level Main", ""])
 
 func _load_scene(scene_str, world_str):
-	var scene = _root.scene_manager._load_scene(scene_str)
-	scene.load_world(world_str)
-	_root.scene_manager._replace_scene(scene)
+	_root.rpc("load_level", scene_str, world_str)
