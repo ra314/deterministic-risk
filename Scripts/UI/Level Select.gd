@@ -10,4 +10,7 @@ func _ready():
 	get_node("Random").connect("button_down", self, "_load_scene", ["Levels/Level Main", ""])
 
 func _load_scene(scene_str, world_str):
-	_root.rpc("load_level", scene_str, world_str)
+	if _root.online_game:
+		_root.rpc("load_level", scene_str, world_str)
+	else:
+		_root.load_level(scene_str, world_str)

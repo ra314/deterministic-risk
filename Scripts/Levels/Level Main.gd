@@ -85,6 +85,8 @@ func _ready():
 	# Buttons to select if host plays as red or blue
 	get_node("Play Red").connect("button_down", self, "set_host_color", ["red"])
 	get_node("Play Blue").connect("button_down", self, "set_host_color", ["blue"])
+	if not _root.online_game:
+		remove_color_select_buttons()
 	
 	# Label keeping track of current player and round number
 	get_node("Player and Round Tracker").set_position(Vector2(get_viewport().size.x/2, 0))
@@ -94,15 +96,19 @@ func get_next_player():
 	return players.values()[(curr_player_index+1)%num_players]
 
 func change_to_next_player():
-	# Wait 1 extra second to ensure syncronisation
-	yield(get_tree().create_timer(sync_period+1), "timeout")
-	curr_player_index = (curr_player_index+1)%num_players
-	curr_player = players.values()[curr_player_index]
-	
-	var player_info = []
-	for player in players.values():
-		player_info.append(player.save())
-	rpc_id(curr_player.network_id, "synchronise_players_and_round", curr_player_index, round_number, player_info)
+	if _root.online_game:
+		# Wait 1 extra second to ensure syncronisation
+		yield(get_tree().create_timer(sync_period+1), "timeout")
+		curr_player_index = (curr_player_index+1)%num_players
+		curr_player = players.values()[curr_player_index]
+		
+		var player_info = []
+		for player in players.values():
+			player_info.append(player.save())
+		rpc_id(curr_player.network_id, "synchronise_players_and_round", curr_player_index, round_number, player_info)
+	else:
+		curr_player_index = (curr_player_index+1)%num_players
+		curr_player = players.values()[curr_player_index]
 
 func set_host_color(color):
 	# Assigning network ids to the players
@@ -222,6 +228,10 @@ remote func synchronise_players_and_round(_curr_player_index, _round_number, pla
 
 var time_since_sync = 0
 func _process(delta):
+	# Skip is not online
+	if not _root.online_game:
+		return
+	
 	time_since_sync += delta
 	if time_since_sync > sync_period:
 		print("syncing")
@@ -230,12 +240,14 @@ func _process(delta):
 		if get_next_player().network_id != null:
 			network_id = get_next_player().network_id
 		
+		# Synchronising the countries in terms of colors and troops
 		for country in all_countries.values():
 			var color = "gray"
 			if country.belongs_to != null:
 				color = country.belongs_to.color
 			rpc_id(network_id, "synchronise_country", country.country_name, country.num_troops, color)
 		
+		# Synchrosing the game in terms of player informationa and meta info like round and curr player
 		var player_info = []
 		for player in players.values():
 			player_info.append(player.save())
