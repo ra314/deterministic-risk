@@ -40,10 +40,6 @@ func change_ownership_to(player):
 		get_node("Sprite").change_color_to("gray")
 
 func update_labels():
-	# Level Creator Behaviour
-	if get_tree().get_current_scene().get_name() == "Level Creator":
-		get_node("Label").text = str(num_troops)
-		return
 	get_node("Label").text = str(num_troops)
 	if belongs_to:
 		belongs_to.update_labels()
@@ -173,6 +169,7 @@ func randomise_troops():
 		num_troops = 3
 	elif rand_num < 10:
 		num_troops = 4
+	update_labels()
 
 func init(_x, _y, _country_name):
 	position = Vector2(_x, _y)
