@@ -34,3 +34,6 @@ First the host must be waiting on the level select menu. Only then should the gu
 
 # Future
 (1) An AI for single player mode and to help determine the balance of a spawn is in the works.
+
+# Thanks
+Thank you to [Allan Ekai](https://github.com/RifleDLuffy) for the 4K images of the maps and help in play testing.
