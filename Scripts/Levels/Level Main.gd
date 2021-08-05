@@ -37,8 +37,7 @@ func load_world(world_str):
 	else:
 		.create_default_level(self)
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
+func spawn_and_allocate():
 	# Creating players
 	players = {"red": Player.instance().init("red", 200, 0), "blue": Player.instance().init("blue", 400, 0)}
 	for player in players.values():
@@ -67,6 +66,11 @@ func _ready():
 		country.update_labels()
 	
 	print("The first player is " + curr_player.color)
+	update_labels()
+	
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	spawn_and_allocate()
 	
 	# Button to end attack
 	end_attack_button = Button.new()
@@ -88,9 +92,29 @@ func _ready():
 	if not _root.online_game:
 		remove_color_select_buttons()
 	
+	# Button to reroll the troop allocation to the countries
+	get_node("Reroll Spawn").connect("button_down", self, "reroll_spawn")
+	if _root.online_game:
+		get_node("Start Game").queue_free()
+	else:
+		get_node("Start Game").connect("button_down", self, "hide_reroll_and_start_butttons")
+	
 	# Label keeping track of current player and round number
 	get_node("Player and Round Tracker").set_position(Vector2(get_viewport().size.x/2, 0))
-	update_labels()
+
+func hide_reroll_and_start_butttons():
+	remove_reroll_spawn_button()
+	get_node("Start Game").queue_free()
+
+# Clear the player dictionary, rerandomise troop allocation and redo player turn order and country allocation
+func reroll_spawn():
+	for player in players.values():
+		player.queue_free()
+	players.clear()
+	for country in all_countries.values():
+		country.change_ownership_to(null)
+		country.randomise_troops()
+	spawn_and_allocate()
 
 func get_next_player():
 	return players.values()[(curr_player_index+1)%num_players]
@@ -118,9 +142,13 @@ func set_host_color(color):
 		other_color = "red"
 	players[other_color].network_id = _root.players["guest"]
 	rpc("remove_color_select_buttons")
+	rpc("remove_reroll_spawn_button")
 
-remotesync func  remove_color_select_buttons():
-	# Hiding the buttons
+remotesync func remove_reroll_spawn_button():
+	get_node("Reroll Spawn").queue_free()
+
+# Hiding the buttons
+remotesync func remove_color_select_buttons():
 	get_node("Play Red").queue_free()
 	get_node("Play Blue").queue_free()
 

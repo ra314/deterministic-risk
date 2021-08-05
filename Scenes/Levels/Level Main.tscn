@@ -47,6 +47,26 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Reroll Spawn" type="Button" parent="."]
+margin_left = 114.704
+margin_top = 935.147
+margin_right = 239.704
+margin_bottom = 965.147
+text = "Reroll Spawn"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Start Game" type="Button" parent="."]
+margin_left = 113.677
+margin_top = 968.514
+margin_right = 238.677
+margin_bottom = 998.514
+text = "Start Game"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Play Blue" type="Button" parent="."]
 margin_left = 114.779
 margin_top = 842.823
