@@ -8,7 +8,7 @@ var add_countries_button = null
 var export_level_button = null
 var connect_countries_button = null
 var information_label = null
-var world_str = "No Mans Land"
+var world_str = "Crucible"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():	

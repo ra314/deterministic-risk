@@ -143,6 +143,12 @@ func set_host_color(color):
 	players[other_color].network_id = _root.players["guest"]
 	rpc("remove_color_select_buttons")
 	rpc("remove_reroll_spawn_button")
+	
+	# Synching network id info to the guest
+	var player_info = []
+	for player in players.values():
+		player_info.append(player.save())
+	rpc_id(players[other_color].network_id, "synchronise_players_and_round", curr_player_index, round_number, player_info)
 
 remotesync func remove_reroll_spawn_button():
 	get_node("Reroll Spawn").queue_free()
