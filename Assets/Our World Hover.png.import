@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Our World Reference.png-0487b8cbd027a0cadf99e42a776accd6.stex"
+path="res://.import/Our World Hover.png-8cdd511ba18d9b901d050a907e79b15f.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Our World Reference.png"
-dest_files=[ "res://.import/Our World Reference.png-0487b8cbd027a0cadf99e42a776accd6.stex" ]
+source_file="res://Assets/Our World Hover.png"
+dest_files=[ "res://.import/Our World Hover.png-8cdd511ba18d9b901d050a907e79b15f.stex" ]
 
 [params]
 

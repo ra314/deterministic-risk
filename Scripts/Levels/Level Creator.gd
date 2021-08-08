@@ -2,13 +2,14 @@ extends "res://Scripts/Level_Funcs.gd"
 
 var phase = "add countries"
 var selected_country = null
+var lines_drawn = false
 
 var change_curr_troops_button = null
 var add_countries_button = null
 var export_level_button = null
 var connect_countries_button = null
 var information_label = null
-var world_str = "Crucible"
+var world_str = "No Mans Land"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():	
@@ -17,14 +18,14 @@ func _ready():
 	# Button to change curr troops
 	change_curr_troops_button = Button.new()
 	change_curr_troops_button.text = "Change Curr Troops"
-	change_curr_troops_button.connect("pressed", self, "change_to_change_curr_troops")
+	change_curr_troops_button.connect("pressed", self, "change_phase", ["change curr troops"])
 	add_child(change_curr_troops_button)
 	change_curr_troops_button.set_position(Vector2(0, 20))
 	
 	# Button to add countries
 	add_countries_button = Button.new()
 	add_countries_button.text = "Add Countries"
-	add_countries_button.connect("pressed", self, "change_to_add_countries")
+	add_countries_button.connect("pressed", self, "change_phase", ["add countries"])
 	add_child(add_countries_button)
 	add_countries_button.set_position(Vector2(0, 40))
 	
@@ -38,9 +39,23 @@ func _ready():
 	# Button to connect countries
 	connect_countries_button = Button.new()
 	connect_countries_button.text = "Connect Countries"
-	connect_countries_button.connect("pressed", self, "connect_countries")
+	connect_countries_button.connect("pressed", self, "change_phase", ["connect countries"])
 	add_child(connect_countries_button)
 	connect_countries_button.set_position(Vector2(0, 80))
+	
+	# Button to move countries
+	connect_countries_button = Button.new()
+	connect_countries_button.text = "Move Countries"
+	connect_countries_button.connect("pressed", self, "change_phase", ["move countries"])
+	add_child(connect_countries_button)
+	connect_countries_button.set_position(Vector2(0, 100))
+	
+	# Button to move countries
+	connect_countries_button = Button.new()
+	connect_countries_button.text = "Toggle lines showing connections"
+	connect_countries_button.connect("pressed", self, "toggle_lines")
+	add_child(connect_countries_button)
+	connect_countries_button.set_position(Vector2(0, 120))
 	
 	# Label showing phase
 	information_label = Label.new()
@@ -52,8 +67,14 @@ func _ready():
 	var save_game = File.new()
 	
 	#Comment out the below lines to have a brand new world
-	.import_level(self, world_str)
-	.draw_lines_between_countries()
+	.import_level(self, world_str)	
+
+func toggle_lines():
+	if lines_drawn:
+		.remove_lines_between_countries()
+	else:
+		.draw_lines_between_countries()
+	lines_drawn = not lines_drawn
 
 func update_labels():
 	match phase:
@@ -64,17 +85,11 @@ func update_labels():
 				"Right click on any country to decrease it's current number of troops\n"
 		"connect countries":
 			information_label.text = "Select any two countries to connect them"
+		"move countries":
+			information_label.text = "Click to select destination, and then click again to select the country to move there"
 
-func connect_countries():
-	phase = "connect countries"
-	update_labels()
-
-func change_to_change_curr_troops():
-	phase = "change curr troops"
-	update_labels()
-
-func change_to_add_countries():
-	phase = "add countries"
+func change_phase(new_phase):
+	phase = new_phase
 	update_labels()
 
 func _input(event):
@@ -82,8 +97,14 @@ func _input(event):
 		if event.is_pressed() and event.button_index == BUTTON_LEFT:
 			var coordinate = get_global_mouse_position()
 			# Dead zone for buttons
-			if coordinate[0] < 150 and coordinate[1] < 100:
+			if coordinate[0] < 250 and coordinate[1] < 150:
 				return
 			var new_country = Country.instance().init(coordinate[0], coordinate[1], hash(OS.get_system_time_msecs()))
 			add_country_to_level(new_country)
 			add_child(new_country)
+	
+	if phase == "move countries":
+		if event.is_pressed():
+			if selected_country != null:
+				selected_country.position = event.position
+				selected_country = null

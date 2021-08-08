@@ -87,6 +87,9 @@ func on_click(event):
 					get_parent().selected_country.connected_countries.append(self)
 					draw_line_to_country(get_parent().selected_country)
 					get_parent().selected_country = null
+			
+			"move countries":
+				get_parent().selected_country = self
 		
 		update_labels()
 		return

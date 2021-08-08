@@ -84,7 +84,7 @@ func _ready():
 	end_reinforcement_button.connect("pressed", self, "change_to_attack")
 	add_child(end_reinforcement_button)
 	end_reinforcement_button.visible = false
-	end_reinforcement_button.set_position(Vector2(100, 0))
+	end_reinforcement_button.set_position(Vector2(0, 20))
 	
 	# Buttons to select if host plays as red or blue
 	get_node("Play Red").connect("button_down", self, "set_host_color", ["red"])

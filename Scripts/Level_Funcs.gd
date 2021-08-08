@@ -93,6 +93,12 @@ func draw_lines_between_countries():
 		for neighbour in country.connected_countries:
 			country.draw_line_to_country(neighbour)
 
+func remove_lines_between_countries():
+	for country in all_countries.values():
+		for child in country.get_children():
+			if child is Line2D:
+				child.queue_free()
+
 func add_country_to_level(country):
 	all_countries[country.country_name] = country
 

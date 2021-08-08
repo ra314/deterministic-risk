@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Crucible Reference.png-a04d8e7b519a148cfbe575eb091785cd.stex"
+path="res://.import/Crucible_Hover.png-32b699c05188bc34748c04e8e5d4b133.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Crucible Reference.png"
-dest_files=[ "res://.import/Crucible Reference.png-a04d8e7b519a148cfbe575eb091785cd.stex" ]
+source_file="res://Assets/Crucible_Hover.png"
+dest_files=[ "res://.import/Crucible_Hover.png-32b699c05188bc34748c04e8e5d4b133.stex" ]
 
 [params]
 

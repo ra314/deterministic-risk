@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Assets/Montserrat-Regular.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Assets/new_dynamicfont.tres" type="DynamicFont" id=2]
@@ -6,6 +6,9 @@
 [ext_resource path="res://Assets/Our World.png" type="Texture" id=4]
 [ext_resource path="res://Assets/Crucible.png" type="Texture" id=5]
 [ext_resource path="res://Scripts/UI/Level Select.gd" type="Script" id=6]
+[ext_resource path="res://Assets/Crucible_Hover.png" type="Texture" id=7]
+[ext_resource path="res://Assets/Our World Hover.png" type="Texture" id=8]
+[ext_resource path="res://Assets/No Mans Land Hover.png" type="Texture" id=9]
 
 [sub_resource type="DynamicFont" id=1]
 size = 100
@@ -75,6 +78,7 @@ margin_right = 400.0
 margin_bottom = 400.0
 rect_min_size = Vector2( 400, 400 )
 texture_normal = ExtResource( 5 )
+texture_hover = ExtResource( 7 )
 expand = true
 stretch_mode = 5
 
@@ -84,6 +88,7 @@ margin_right = 804.0
 margin_bottom = 400.0
 rect_min_size = Vector2( 400, 400 )
 texture_normal = ExtResource( 3 )
+texture_hover = ExtResource( 9 )
 expand = true
 stretch_mode = 5
 
@@ -93,6 +98,7 @@ margin_right = 1208.0
 margin_bottom = 400.0
 rect_min_size = Vector2( 400, 400 )
 texture_normal = ExtResource( 4 )
+texture_hover = ExtResource( 8 )
 expand = true
 stretch_mode = 5
 
