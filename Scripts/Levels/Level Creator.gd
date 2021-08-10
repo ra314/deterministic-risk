@@ -93,6 +93,11 @@ func change_phase(new_phase):
 	update_labels()
 
 func _input(event):
+	var image = get_node("No Mans Land").texture.get_data()
+	image.lock()
+	print(image.get_size())
+	print(Vector2(get_local_mouse_position()[0]*2, get_local_mouse_position()[1]*2))
+	print(image.get_pixel(get_local_mouse_position()[0]*2, get_local_mouse_position()[1]*2)*256)
 	if phase == "add countries":
 		if event.is_pressed() and event.button_index == BUTTON_LEFT:
 			var coordinate = get_global_mouse_position()

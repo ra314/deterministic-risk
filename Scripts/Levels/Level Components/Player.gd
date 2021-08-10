@@ -1,7 +1,7 @@
 extends Node2D
 var owned_countries = []
 var num_reinforcements = 0
-var color = null
+var color = ""
 var network_id = null
 
 func save():
@@ -11,9 +11,14 @@ func save():
 	save_dict["num_reinforcements"] = num_reinforcements
 	return save_dict
 
-func init(_color, _x, _y):
+func reset():
+	owned_countries = []
+	num_reinforcements = 0
+	color = ""
+	network_id = null
+
+func init(_color):
 	self.color = _color
-	position = Vector2(_x, _y)
 	return self
 
 func get_num_troops():

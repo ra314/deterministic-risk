@@ -19,8 +19,6 @@ var reinforced_countries = {}
 var round_number = 1
 const max_rounds = 10
 
-var end_attack_button = null
-var end_reinforcement_button = null
 var round_number_label = null
 
 var curr_player = null
@@ -39,10 +37,8 @@ func load_world(world_str):
 
 func spawn_and_allocate():
 	# Creating players
-	players = {"red": Player.instance().init("red", 200, 0), "blue": Player.instance().init("blue", 400, 0)}
-	for player in players.values():
-		add_child(player)
-	
+	players = {"red": get_node("CanvasLayer/Player Red").init("red"), "blue": get_node("CanvasLayer/Player Blue").init("blue")}
+
 	# Randomizing players
 	randomize()
 	curr_player_index = randi() % num_players
@@ -73,44 +69,35 @@ func _ready():
 	spawn_and_allocate()
 	
 	# Button to end attack
-	end_attack_button = Button.new()
-	end_attack_button.text = "End Attack Phase"
-	end_attack_button.connect("pressed", self, "change_to_reinforcement")
-	add_child(end_attack_button)
+	get_node("CanvasLayer/End Attack").connect("pressed", self, "change_to_reinforcement")
 	
 	# Button to end reinforcement
-	end_reinforcement_button = Button.new()
-	end_reinforcement_button.text = "End Reinforcement Phase"
-	end_reinforcement_button.connect("pressed", self, "change_to_attack")
-	add_child(end_reinforcement_button)
-	end_reinforcement_button.visible = false
-	end_reinforcement_button.set_position(Vector2(0, 20))
+	get_node("CanvasLayer/End Reinforcement").connect("pressed", self, "change_to_attack")
 	
 	# Buttons to select if host plays as red or blue
-	get_node("Play Red").connect("button_down", self, "set_host_color", ["red"])
-	get_node("Play Blue").connect("button_down", self, "set_host_color", ["blue"])
+	get_node("CanvasLayer/Play Red").connect("button_down", self, "set_host_color", ["red"])
+	get_node("CanvasLayer/Play Blue").connect("button_down", self, "set_host_color", ["blue"])
 	if not _root.online_game:
 		remove_color_select_buttons()
 	
 	# Button to reroll the troop allocation to the countries
-	get_node("Reroll Spawn").connect("button_down", self, "reroll_spawn")
+	get_node("CanvasLayer/Reroll Spawn").connect("button_down", self, "reroll_spawn")
 	if _root.online_game:
-		get_node("Start Game").queue_free()
+		get_node("CanvasLayer/Start Game").queue_free()
 	else:
-		get_node("Start Game").connect("button_down", self, "hide_reroll_and_start_butttons")
+		get_node("CanvasLayer/Start Game").connect("button_down", self, "hide_reroll_and_start_butttons")
 	
 	# Label keeping track of current player and round number
-	get_node("Player and Round Tracker").set_position(Vector2(get_viewport().size.x/2, 0))
+	get_node("CanvasLayer/Player and Round Tracker").set_position(Vector2(get_viewport().size.x/2, 0))
 
 func hide_reroll_and_start_butttons():
 	remove_reroll_spawn_button()
-	get_node("Start Game").queue_free()
+	get_node("CanvasLayer/Start Game").queue_free()
 
 # Clear the player dictionary, rerandomise troop allocation and redo player turn order and country allocation
 func reroll_spawn():
 	for player in players.values():
-		player.queue_free()
-	players.clear()
+		player.reset()
 	for country in all_countries.values():
 		country.change_ownership_to(null)
 		country.randomise_troops()
@@ -151,12 +138,12 @@ func set_host_color(color):
 	rpc_id(players[other_color].network_id, "synchronise_players_and_round", curr_player_index, round_number, player_info)
 
 remotesync func remove_reroll_spawn_button():
-	get_node("Reroll Spawn").queue_free()
+	get_node("CanvasLayer/Reroll Spawn").queue_free()
 
 # Hiding the buttons
 remotesync func remove_color_select_buttons():
-	get_node("Play Red").queue_free()
-	get_node("Play Blue").queue_free()
+	get_node("CanvasLayer/Play Red").queue_free()
+	get_node("CanvasLayer/Play Blue").queue_free()
 
 func select_random(array):
 	var rng = RandomNumberGenerator.new()
@@ -203,8 +190,8 @@ func change_to_reinforcement():
 	curr_level.stop_flashing()
 	curr_player.give_reinforcements()
 	
-	end_attack_button.visible = false
-	end_reinforcement_button.visible = true
+	get_node("CanvasLayer/End Attack").visible = false
+	get_node("CanvasLayer/End Reinforcement").visible = true
 	phase = "reinforcement"
 
 func change_to_attack():
@@ -220,8 +207,8 @@ func change_to_attack():
 	round_number += 1
 	update_labels()
 	
-	end_attack_button.visible = true
-	end_reinforcement_button.visible = false
+	get_node("CanvasLayer/End Attack").visible = true
+	get_node("CanvasLayer/End Reinforcement").visible = false
 	phase = "attack"
 
 func get_player_with_most_troops():
@@ -234,13 +221,13 @@ func get_player_with_most_troops():
 	return player_with_most_troops
 
 func end_game():
-	end_attack_button.visible = false
-	end_reinforcement_button.visible = false
+	get_node("CanvasLayer/End Attack").visible = false
+	get_node("CanvasLayer/End Reinforcement").visible = false
 	phase = "game over"
-	get_node("Player and Round Tracker").text = get_player_with_most_troops().color + " Wins"
+	get_node("CanvasLayer/Player and Round Tracker").text = get_player_with_most_troops().color + " Wins"
 
 func update_labels():
-	get_node("Player and Round Tracker").text = "Player: " + curr_player.color + "\nRound: " + str(round_number)
+	get_node("CanvasLayer/Player and Round Tracker").text = "Player: " + curr_player.color + "\nRound: " + str(round_number)
 
 # Network synchronisation
 remote func synchronise_country(country_name, num_troops, color):
