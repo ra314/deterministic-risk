@@ -86,9 +86,6 @@ func _ready():
 		get_node("CanvasLayer/Start Game").queue_free()
 	else:
 		get_node("CanvasLayer/Start Game").connect("button_down", self, "hide_reroll_and_start_butttons")
-	
-	# Label keeping track of current player and round number
-	get_node("CanvasLayer/Player and Round Tracker").set_position(Vector2(get_viewport().size.x/2, 0))
 
 func hide_reroll_and_start_butttons():
 	remove_reroll_spawn_button()
@@ -227,7 +224,7 @@ func end_game():
 	get_node("CanvasLayer/Player and Round Tracker").text = get_player_with_most_troops().color + " Wins"
 
 func update_labels():
-	get_node("CanvasLayer/Player and Round Tracker").text = "Player: " + curr_player.color + "\nRound: " + str(round_number)
+	get_node("CanvasLayer/Player and Round Tracker").text = "Current Player: " + curr_player.color + "\nRound: " + str(round_number)
 
 # Network synchronisation
 remote func synchronise_country(country_name, num_troops, color):
