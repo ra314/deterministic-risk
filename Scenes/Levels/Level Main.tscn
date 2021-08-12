@@ -16,6 +16,15 @@ script = ExtResource( 2 )
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
+[node name="Help" type="Button" parent="CanvasLayer"]
+margin_left = 1795.0
+margin_right = 1920.0
+margin_bottom = 30.0
+text = "Help"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Player Red" parent="CanvasLayer" instance=ExtResource( 6 )]
 position = Vector2( 0, 300 )
 
@@ -88,7 +97,6 @@ __meta__ = {
 [node name="Our World" type="Sprite" parent="."]
 visible = false
 scale = Vector2( 0.5, 0.5 )
-z_index = -1
 texture = ExtResource( 1 )
 centered = false
 

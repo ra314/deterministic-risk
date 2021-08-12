@@ -2,6 +2,10 @@ extends Node2D
 
 var Country = load("res://Scenes/Levels/Level Components/Country.tscn")
 var all_countries = {}
+var world_mask = null
+var world_str = null
+var world_sprite = null
+var flash_shader = load("res://Assets/flash_shader.tres")
 
 func get_num_neutral_countries():
 	var count = 0
@@ -46,7 +50,9 @@ func select_random(array):
 	rng.randomize()
 	return array[rng.randi() % len(array)]
 
-func import_level(level_node, world_str):	
+func import_level(level_node, _world_str):
+	world_str = _world_str
+	
 	# Instantiating countries
 	var save_game = File.new()
 	
@@ -64,11 +70,14 @@ func import_level(level_node, world_str):
 	# Pick the random world if the world_str is empty
 	if not world_str:
 		world_str = select_random(worlds.keys())
-	var world = worlds[world_str]
+	world_sprite = worlds[world_str]
 	
 	# Make visible the sprite of the selected world and get the location of the save
 	var save_file_location = "res://" + world_str + ".save"
-	world.visible = true
+	world_sprite.visible = true
+	# Load up the mask
+	world_mask = load("res://Assets/" + world_str + " Mask.png").get_data()
+	world_mask.lock()
 	
 	save_game.open(save_file_location, File.READ)
 	
@@ -105,3 +114,15 @@ func add_country_to_level(country):
 func add_connections(source_country_name, destination_country_names):
 	for destination_country_name in destination_country_names:
 		all_countries[source_country_name].add_connection(all_countries[destination_country_name])
+
+func get_color_in_mask():
+	return world_mask.get_pixel(get_local_mouse_position()[0]*2, get_local_mouse_position()[1]*2)*255
+
+func _input(event):	
+	if event.is_pressed():
+		# Print color of pixel under mouse cursos when clicked
+		print(world_mask.get_pixel(get_local_mouse_position()[0]*2, get_local_mouse_position()[1]*2)*255)
+		
+		var country_name = get_color_in_mask()[0]
+		if country_name in all_countries:
+			all_countries[country_name].on_click(event)

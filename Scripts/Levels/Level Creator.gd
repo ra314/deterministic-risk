@@ -9,7 +9,7 @@ var add_countries_button = null
 var export_level_button = null
 var connect_countries_button = null
 var information_label = null
-var world_str = "No Mans Land"
+var _world_str = "Crucible"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():	
@@ -32,7 +32,7 @@ func _ready():
 	# Button to export level to text
 	export_level_button = Button.new()
 	export_level_button.text = "Export Level to Text"
-	export_level_button.connect("pressed", self, "export_level", [world_str])
+	export_level_button.connect("pressed", self, "export_level", [_world_str])
 	add_child(export_level_button)
 	export_level_button.set_position(Vector2(0, 60))
 	
@@ -57,6 +57,13 @@ func _ready():
 	add_child(connect_countries_button)
 	connect_countries_button.set_position(Vector2(0, 120))
 	
+	# Button to move countries
+	connect_countries_button = Button.new()
+	connect_countries_button.text = "Assign color mask to country"
+	connect_countries_button.connect("pressed", self, "change_phase", ["add color to country"])
+	add_child(connect_countries_button)
+	connect_countries_button.set_position(Vector2(0, 140))
+	
 	# Label showing phase
 	information_label = Label.new()
 	add_child(information_label)
@@ -67,7 +74,7 @@ func _ready():
 	var save_game = File.new()
 	
 	#Comment out the below lines to have a brand new world
-	.import_level(self, world_str)	
+	.import_level(self, _world_str)	
 
 func toggle_lines():
 	if lines_drawn:
@@ -87,22 +94,20 @@ func update_labels():
 			information_label.text = "Select any two countries to connect them"
 		"move countries":
 			information_label.text = "Click to select destination, and then click again to select the country to move there"
+		"add color to country":
+			information_label.text = "Click on a square that belongs to a country. \n" + \
+				"Then the country object will store data about the color assigned to it in the mask."
 
 func change_phase(new_phase):
 	phase = new_phase
 	update_labels()
 
-func _input(event):
-	var image = get_node("No Mans Land").texture.get_data()
-	image.lock()
-	print(image.get_size())
-	print(Vector2(get_local_mouse_position()[0]*2, get_local_mouse_position()[1]*2))
-	print(image.get_pixel(get_local_mouse_position()[0]*2, get_local_mouse_position()[1]*2)*256)
+func _input(event):	
 	if phase == "add countries":
 		if event.is_pressed() and event.button_index == BUTTON_LEFT:
 			var coordinate = get_global_mouse_position()
 			# Dead zone for buttons
-			if coordinate[0] < 250 and coordinate[1] < 150:
+			if coordinate[0] < 250 and coordinate[1] < 250:
 				return
 			var new_country = Country.instance().init(coordinate[0], coordinate[1], hash(OS.get_system_time_msecs()))
 			add_country_to_level(new_country)

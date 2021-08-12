@@ -86,6 +86,13 @@ func _ready():
 		get_node("CanvasLayer/Start Game").queue_free()
 	else:
 		get_node("CanvasLayer/Start Game").connect("button_down", self, "hide_reroll_and_start_butttons")
+		
+	# Button to go to help menu
+	get_node("CanvasLayer/Help").connect("button_down", self, "show_help_menu")
+
+func show_help_menu():
+	var scene = _root.scene_manager._load_scene("UI/Help Menu")
+	_root.scene_manager._replace_scene(scene)
 
 func hide_reroll_and_start_butttons():
 	remove_reroll_spawn_button()
@@ -244,9 +251,16 @@ remote func synchronise_players_and_round(_curr_player_index, _round_number, pla
 	curr_player = players.values()[curr_player_index]
 	update_labels()
 
+
+
 var time_since_sync = 0
 func _process(delta):
-	# Skip is not online
+#	### TESTING
+#	time_since_sync += delta
+#	if time_since_sync > 3:
+#		update_map_with_mask()
+	
+	# Skip synchronisation if not online
 	if not _root.online_game:
 		return
 	
