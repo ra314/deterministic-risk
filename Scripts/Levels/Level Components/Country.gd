@@ -43,7 +43,10 @@ func update_labels():
 
 func flash_attackable_neighbours(player):
 	for country in connected_countries:
-		print(country.country_name)
+		if not country.flash_mask_sprite:
+			print(str(country.create_flash_mask_sprite()) + "ms")
+	
+	for country in connected_countries:
 		if country.belongs_to != player:
 			country.flashing = true
 
@@ -191,8 +194,9 @@ func _ready():
 	update_labels()
 
 func stop_flashing():
-	if flash_mask_sprite:
+	if flash_mask_sprite != null:
 		flash_mask_sprite.visible = false
+		#print(flash_mask_sprite.visible)
 	get_node("Sprite").modulate = Color(1,1,1)
 	time_since_last_flash = 0
 	self.flashing = false
@@ -225,17 +229,20 @@ func create_flash_mask_sprite():
 	flash_mask_sprite.set_material(flash_shader)
 	
 	# Measuring performance
-	print(str(OS.get_ticks_msec() - time_start) + " ms")
+	var time_taken = OS.get_ticks_msec() - time_start
+	#print(str(time_taken) + "ms")
+	return time_taken
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if flashing:
 		time_since_last_flash += delta
 		if time_since_last_flash > flashing_period:
-			# Spawning the mask sprite if it doesn't exist
-			if not flash_mask_sprite:
-				create_flash_mask_sprite()
+#			# Spawning the mask sprite if it doesn't exist
+#			if flash_mask_sprite == null:
+#				create_flash_mask_sprite()
 			#Flashing the mask
+			#print(flash_mask_sprite.visible)
 			flash_mask_sprite.visible = !flash_mask_sprite.visible
 			
 			#Flashing the country sprite
