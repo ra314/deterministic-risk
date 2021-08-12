@@ -118,14 +118,14 @@ func add_connections(source_country_name, destination_country_names):
 func get_color_in_mask():
 	return world_mask.get_pixel(get_local_mouse_position()[0]*2, get_local_mouse_position()[1]*2)*255
 
-func _input(event):	
-	if event.is_pressed():
-		if not (Rect2(Vector2(0,0), world_mask.get_size()).has_point(get_local_mouse_position())):
-			return
-		
-		# Print color of pixel under mouse cursos when clicked
-		print(get_color_in_mask())
-		
-		var country_name = get_color_in_mask()[0]
-		if country_name in all_countries:
-			all_countries[country_name].on_click(event)
+#func _input(event):	
+#	if event.is_pressed():
+#		if not (Rect2(Vector2(0,0), world_mask.get_size()).has_point(get_local_mouse_position())):
+#			return
+#
+#		# Print color of pixel under mouse cursos when clicked
+#		print(get_color_in_mask())
+#
+#		var country_name = get_color_in_mask()[0]
+#		if country_name in all_countries:
+#			all_countries[country_name].on_click(event)

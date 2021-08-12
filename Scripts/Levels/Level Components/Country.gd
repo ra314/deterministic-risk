@@ -61,7 +61,10 @@ func can_attack():
 		if country.num_troops < num_troops and country.belongs_to != belongs_to:
 			return true
 	return false
-	
+
+func _input_event(viewport, event, shape_idx):
+	if event.is_pressed():
+		self.on_click(event)
 
 func on_click(event):
 	# Level Creator Behaviour
