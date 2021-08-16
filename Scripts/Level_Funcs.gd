@@ -41,9 +41,15 @@ func export_level(save_name):
 	var save_game = File.new()
 	save_game.open("res://" + save_name + ".save", File.WRITE)
 	# Converting each country to a json and dumping them all
-	for country in all_countries.values():
+	var arr = all_countries.values()
+	arr.sort_custom(self, "country_comparator")
+	print(all_countries)
+	for country in arr:
 		save_game.store_line(to_json(country.save()))
 	save_game.close()
+
+func country_comparator(c1, c2):
+	return c1.country_name < c2.country_name
 
 func select_random(array):
 	var rng = RandomNumberGenerator.new()
@@ -118,14 +124,4 @@ func add_connections(source_country_name, destination_country_names):
 func get_color_in_mask():
 	return world_mask.get_pixel(get_local_mouse_position()[0]*2, get_local_mouse_position()[1]*2)*255
 
-#func _input(event):	
-#	if event.is_pressed():
-#		if not (Rect2(Vector2(0,0), world_mask.get_size()).has_point(get_local_mouse_position())):
-#			return
-#
-#		# Print color of pixel under mouse cursos when clicked
-#		print(get_color_in_mask())
-#
-#		var country_name = get_color_in_mask()[0]
-#		if country_name in all_countries:
-#			all_countries[country_name].on_click(event)
+

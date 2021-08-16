@@ -63,8 +63,9 @@ func can_attack():
 	return false
 
 func _input_event(viewport, event, shape_idx):
-	if event.is_pressed():
-		self.on_click(event)
+	if get_tree().get_current_scene().get_name() == "Level Creator":
+		if event.is_pressed():
+			self.on_click(event)
 
 func on_click(event):
 	# Level Creator Behaviour

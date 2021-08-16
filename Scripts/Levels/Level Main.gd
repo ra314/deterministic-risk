@@ -251,7 +251,17 @@ remote func synchronise_players_and_round(_curr_player_index, _round_number, pla
 	curr_player = players.values()[curr_player_index]
 	update_labels()
 
+func _input(event):	
+	if event.is_pressed():
+		if not (Rect2(Vector2(0,0), world_mask.get_size()).has_point(get_local_mouse_position())):
+			return
 
+		# Print color of pixel under mouse cursos when clicked
+		print(get_color_in_mask())
+
+		var country_name = get_color_in_mask()[0]
+		if country_name in all_countries:
+			all_countries[country_name].on_click(event)
 
 var time_since_sync = 0
 func _process(delta):
