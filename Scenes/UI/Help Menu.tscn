@@ -28,9 +28,9 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 margin_left = 302.0
-margin_top = 188.0
+margin_top = 144.0
 margin_right = 1617.0
-margin_bottom = 892.0
+margin_bottom = 935.0
 
 [node name="CenterContainer" type="CenterContainer" parent="CenterContainer/VBoxContainer"]
 margin_right = 1315.0
@@ -46,15 +46,18 @@ text = "Deterministic Risk"
 [node name="Label2" type="Label" parent="CenterContainer/VBoxContainer"]
 margin_top = 127.0
 margin_right = 1315.0
-margin_bottom = 704.0
+margin_bottom = 791.0
 custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Rules:
     The win condition is achieved when your opponent has no countries left in their possession.
 	
-    Each turn is split into a attack and reinforce phase. 
-    During the attack phase, you may attack any adjacent country (A) that you don't own, with any country you own (B).
-    As long as B has more units in it than A. After the attack, B is left with 1 unit, and A is left with B-A units.
+    Each turn is split into an attack and a reinforce phase. 
+    Suppose you want to attack country A with country B to conquer it.
+    This is only possible if B has more units than A, and B is adjacent to A.
+    Adjacency across oceans is represented with dashed white lines.
+    After the attack, B is left with 1 unit, and A is left with B-A units.
+    A is now under your ownership.
 	
     The reinforce phase automatically starts when you have no attacks to make or when you click on the \"end attack\" button. 
     During the reinforce phase the number of reinforcements you get  is the number of countries you own halved, then rounded up. 
