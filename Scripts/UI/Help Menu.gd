@@ -12,6 +12,4 @@ func _ready():
 	pass # Replace with function body.
 
 func _load_scene():
-	print(_root.saved_scene)
-	
-	_root.scene_manager._replace_scene(_root.saved_scene.instance())
+	_root.scene_manager.load_saved_scene()

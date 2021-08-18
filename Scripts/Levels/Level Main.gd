@@ -104,9 +104,9 @@ func _ready():
 	get_node("CanvasLayer/Help").connect("button_down", self, "show_help_menu")
 
 func show_help_menu():
-	_root.save_scene()
 	var scene = _root.scene_manager._load_scene("UI/Help Menu")
-	_root.scene_manager._replace_scene(scene)
+	_root.scene_manager.save_and_hide_current_scene()
+	_root.add_child(scene)
 
 # Button Removal and Hiding Functions
 #######

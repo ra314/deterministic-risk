@@ -19,3 +19,13 @@ func _replace_scene(scene):
 func _remove_children(node: Node):
 	for child in node.get_children():
 		child.queue_free()
+
+var saved_scene = null
+
+func save_and_hide_current_scene():
+	saved_scene = _root.get_children()[0]
+	_root.remove_child(saved_scene)
+	
+func load_saved_scene():
+	_root.remove_child(_root.get_children()[0])
+	_root.add_child(saved_scene)
