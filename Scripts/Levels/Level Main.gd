@@ -294,7 +294,7 @@ func synchronize(network_id):
 		rpc_id(network_id, "synchronise_player", player.save())
 	
 	# Synchronising meta information
-	rpc_id(network_id, "synchronise_meta_info", curr_player_index, round_number)
+	rpc_id(network_id, "synchronise_meta_info", curr_player_index, round_number, game_started)
 
 remote func synchronise_country(country_name, num_troops, color):
 	all_countries[country_name].synchronise(num_troops, players[color])
@@ -305,7 +305,8 @@ remote func synchronise_player(player_info):
 	curr_player.num_reinforcements = player_info["num_reinforcements"]
 	curr_player.update_labels()
 
-remote func synchronise_meta_info(_curr_player_index, _round_number):
+remote func synchronise_meta_info(_curr_player_index, _round_number, _game_started):
+	game_started = _game_started
 	round_number = _round_number
 	curr_player_index = _curr_player_index
 	curr_player = players.values()[curr_player_index]
