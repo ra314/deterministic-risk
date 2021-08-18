@@ -84,15 +84,21 @@ func _ready():
 	# Buttons to select if host plays as red or blue
 	get_node("CanvasLayer/Play Red").connect("button_down", self, "set_host_color", ["red"])
 	get_node("CanvasLayer/Play Blue").connect("button_down", self, "set_host_color", ["blue"])
-	if not _root.online_game:
+	# Don't let the guest choose who goes first
+	if not _root.online_game or _root.player_name == "guest":
 		remove_color_select_buttons()
 	
 	# Button to reroll the troop allocation to the countries
 	get_node("CanvasLayer/Reroll Spawn").connect("button_down", self, "reroll_spawn")
+	# Don't let the guest reroll the spawn.
+	if _root.online_game and _root.player_name == "guest":
+		remove_reroll_spawn_button()
+	
+	# Button to start the game, when clicked it removes itself and the reroll button
 	if _root.online_game:
 		get_node("CanvasLayer/Start Game").queue_free()
 	else:
-		get_node("CanvasLayer/Start Game").connect("button_down", self, "hide_reroll_and_start_butttons")
+		get_node("CanvasLayer/Start Game").connect("button_down", self, "remove_reroll_and_start_butttons")
 		
 	# Button to go to help menu
 	get_node("CanvasLayer/Help").connect("button_down", self, "show_help_menu")
@@ -102,9 +108,33 @@ func show_help_menu():
 	var scene = _root.scene_manager._load_scene("UI/Help Menu")
 	_root.scene_manager._replace_scene(scene)
 
-func hide_reroll_and_start_butttons():
+# Button Removal and Hiding Functions
+#######
+# This relies on an assumption that this funciton is only called in offline games
+func remove_reroll_and_start_butttons():
 	remove_reroll_spawn_button()
 	get_node("CanvasLayer/Start Game").queue_free()
+	change_view_of_end_attack(false)
+
+remotesync func remove_reroll_spawn_button():
+	get_node("CanvasLayer/Reroll Spawn").queue_free()
+
+remotesync func remove_color_select_buttons():
+	get_node("CanvasLayer/Play Red").queue_free()
+	get_node("CanvasLayer/Play Blue").queue_free()
+
+remote func change_view_of_end_attack(hide_boolean):
+	if hide_boolean:
+		get_node("CanvasLayer/End Attack").hide()
+	else:
+		get_node("CanvasLayer/End Attack").show()
+
+remote func change_view_of_end_reinforcement(hide_boolean):
+	if hide_boolean:
+		get_node("CanvasLayer/End Reinforcement").hide()
+	else:
+		get_node("CanvasLayer/End Reinforcement").show()
+#######
 
 # Clear the player dictionary, rerandomise troop allocation and redo player turn order and country allocation
 func reroll_spawn():
@@ -115,28 +145,12 @@ func reroll_spawn():
 		country.change_ownership_to(players["gray"])
 		country.randomise_troops()
 	spawn_and_allocate()
-	
-	
 
 # Because we mod by the number of players, it doesn't matter that there' an extra player_neutral
 func get_next_player():
 	return players.values()[(curr_player_index+1)%num_players]
 
-func change_to_next_player():
-	if _root.online_game:
-		# Wait 1 extra second to ensure syncronisation
-		yield(get_tree().create_timer(sync_period+1), "timeout")
-		curr_player_index = (curr_player_index+1)%num_players
-		curr_player = players.values()[curr_player_index]
-		
-		var player_info = []
-		for player in players.values():
-			player_info.append(player.save())
-		rpc_id(curr_player.network_id, "synchronise_players_and_round", curr_player_index, round_number, player_info)
-	else:
-		curr_player_index = (curr_player_index+1)%num_players
-		curr_player = players.values()[curr_player_index]
-
+# This relies on an assumption that this funciton is only called in online games
 func set_host_color(color):
 	# Assigning network ids to the players
 	players[color].network_id = _root.players["host"]
@@ -144,29 +158,20 @@ func set_host_color(color):
 	if color == "blue":
 		other_color = "red"
 	players[other_color].network_id = _root.players["guest"]
-	rpc("remove_color_select_buttons")
-	rpc("remove_reroll_spawn_button")
+	synchronize(_root.players["guest"])
 	
-	# Synching network id info to the guest
-	var player_info = []
-	for player in players.values():
-		player_info.append(player.save())
-	rpc_id(players[other_color].network_id, "synchronise_players_and_round", curr_player_index, round_number, player_info)
+	# Changing the visibility of relevant buttons
+	remove_color_select_buttons()
+	remove_reroll_spawn_button()
+	
+	if curr_player.network_id == _root.players[_root.player_name]:
+		print("changing local button")
+		change_view_of_end_attack(false)
+	else:
+		print("changing other guyss button")
+		rpc_id(curr_player.network_id, "change_view_of_end_attack", false)
 	
 	host_color_is_set = true
-
-remotesync func remove_reroll_spawn_button():
-	get_node("CanvasLayer/Reroll Spawn").queue_free()
-
-# Hiding the buttons
-remotesync func remove_color_select_buttons():
-	get_node("CanvasLayer/Play Red").queue_free()
-	get_node("CanvasLayer/Play Blue").queue_free()
-
-func select_random(array):
-	var rng = RandomNumberGenerator.new()
-	rng.randomize()
-	return array[rng.randi() % len(array)]
 
 # Checks if a country is non adjacent to a player
 func is_country_neighbour_of_player(test_country, player):
@@ -204,20 +209,35 @@ func is_attack_over():
 			return false
 	return true
 
+# Changing phases of the game
+#######
+func change_to_next_player():
+	curr_player_index = (curr_player_index+1)%num_players
+	curr_player = players.values()[curr_player_index]
+	# We're synchronizing the current player because after the change 
+	# the current player is no longer the instance this function was called on
+	if _root.online_game:
+		synchronize(curr_player.network_id)
+
 func change_to_reinforcement():	
 	selected_country = null
 	curr_level.stop_flashing()
 	curr_player.give_reinforcements()
 	
-	get_node("CanvasLayer/End Attack").visible = false
-	get_node("CanvasLayer/End Reinforcement").visible = true
+	# Modifying the visibility of the end attack and end reinforcement buttons
+	change_view_of_end_attack(true)
+	change_view_of_end_reinforcement(false)
+	
 	phase = "reinforcement"
 
 func change_to_attack():
-	# Round limit
-#	if round_number == 10:
-#		end_game()
-#		return
+	# Modifying the visibility of the end attack and end reinforcement buttons	
+	if _root.online_game:
+		change_view_of_end_reinforcement(true)
+		rpc_id(get_next_player().network_id, "change_view_of_end_attack", false)
+	else:
+		change_view_of_end_attack(false)
+		change_view_of_end_reinforcement(true)
 	
 	# Cleaning up the dictionary that was tracking where reinforcements were placed
 	reinforced_countries.clear()
@@ -225,10 +245,8 @@ func change_to_attack():
 	change_to_next_player()
 	round_number += 1
 	update_labels()
-	
-	get_node("CanvasLayer/End Attack").visible = true
-	get_node("CanvasLayer/End Reinforcement").visible = false
 	phase = "attack"
+#######
 
 func get_player_with_most_troops():
 	var player_with_most_troops = null
@@ -261,6 +279,7 @@ func _input(event):
 			all_countries[country_name].on_click(event)
 
 # Network synchronisation
+#######
 func synchronize(network_id):
 	print("syncing")
 	
@@ -289,6 +308,7 @@ remote func synchronise_meta_info(_curr_player_index, _round_number):
 	curr_player_index = _curr_player_index
 	curr_player = players.values()[curr_player_index]
 	update_labels()
+#######
 
 func _process(delta):
 	# Skip synchronisation if not online

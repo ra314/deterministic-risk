@@ -102,6 +102,15 @@ func on_click(event):
 		update_labels()
 		return
 	
+	# In Game Behaviour
+	
+	# Don't do anything in multiplayer mode if the player of this game instance isn't the curr player
+	if Game_Manager._root.online_game:
+		print(Game_Manager.curr_player.network_id)
+		print(Game_Manager._root.players[Game_Manager._root.player_name])
+		if Game_Manager.curr_player.network_id != Game_Manager._root.players[Game_Manager._root.player_name]:
+			return
+	
 	Game_Manager.stop_flashing()
 	match Game_Manager.phase:
 		"attack":

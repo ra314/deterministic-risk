@@ -128,4 +128,3 @@ func add_connections(source_country_name, destination_country_names):
 func get_color_in_mask():
 	return world_mask.get_pixel(get_local_mouse_position()[0]*2, get_local_mouse_position()[1]*2)*255
 
-

@@ -32,6 +32,7 @@ position = Vector2( 0, 300 )
 position = Vector2( 0, 450 )
 
 [node name="End Attack" type="Button" parent="CanvasLayer"]
+visible = false
 margin_right = 125.0
 margin_bottom = 30.0
 text = "End Attack"
