@@ -6,23 +6,27 @@ var world_mask = null
 var world_str = null
 var world_sprite = null
 var flash_shader = load("res://Assets/flash_shader.tres")
+var Player = load("res://Scenes/Levels/Level Components/Player.tscn")
+# Player neutral is a dummy container for all of the unoccupied countries, 
+# it simplifies the code when changing ownership and syncing ownership
+var player_neutral = Player.instance().init("gray")
 
 func get_num_neutral_countries():
 	var count = 0
 	for country in all_countries.values():
-		count += int(country.belongs_to == null)
+		count += int(country.belongs_to.color == "gray")
 	return count
 
 func create_default_level(level_node):	
 	# Instantiating countries
-	add_country_to_level(Country.instance().new(50, 50, "Alaska"))
-	add_country_to_level(Country.instance().new(100, 50, "West Canada"))
-	add_country_to_level(Country.instance().new(150, 70, "East Canada"))
-	add_country_to_level(Country.instance().new(100, 100, "USA"))
-	add_country_to_level(Country.instance().new(75, 150, "Mexico"))
-	add_country_to_level(Country.instance().new(120, 200, "Colombia"))
-	add_country_to_level(Country.instance().new(190, 200, "Brazil"))
-	add_country_to_level(Country.instance().new(170, 300, "Argentina"))
+	add_country_to_level(Country.instance().new(50, 50, "Alaska", player_neutral))
+	add_country_to_level(Country.instance().new(100, 50, "West Canada", player_neutral))
+	add_country_to_level(Country.instance().new(150, 70, "East Canada", player_neutral))
+	add_country_to_level(Country.instance().new(100, 100, "USA", player_neutral))
+	add_country_to_level(Country.instance().new(75, 150, "Mexico", player_neutral))
+	add_country_to_level(Country.instance().new(120, 200, "Colombia", player_neutral))
+	add_country_to_level(Country.instance().new(190, 200, "Brazil", player_neutral))
+	add_country_to_level(Country.instance().new(170, 300, "Argentina", player_neutral))
 	
 	# Adding connections
 	add_connections("Alaska", ["West Canada"])
@@ -90,7 +94,7 @@ func import_level(level_node, _world_str):
 	# Going through the json save
 	while save_game.get_position() < save_game.get_len():
 		var node_data = parse_json(save_game.get_line())
-		var new_country = Country.instance().init(node_data["x"], node_data["y"], node_data["name"])
+		var new_country = Country.instance().init(node_data["x"], node_data["y"], node_data["name"], player_neutral)
 		add_country_to_level(new_country)
 		level_node.add_child(new_country)
 	

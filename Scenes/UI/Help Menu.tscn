@@ -19,15 +19,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Return To Game" type="Button" parent="."]
-margin_left = 1795.0
-margin_right = 1920.0
-margin_bottom = 30.0
-text = "Return To Game"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="CenterContainer" type="CenterContainer" parent="."]
 margin_right = 1920.0
 margin_bottom = 1080.0
@@ -75,3 +66,12 @@ Controls:
         Left click to add a reinforcement.
         Right click to remove a reinforcement.
         You cannot remove more reinforcements than you have added."
+
+[node name="Return To Game" type="Button" parent="."]
+margin_left = 1795.0
+margin_right = 1920.0
+margin_bottom = 30.0
+text = "Return To Game"
+__meta__ = {
+"_edit_use_anchors_": false
+}

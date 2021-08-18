@@ -24,17 +24,13 @@ func save():
 
 func change_ownership_to(player):
 	# Transfer of Ownership
-	if belongs_to != null:
-		belongs_to.owned_countries.erase(self)
+	belongs_to.owned_countries.erase(self)
 	belongs_to = player
+	player.owned_countries.append(self)
 	
-	if player != null:
-		player.owned_countries.append(self)
-		# Visual Update
-		player.update_labels()
-		get_node("Sprite").change_color_to(player.color)
-	else:
-		get_node("Sprite").change_color_to("gray")
+	# Visual Update
+	player.update_labels()
+	get_node("Sprite").change_color_to(player.color)
 
 func update_labels():
 	get_node("Label").text = str(num_troops)
@@ -186,10 +182,12 @@ func randomise_troops():
 		num_troops = 4
 	update_labels()
 
-func init(_x, _y, _country_name):
+func init(_x, _y, _country_name, player):
+
 	position = Vector2(_x, _y)
 	self.country_name = _country_name
 	randomise_troops()
+	self.belongs_to = player
 	return self
 
 # Called when the node enters the scene tree for the first time.
