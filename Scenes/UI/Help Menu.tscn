@@ -27,26 +27,26 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
-margin_left = 345.0
-margin_top = 231.0
-margin_right = 1574.0
-margin_bottom = 848.0
+margin_left = 302.0
+margin_top = 188.0
+margin_right = 1617.0
+margin_bottom = 892.0
 
 [node name="CenterContainer" type="CenterContainer" parent="CenterContainer/VBoxContainer"]
-margin_right = 1229.0
+margin_right = 1315.0
 margin_bottom = 123.0
 
 [node name="Label" type="Label" parent="CenterContainer/VBoxContainer/CenterContainer"]
-margin_left = 155.0
-margin_right = 1074.0
+margin_left = 198.0
+margin_right = 1117.0
 margin_bottom = 123.0
 custom_fonts/font = SubResource( 1 )
 text = "Deterministic Risk"
 
 [node name="Label2" type="Label" parent="CenterContainer/VBoxContainer"]
 margin_top = 127.0
-margin_right = 1229.0
-margin_bottom = 617.0
+margin_right = 1315.0
+margin_bottom = 704.0
 custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Rules:
@@ -54,14 +54,17 @@ text = "Rules:
 	
     Each turn is split into a attack and reinforce phase. 
     During the attack phase, you may attack any adjacent country (A) that you don't own, with any country you own (B).
-    As long as B has more units in it than A. After the attack, B is left with 1 unit. A is left with B-A.
+    As long as B has more units in it than A. After the attack, B is left with 1 unit, and A is left with B-A units.
 	
-    The reinforce phase automatically starts when you have no attacks to make or when you click on the button. 
-    During the reinforce phase the number of reinforcements is the number of countries you own halved, then rounded up. 
+    The reinforce phase automatically starts when you have no attacks to make or when you click on the \"end attack\" button. 
+    During the reinforce phase the number of reinforcements you get  is the number of countries you own halved, then rounded up. 
 
 Controls:
     In general:
         Mouse 3 to pan the map.
+    During attack:
+        Left click to select a country that you own.
+        Left click again to attack a country that you don't own.
     During reinforcement:
         Left click to add a reinforcement.
         Right click to remove a reinforcement.
