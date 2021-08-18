@@ -112,6 +112,16 @@ func on_click(event):
 			return
 	
 	Game_Manager.stop_flashing()
+	
+	# Do nothing if the game hasn't started
+	if not Game_Manager.game_started:
+		return
+	
+	# Deselecting behaviour
+	if Game_Manager.selected_country == self:
+		Game_Manager.selected_country = null
+		return
+	
 	match Game_Manager.phase:
 		"attack":
 			if belongs_to != Game_Manager.curr_player:

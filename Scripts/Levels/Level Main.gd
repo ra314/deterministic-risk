@@ -26,7 +26,7 @@ var curr_player = null
 var curr_player_index = null
 const num_players = 2
 var players = null
-var host_color_is_set = false
+var game_started = false
 
 func init(world_str):
 	load_world(world_str)
@@ -115,6 +115,7 @@ func remove_reroll_and_start_butttons():
 	remove_reroll_spawn_button()
 	get_node("CanvasLayer/Start Game").queue_free()
 	change_view_of_end_attack(false)
+	game_started = true
 
 remotesync func remove_reroll_spawn_button():
 	get_node("CanvasLayer/Reroll Spawn").queue_free()
@@ -171,7 +172,7 @@ func set_host_color(color):
 		print("changing other guyss button")
 		rpc_id(curr_player.network_id, "change_view_of_end_attack", false)
 	
-	host_color_is_set = true
+	game_started = true
 
 # Checks if a country is non adjacent to a player
 func is_country_neighbour_of_player(test_country, player):
@@ -242,6 +243,7 @@ func change_to_attack():
 	# Cleaning up the dictionary that was tracking where reinforcements were placed
 	reinforced_countries.clear()
 	
+	selected_country = null
 	change_to_next_player()
 	round_number += 1
 	update_labels()
@@ -315,7 +317,7 @@ func _process(delta):
 	if not _root.online_game:
 		return
 	
-	if host_color_is_set:
+	if game_started:
 		# Skip synchronisation if this instance of the game isn't the current player and the host color has been set
 		if _root.players[_root.player_name] != curr_player.network_id:
 			return
@@ -326,8 +328,7 @@ func _process(delta):
 	
 	time_since_sync += delta
 	if time_since_sync > sync_period:
-		print(host_color_is_set)
-		if host_color_is_set:
+		if game_started:
 			synchronize(get_next_player().network_id)
 		else:
 			synchronize(_root.players["guest"])
