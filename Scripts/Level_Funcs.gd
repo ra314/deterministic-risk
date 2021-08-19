@@ -11,6 +11,10 @@ var Player = load("res://Scenes/Levels/Level Components/Player.tscn")
 # it simplifies the code when changing ownership and syncing ownership
 var player_neutral = Player.instance().init("gray")
 
+# This constant is the ratio between the maps current resolution and the screen resolution (1080p)
+# For example the ratio between 4k and 1080p should be 2
+const scale_ratio: float = 2.0
+
 func get_num_neutral_countries():
 	var count = 0
 	for country in all_countries.values():
@@ -126,5 +130,5 @@ func add_connections(source_country_name, destination_country_names):
 		all_countries[source_country_name].add_connection(all_countries[destination_country_name])
 
 func get_color_in_mask():
-	return world_mask.get_pixel(get_local_mouse_position()[0]*2, get_local_mouse_position()[1]*2)*255
+	return world_mask.get_pixel(get_local_mouse_position()[0]*scale_ratio, get_local_mouse_position()[1]*scale_ratio)*255
 

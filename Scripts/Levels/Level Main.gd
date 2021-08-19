@@ -13,10 +13,6 @@ var selected_country = null
 var phase = "attack"
 var curr_level = self
 
-# Maintains the number of reinforcements a country receives during the reinforcement phase
-# Ensures that more reinforcements can't be removed than are added from any country
-var reinforced_countries = {}
-
 var round_number = 1
 const max_rounds = 10
 
@@ -114,7 +110,7 @@ func show_help_menu():
 func remove_reroll_and_start_butttons():
 	remove_reroll_spawn_button()
 	get_node("CanvasLayer/Start Game").queue_free()
-	end_attack_enable(false)
+	end_attack_disable(false)
 	game_started = true
 
 remotesync func remove_reroll_spawn_button():
@@ -124,13 +120,15 @@ remotesync func remove_color_select_buttons():
 	get_node("CanvasLayer/Play Red").queue_free()
 	get_node("CanvasLayer/Play Blue").queue_free()
 
-remote func end_attack_enable(hide_boolean):
+remote func end_attack_disable(hide_boolean):
+	print("End attack buttons is being " + str(hide_boolean))
 	if hide_boolean:
 		get_node("CanvasLayer/End Attack").hide()
 	else:
 		get_node("CanvasLayer/End Attack").show()
 
-remote func change_view_of_end_reinforcement(hide_boolean):
+remote func end_reinforcement_disable(hide_boolean):
+	print("End reinforcement buttons is being " + str(hide_boolean))
 	if hide_boolean:
 		get_node("CanvasLayer/End Reinforcement").hide()
 	else:
@@ -168,10 +166,10 @@ func set_host_color(color):
 	
 	if curr_player.network_id == _root.players[_root.player_name]:
 		print("changing local button")
-		end_attack_enable(false)
+		end_attack_disable(false)
 	else:
 		print("changing other guyss button")
-		rpc_id(curr_player.network_id, "end_attack_enable", false)
+		rpc_id(curr_player.network_id, "end_attack_disable", false)
 
 # Checks if a country is non adjacent to a player
 func is_country_neighbour_of_player(test_country, player):
@@ -225,22 +223,24 @@ func change_to_reinforcement():
 	curr_player.give_reinforcements()
 	
 	# Modifying the visibility of the end attack and end reinforcement buttons
-	end_attack_enable(true)
-	change_view_of_end_reinforcement(false)
+	end_attack_disable(true)
+	end_reinforcement_disable(false)
 	
 	phase = "reinforcement"
 
 func change_to_attack():
 	# Modifying the visibility of the end attack and end reinforcement buttons	
 	if _root.online_game:
-		change_view_of_end_reinforcement(true)
-		rpc_id(get_next_player().network_id, "end_attack_enable", false)
+		end_reinforcement_disable(true)
+		rpc_id(get_next_player().network_id, "end_attack_disable", false)
 	else:
-		end_attack_enable(false)
-		change_view_of_end_reinforcement(true)
+		end_attack_disable(false)
+		end_reinforcement_disable(true)
 	
-	# Cleaning up the dictionary that was tracking where reinforcements were placed
-	reinforced_countries.clear()
+	# Moving the troops from reinforcement to actual unit
+	for country in all_countries.values():
+		country.num_troops += country.num_reinforcements
+		country.num_reinforcements = 0
 	
 	selected_country = null
 	change_to_next_player()

@@ -1,10 +1,13 @@
 extends Area2D
 
-var num_troops = 0
+var num_troops: int = 0
 var belongs_to = null
 var connected_countries = []
 var country_name = null
 var Game_Manager = null
+# This is so during reinforcement the label can show up as
+# {num_troops} + {num_reinforcements}
+var num_reinforcements: int = 0
 
 var flashing = false
 var time_since_last_flash = 0
@@ -33,9 +36,11 @@ func change_ownership_to(player):
 	get_node("Sprite").change_color_to(player.color)
 
 func update_labels():
-	get_node("Label").text = str(num_troops)
-	if belongs_to:
-		belongs_to.update_labels()
+	var label_text = str(num_troops)
+	if num_reinforcements > 0:
+		label_text += " + " + str(num_reinforcements)
+	get_node("Label").text = label_text
+	belongs_to.update_labels()
 
 func flash_attackable_neighbours(player):
 	for country in connected_countries:
@@ -150,13 +155,9 @@ func on_click(event):
 		"reinforcement":
 			if belongs_to == Game_Manager.curr_player:
 				# Add a reinforcement
-				if event.button_index == BUTTON_LEFT and Game_Manager.curr_player.num_reinforcements > 0:
-					num_troops += 1
+				if event.button_index == BUTTON_LEFT:
+					num_reinforcements += 1
 					Game_Manager.curr_player.num_reinforcements -= 1
-					if self in Game_Manager.reinforced_countries:
-						Game_Manager.reinforced_countries[self] += 1
-					else:
-						Game_Manager.reinforced_countries[self] = 1
 					
 					# Changing to attack phase for the next player
 					if Game_Manager.curr_player.num_reinforcements == 0:
@@ -165,11 +166,8 @@ func on_click(event):
 				# Remove a reinforcement
 				if event.button_index == BUTTON_RIGHT:
 					# Check that a reinforcement has been previously added to this country
-					if self in Game_Manager.reinforced_countries and Game_Manager.reinforced_countries[self] > 0:
-						num_troops -= 1
-						Game_Manager.curr_player.num_reinforcements += 1
-						if self in Game_Manager.reinforced_countries:
-							Game_Manager.reinforced_countries[self] -= 1
+					if num_reinforcements > 0:
+						num_reinforcements -= 1
 				
 				update_labels()
 				Game_Manager.curr_player.update_labels()
@@ -202,17 +200,17 @@ func randomise_troops():
 	update_labels()
 
 func init(_x, _y, _country_name, player):
-
+	self.belongs_to = player
 	position = Vector2(_x, _y)
 	self.country_name = _country_name
 	randomise_troops()
-	self.belongs_to = player
+
+	update_labels()
 	return self
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Game_Manager = get_parent()
-	update_labels()
 
 func stop_flashing():
 	if flash_mask_sprite != null:
@@ -235,7 +233,6 @@ func create_flash_mask_sprite():
 	
 	# Creating a sprite that contains the world's mask texture and add it to level
 	flash_mask_sprite = Sprite.new()
-	flash_mask_sprite.set_scale(Vector2(0.5,0.5))
 	flash_mask_sprite.centered = false
 	var tex = ImageTexture.new()
 	tex.create_from_image(Game_Manager.world_mask)
@@ -248,6 +245,9 @@ func create_flash_mask_sprite():
 	flash_shader.set_shader_param("u_highlight_color", Color8(255,255,255,255))
 	flash_shader.set_shader_param("u_background_color", Color8(0,0,0,0))
 	flash_mask_sprite.set_material(flash_shader)
+	
+	# Scale after the shader has run to avoid AA issues
+	flash_mask_sprite.set_scale(Vector2(1/Game_Manager.scale_ratio,1/Game_Manager.scale_ratio))
 	
 	# Measuring performance
 	var time_taken = OS.get_ticks_msec() - time_start

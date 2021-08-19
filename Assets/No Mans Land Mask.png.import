@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/No Mans Land Mask.png-eabc9e47ab216c27ce222022d80af92a.stex"
+path="res://.import/No Mans Land Mask.png-a7cf3c9d0e81fd8b32cca8b96b6ba8bb.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/No Mans Land Mask.png"
-dest_files=[ "res://.import/No Mans Land Mask.png-eabc9e47ab216c27ce222022d80af92a.stex" ]
+source_file="res://Assets/Old/No Mans Land Mask.png"
+dest_files=[ "res://.import/No Mans Land Mask.png-a7cf3c9d0e81fd8b32cca8b96b6ba8bb.stex" ]
 
 [params]
 
