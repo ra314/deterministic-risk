@@ -114,7 +114,7 @@ func show_help_menu():
 func remove_reroll_and_start_butttons():
 	remove_reroll_spawn_button()
 	get_node("CanvasLayer/Start Game").queue_free()
-	change_view_of_end_attack(false)
+	end_attack_enable(false)
 	game_started = true
 
 remotesync func remove_reroll_spawn_button():
@@ -124,7 +124,7 @@ remotesync func remove_color_select_buttons():
 	get_node("CanvasLayer/Play Red").queue_free()
 	get_node("CanvasLayer/Play Blue").queue_free()
 
-remote func change_view_of_end_attack(hide_boolean):
+remote func end_attack_enable(hide_boolean):
 	if hide_boolean:
 		get_node("CanvasLayer/End Attack").hide()
 	else:
@@ -159,6 +159,7 @@ func set_host_color(color):
 	if color == "blue":
 		other_color = "red"
 	players[other_color].network_id = _root.players["guest"]
+	game_started = true
 	synchronize(_root.players["guest"])
 	
 	# Changing the visibility of relevant buttons
@@ -167,12 +168,10 @@ func set_host_color(color):
 	
 	if curr_player.network_id == _root.players[_root.player_name]:
 		print("changing local button")
-		change_view_of_end_attack(false)
+		end_attack_enable(false)
 	else:
 		print("changing other guyss button")
-		rpc_id(curr_player.network_id, "change_view_of_end_attack", false)
-	
-	game_started = true
+		rpc_id(curr_player.network_id, "end_attack_enable", false)
 
 # Checks if a country is non adjacent to a player
 func is_country_neighbour_of_player(test_country, player):
@@ -226,7 +225,7 @@ func change_to_reinforcement():
 	curr_player.give_reinforcements()
 	
 	# Modifying the visibility of the end attack and end reinforcement buttons
-	change_view_of_end_attack(true)
+	end_attack_enable(true)
 	change_view_of_end_reinforcement(false)
 	
 	phase = "reinforcement"
@@ -235,9 +234,9 @@ func change_to_attack():
 	# Modifying the visibility of the end attack and end reinforcement buttons	
 	if _root.online_game:
 		change_view_of_end_reinforcement(true)
-		rpc_id(get_next_player().network_id, "change_view_of_end_attack", false)
+		rpc_id(get_next_player().network_id, "end_attack_enable", false)
 	else:
-		change_view_of_end_attack(false)
+		end_attack_enable(false)
 		change_view_of_end_reinforcement(true)
 	
 	# Cleaning up the dictionary that was tracking where reinforcements were placed
