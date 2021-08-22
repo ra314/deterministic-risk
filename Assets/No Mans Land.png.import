@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/No Mans Land.png-a0810eeb855f32bc7f69f4de78476679.stex"
+path="res://.import/No Mans Land.png-94e5eb6f0311bf7dfc5a1a4a11dc09d1.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Old/No Mans Land.png"
-dest_files=[ "res://.import/No Mans Land.png-a0810eeb855f32bc7f69f4de78476679.stex" ]
+source_file="res://Assets/No Mans Land.png"
+dest_files=[ "res://.import/No Mans Land.png-94e5eb6f0311bf7dfc5a1a4a11dc09d1.stex" ]
 
 [params]
 

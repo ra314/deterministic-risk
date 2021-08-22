@@ -65,10 +65,10 @@ func can_attack():
 
 func _input_event(viewport, event, shape_idx):
 	if get_tree().get_current_scene().get_name() == "Level Creator":
-		if event.is_pressed():
+		if event.is_action_just_released():
 			self.on_click(event)
 
-func on_click(event):
+func on_click(event):	
 	# Level Creator Behaviour
 	if get_tree().get_current_scene().get_name() == "Level Creator":
 		match Game_Manager.phase:
@@ -131,6 +131,7 @@ func on_click(event):
 		"attack":
 			if belongs_to != Game_Manager.curr_player:
 				# If you select a country that's not your own with a previous country selection
+#				print(Game_Manager.selected_country.country_name)
 				if Game_Manager.selected_country != null:
 					# And if it is a neighbour, then attack
 					if Game_Manager.selected_country in connected_countries:
@@ -150,7 +151,10 @@ func on_click(event):
 							# Check if the opponent has any troops left
 							if Game_Manager.get_next_player().get_num_troops() == 0:
 								Game_Manager.end_game()
-				return
+			else:
+				print("flashing")
+				Game_Manager.selected_country = self	
+				flash_attackable_neighbours(Game_Manager.curr_player)
 
 		"reinforcement":
 			if belongs_to == Game_Manager.curr_player:
@@ -171,13 +175,10 @@ func on_click(event):
 				
 				update_labels()
 				Game_Manager.curr_player.update_labels()
-			return
+			pass
 		
 		"game over":
-			return
-		
-	Game_Manager.selected_country = self	
-	flash_attackable_neighbours(Game_Manager.curr_player)
+			pass
 
 func add_connection(country):
 	connected_countries.append(country)
@@ -259,11 +260,7 @@ func _process(delta):
 	if flashing:
 		time_since_last_flash += delta
 		if time_since_last_flash > flashing_period:
-#			# Spawning the mask sprite if it doesn't exist
-#			if flash_mask_sprite == null:
-#				create_flash_mask_sprite()
-			#Flashing the mask
-			#print(flash_mask_sprite.visible)
+			
 			flash_mask_sprite.visible = !flash_mask_sprite.visible
 			
 			#Flashing the country sprite

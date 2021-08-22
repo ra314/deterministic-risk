@@ -40,3 +40,9 @@ config/icon="res://icon.png"
 
 window/size/width=1920
 window/size/height=1080
+
+[rendering]
+
+quality/driver/driver_name="GLES2"
+quality/driver/fallback_to_gles2=true
+vram_compression/import_etc=true

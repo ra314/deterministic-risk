@@ -1,8 +1,8 @@
 extends "res://Scripts/Level_Funcs.gd"
 
 onready var _root: Main = get_tree().get_root().get_node("Main")
-const sync_period = 2
-var time_since_sync = 0
+
+var input_allowed = true
 
 func stop_flashing():
 	for country in all_countries.values():
@@ -195,7 +195,6 @@ func add_random_countries(player, num_countries):
 			get_tree().quit()
 		
 		# Ensuring that the country is not adjacent to the opponent and is unowned
-		print(country.belongs_to)
 		if country.belongs_to.color == "gray" and not is_country_neighbour_of_player(country, get_next_player()):
 			country.change_ownership_to(player)
 			num_added_countries += 1
@@ -241,6 +240,7 @@ func change_to_attack():
 	for country in all_countries.values():
 		country.num_troops += country.num_reinforcements
 		country.num_reinforcements = 0
+		country.update_labels()
 	
 	selected_country = null
 	change_to_next_player()
@@ -265,14 +265,16 @@ func end_game():
 	get_node("CanvasLayer/Player and Round Tracker").text = get_player_with_most_troops().color + " Wins"
 
 func update_labels():
-	get_node("CanvasLayer/Player and Round Tracker").text = "Current Player: " + curr_player.color + "\nRound: " + str(round_number)
+	get_node("CanvasLayer/Player and Round Tracker").text = "Current Player: " +\
+		curr_player.color + "\nRound: " + str(round_number)
 
 func _input(event):	
-	if event.is_pressed():
+	if event.is_pressed() and input_allowed:
+		input_allowed = false
 		if not (Rect2(Vector2(0,0), world_mask.get_size()).has_point(get_local_mouse_position())):
 			return
 
-		# Print color of pixel under mouse cursos when clicked
+		# Print color of pixel under mouse cursor when clicked
 		print(get_color_in_mask())
 
 		var country_name = get_color_in_mask()[0]
@@ -312,7 +314,18 @@ remote func synchronise_meta_info(_curr_player_index, _round_number, _game_start
 	update_labels()
 #######
 
+const sync_period = 2
+var time_since_sync = 0
+const input_frequency = 0.2
+var time_since_last_input = 0
+
 func _process(delta):
+	# Preventing mouse input repeats
+	time_since_last_input += delta
+	if time_since_last_input > input_frequency:
+		input_allowed = true
+		time_since_last_input = 0
+	
 	# Skip synchronisation if not online
 	if not _root.online_game:
 		return
