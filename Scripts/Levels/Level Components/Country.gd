@@ -16,7 +16,7 @@ var flash_mask_sprite = null
 
 # List of locations to move to to complete the attack animation.
 const movement_speed = 0.2
-const distance_to_stop_moving_at = 10
+const distance_to_stop_moving_at = 16
 var locations_to_move_to = []
 
 func save():
@@ -285,4 +285,4 @@ func _process(delta):
 		position = position.linear_interpolate(locations_to_move_to[0], movement_speed)
 		# Checking if the destination has been reached
 		if position.distance_to(locations_to_move_to[0]) < distance_to_stop_moving_at:
-			locations_to_move_to.pop_front()
+			position = locations_to_move_to.pop_front()
