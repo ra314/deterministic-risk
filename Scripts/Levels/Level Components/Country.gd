@@ -14,6 +14,11 @@ var time_since_last_flash = 0
 var flashing_period = 0.5
 var flash_mask_sprite = null
 
+# List of locations to move to to complete the attack animation.
+const movement_speed = 0.2
+const distance_to_stop_moving_at = 10
+var locations_to_move_to = []
+
 func save():
 	var save_dict = {}
 	save_dict["name"] = country_name
@@ -130,27 +135,30 @@ func on_click(event):
 	match Game_Manager.phase:
 		"attack":
 			if belongs_to != Game_Manager.curr_player:
-				# If you select a country that's not your own with a previous country selection
-#				print(Game_Manager.selected_country.country_name)
+				# Checking if there was a previous country selection
 				if Game_Manager.selected_country != null:
-					# And if it is a neighbour, then attack
-					if Game_Manager.selected_country in connected_countries:
-						var attacker = Game_Manager.selected_country
-						if attacker.num_troops > num_troops:
-							num_troops = attacker.num_troops - num_troops
-							attacker.num_troops = 1
-							update_labels()
-							attacker.update_labels()
-							
-							change_ownership_to(attacker.belongs_to)
-							if Game_Manager.is_attack_over():
-								Game_Manager.change_to_reinforcement()
-							
-							Game_Manager.selected_country = null
-							
-							# Check if the opponent has any troops left
-							if Game_Manager.get_next_player().get_num_troops() == 0:
-								Game_Manager.end_game()
+					# And if it is a neighbour and the attacker has sufficient troops, then attack
+					var attacker = Game_Manager.selected_country
+					if (attacker in connected_countries) and (attacker.num_troops > num_troops):
+						# Movement animation
+						attacker.locations_to_move_to.append(position)
+						attacker.locations_to_move_to.append(attacker.position)
+						
+						# Attack logic that changes troops and updates labels
+						num_troops = attacker.num_troops - num_troops
+						attacker.num_troops = 1
+						update_labels()
+						attacker.update_labels()
+						
+						change_ownership_to(attacker.belongs_to)
+						if Game_Manager.is_attack_over():
+							Game_Manager.change_to_reinforcement()
+						
+						Game_Manager.selected_country = null
+						
+						# Check if the opponent has any troops left
+						if Game_Manager.get_next_player().get_num_troops() == 0:
+							Game_Manager.end_game()
 			else:
 				print("flashing")
 				Game_Manager.selected_country = self	
@@ -212,6 +220,8 @@ func init(_x, _y, _country_name, player):
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Game_Manager = get_parent()
+	
+	
 
 func stop_flashing():
 	if flash_mask_sprite != null:
@@ -269,3 +279,10 @@ func _process(delta):
 			else:
 				get_node("Sprite").modulate = Color(1,1,1)
 			time_since_last_flash = 0
+	
+	# Moving to a spot if the locations_to_move_to list is non empty
+	if locations_to_move_to:
+		position = position.linear_interpolate(locations_to_move_to[0], movement_speed)
+		# Checking if the destination has been reached
+		if position.distance_to(locations_to_move_to[0]) < distance_to_stop_moving_at:
+			locations_to_move_to.pop_front()
