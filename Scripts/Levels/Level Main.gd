@@ -135,6 +135,34 @@ remote func end_reinforcement_disable(hide_boolean):
 		get_node("CanvasLayer/End Reinforcement").show()
 #######
 
+# AI
+#######
+# We duplicate the existing countries so that modifications here do not propogate outside
+func clone_country(country):
+	var new_country = Country.init(country.x, country.y, country.country_name, country.player)
+	new_country.num_troops = country.num_troops
+	return new_country
+
+func extract_game_state():
+	var game_state = {}
+	for player in players.values():
+		game_state[player.color] = {}
+		for country in player.owner_countries:
+			game_state[player.color][country.country_name] = clone_country(country)
+	return game_state
+
+func get_child_states(game_state, curr_player_color):
+	for country in game_state[curr_player_color]:
+		for attackable_country in country.get_attackable_countries():
+			pass
+
+# The depth parameter is not how deep the function is currently, 
+# but how much deeper it should go
+# minimax(extract_game_state(), 3, -INF, INF, true) 
+func minimax(game_state, depth, alpha, beta, maximizing_player):
+	pass
+######
+
 # Clear the player dictionary, rerandomise troop allocation and redo player turn order and country allocation
 func reroll_spawn():
 	for player in players.values():
@@ -202,7 +230,7 @@ func add_random_countries(player, num_countries):
 	
 func is_attack_over():
 	for country in curr_player.owned_countries:
-		if country.can_attack():
+		if country.get_attackable_countries():
 			return false
 	return true
 

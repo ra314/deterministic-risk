@@ -11,13 +11,12 @@ var num_reinforcements: int = 0
 
 var flashing = false
 var time_since_last_flash = 0
-var flashing_period = 0.5
+const flashing_period = 0.5
 var flash_mask_sprite = null
 
 # List of locations to move to to complete the attack animation.
-const movement_speed = 0.2
-const distance_to_stop_moving_at = 16
-var locations_to_move_to = []
+const destination_movement_duration = 0.2
+const origin_movement_duration = 0.4
 
 func save():
 	var save_dict = {}
@@ -43,7 +42,7 @@ func change_ownership_to(player):
 func update_labels():
 	var label_text = str(num_troops)
 	if num_reinforcements > 0:
-		label_text += " + " + str(num_reinforcements)
+		label_text += " +" + str(num_reinforcements)
 	get_node("Label").text = label_text
 	belongs_to.update_labels()
 
@@ -62,16 +61,21 @@ func draw_line_to_country(selected_country):
 	new_line.add_point(Vector2(0,0))
 	new_line.add_point(selected_country.position - position)
 
-func can_attack():
+func get_attackable_countries():
+	var attackable_countries = []
 	for country in connected_countries:
 		if country.num_troops < num_troops and country.belongs_to != belongs_to:
-			return true
-	return false
+			attackable_countries.append(country)
+	return attackable_countries
 
 func _input_event(viewport, event, shape_idx):
 	if get_tree().get_current_scene().get_name() == "Level Creator":
 		if event.is_action_just_released():
 			self.on_click(event)
+
+func move_to(duration, destination):
+	get_node("Tween").interpolate_property(self, "position", position, destination, duration)
+	get_node("Tween").start()
 
 func on_click(event):	
 	# Level Creator Behaviour
@@ -141,8 +145,8 @@ func on_click(event):
 					var attacker = Game_Manager.selected_country
 					if (attacker in connected_countries) and (attacker.num_troops > num_troops):
 						# Movement animation
-						attacker.locations_to_move_to.append(position)
-						attacker.locations_to_move_to.append(attacker.position)
+						attacker.move_to(destination_movement_duration, position)
+						attacker.get_node("Tween").interpolate_callback(attacker, destination_movement_duration, "move_to", origin_movement_duration, attacker.position)
 						
 						# Attack logic that changes troops and updates labels
 						num_troops = attacker.num_troops - num_troops
@@ -179,6 +183,7 @@ func on_click(event):
 				if event.button_index == BUTTON_RIGHT:
 					# Check that a reinforcement has been previously added to this country
 					if num_reinforcements > 0:
+						Game_Manager.curr_player.num_reinforcements += 1
 						num_reinforcements -= 1
 				
 				update_labels()
@@ -281,8 +286,8 @@ func _process(delta):
 			time_since_last_flash = 0
 	
 	# Moving to a spot if the locations_to_move_to list is non empty
-	if locations_to_move_to:
-		position = position.linear_interpolate(locations_to_move_to[0], movement_speed)
-		# Checking if the destination has been reached
-		if position.distance_to(locations_to_move_to[0]) < distance_to_stop_moving_at:
-			position = locations_to_move_to.pop_front()
+#	if locations_to_move_to:
+#		position = position.linear_interpolate(locations_to_move_to[0], movement_speed)
+#		# Checking if the destination has been reached
+#		if position.distance_to(locations_to_move_to[0]) < distance_to_stop_moving_at:
+#			position = locations_to_move_to.pop_front()
