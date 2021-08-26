@@ -340,6 +340,14 @@ remote func synchronise_meta_info(_curr_player_index, _round_number, _game_start
 	curr_player_index = _curr_player_index
 	curr_player = players.values()[curr_player_index]
 	update_labels()
+
+# Below functions are for the movement of countries during the attack phase to propagate across network
+func move_country_across_network(origin_country_name, destination_country_name):
+	rpc_id(get_next_player().network_id, "move_to_country", origin_country_name, destination_country_name)
+	synchronize(get_next_player().network_id)
+
+remote func move_to_country(origin_country_name, destination_country_name):
+	all_countries[origin_country_name].move_to_country(all_countries[destination_country_name])
 #######
 
 const sync_period = 2

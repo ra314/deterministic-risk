@@ -73,8 +73,13 @@ func _input_event(viewport, event, shape_idx):
 		if event.is_action_just_released():
 			self.on_click(event)
 
-func move_to(duration, destination):
-	get_node("Tween").interpolate_property(self, "position", position, destination, duration)
+func move_to_location_with_duration(location, duration):
+	get_node("Tween").interpolate_property(self, "position", position, location, duration)
+
+# Moving to a country and back
+func move_to_country(destination_country):
+	move_to_location_with_duration(destination_country.position, destination_movement_duration)
+	get_node("Tween").interpolate_callback(self, destination_movement_duration, "move_to_location_with_duration", position, origin_movement_duration)
 	get_node("Tween").start()
 
 func on_click(event):	
@@ -144,22 +149,23 @@ func on_click(event):
 					# And if it is a neighbour and the attacker has sufficient troops, then attack
 					var attacker = Game_Manager.selected_country
 					if (attacker in connected_countries) and (attacker.num_troops > num_troops):
-						# Movement animation
-						attacker.move_to(destination_movement_duration, position)
-						attacker.get_node("Tween").interpolate_callback(attacker, destination_movement_duration, "move_to", origin_movement_duration, attacker.position)
-						
 						# Attack logic that changes troops and updates labels
 						num_troops = attacker.num_troops - num_troops
 						attacker.num_troops = 1
 						update_labels()
 						attacker.update_labels()
-						
 						change_ownership_to(attacker.belongs_to)
-						if Game_Manager.is_attack_over():
-							Game_Manager.change_to_reinforcement()
-						
 						Game_Manager.selected_country = null
 						
+						# Movement animation
+						attacker.move_to_country(self)
+						# Networked component of movement animation
+						if Game_Manager._root.online_game:
+							Game_Manager.move_country_across_network(attacker.country_name, country_name)
+						
+						# Phase change
+						if Game_Manager.is_attack_over():
+							Game_Manager.change_to_reinforcement()
 						# Check if the opponent has any troops left
 						if Game_Manager.get_next_player().get_num_troops() == 0:
 							Game_Manager.end_game()
