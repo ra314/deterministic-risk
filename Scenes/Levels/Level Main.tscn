@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Assets/Our World.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Levels/Level Main.gd" type="Script" id=2]
@@ -10,8 +10,13 @@
 [ext_resource path="res://Assets/new_dynamicfont.tres" type="DynamicFont" id=8]
 [ext_resource path="res://Assets/zoom-out-line.svg" type="Texture" id=9]
 [ext_resource path="res://Assets/zoom-in-line.svg" type="Texture" id=10]
+[ext_resource path="res://Assets/expand-arrow.svg" type="Texture" id=11]
+[ext_resource path="res://Assets/collapse-arrow.svg" type="Texture" id=12]
+[ext_resource path="res://Assets/label_background.tres" type="StyleBox" id=13]
+[ext_resource path="res://Assets/Parallax Background.png" type="Texture" id=14]
 
 [sub_resource type="DynamicFont" id=1]
+size = 25
 font_data = ExtResource( 7 )
 
 [node name="Level 1" type="Node2D"]
@@ -57,9 +62,9 @@ __meta__ = {
 }
 
 [node name="Reroll Spawn" type="Button" parent="CanvasLayer"]
-margin_top = 780.0
+margin_top = 940.0
 margin_right = 341.0
-margin_bottom = 848.0
+margin_bottom = 1008.0
 custom_fonts/font = ExtResource( 8 )
 text = "Reroll Spawn"
 __meta__ = {
@@ -67,9 +72,9 @@ __meta__ = {
 }
 
 [node name="Start Game" type="Button" parent="CanvasLayer"]
-margin_top = 850.0
+margin_top = 1010.0
 margin_right = 298.0
-margin_bottom = 918.0
+margin_bottom = 1078.0
 custom_fonts/font = ExtResource( 8 )
 text = "Start Game"
 __meta__ = {
@@ -77,9 +82,9 @@ __meta__ = {
 }
 
 [node name="Play Blue" type="Button" parent="CanvasLayer"]
-margin_top = 670.0
+margin_top = 804.0
 margin_right = 464.0
-margin_bottom = 738.0
+margin_bottom = 872.0
 custom_fonts/font = ExtResource( 8 )
 text = "Host plays as Blue"
 __meta__ = {
@@ -87,9 +92,9 @@ __meta__ = {
 }
 
 [node name="Play Red" type="Button" parent="CanvasLayer"]
-margin_top = 600.0
-margin_right = 125.0
-margin_bottom = 630.0
+margin_top = 734.0
+margin_right = 449.0
+margin_bottom = 802.0
 custom_fonts/font = ExtResource( 8 )
 text = "Host plays as Red"
 __meta__ = {
@@ -100,6 +105,7 @@ __meta__ = {
 margin_top = 200.0
 margin_right = 40.0
 margin_bottom = 221.0
+custom_styles/normal = ExtResource( 13 )
 custom_fonts/font = SubResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -133,6 +139,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Toggle Info" type="TextureButton" parent="CanvasLayer"]
+margin_right = 40.0
+margin_bottom = 40.0
+toggle_mode = true
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 11 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Our World" type="Sprite" parent="."]
 visible = false
 scale = Vector2( 0.5, 0.5 )
@@ -152,4 +168,14 @@ centered = false
 visible = false
 scale = Vector2( 0.5, 0.5 )
 texture = ExtResource( 5 )
+centered = false
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+scroll_limit_end = Vector2( 0, 1080 )
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2( 1920, 1080 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxBackground/ParallaxLayer"]
+texture = ExtResource( 14 )
 centered = false

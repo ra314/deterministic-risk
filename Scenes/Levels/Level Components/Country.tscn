@@ -4,18 +4,16 @@
 [ext_resource path="res://Assets/Blue_Square.png" type="Texture" id=2]
 [ext_resource path="res://Scripts/Levels/Level Components/Sprite.gd" type="Script" id=3]
 [ext_resource path="res://Assets/Montserrat-Regular.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://Assets/label_background.tres" type="StyleBox" id=5]
 
-[sub_resource type="DynamicFont" id=3]
+[sub_resource type="DynamicFont" id=1]
 size = 25
 font_data = ExtResource( 4 )
 
-[sub_resource type="RectangleShape2D" id=1]
+[sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 16.0538, 16.1497 )
 
-[sub_resource type="StyleBoxFlat" id=2]
-bg_color = Color( 0.113725, 0.113725, 0.113725, 1 )
-
-[sub_resource type="DynamicFont" id=4]
+[sub_resource type="DynamicFont" id=3]
 size = 25
 font_data = ExtResource( 4 )
 
@@ -32,7 +30,7 @@ script = ExtResource( 3 )
 [node name="Units" type="Label" parent="."]
 margin_right = 32.0
 margin_bottom = 32.0
-custom_fonts/font = SubResource( 3 )
+custom_fonts/font = SubResource( 1 )
 text = "12"
 align = 1
 valign = 1
@@ -43,7 +41,7 @@ __meta__ = {
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 16, 16 )
-shape = SubResource( 1 )
+shape = SubResource( 2 )
 
 [node name="Tween" type="Tween" parent="."]
 
@@ -51,8 +49,8 @@ shape = SubResource( 1 )
 margin_top = 32.0
 margin_right = 32.0
 margin_bottom = 64.0
-custom_styles/normal = SubResource( 2 )
-custom_fonts/font = SubResource( 4 )
+custom_styles/normal = ExtResource( 5 )
+custom_fonts/font = SubResource( 3 )
 text = "1"
 align = 1
 valign = 1

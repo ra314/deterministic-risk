@@ -71,6 +71,9 @@ func spawn_and_allocate():
 func _ready():
 	spawn_and_allocate()
 	
+	# Button to toggle showing player and round info
+	get_node("CanvasLayer/Toggle Info").connect("pressed", self, "toggle_info_visibility")
+	
 	# Buttons to zoom in and out
 	get_node("CanvasLayer/Zoom In").connect("pressed", get_node("Camera2D"), "zoom_in")
 	get_node("CanvasLayer/Zoom Out").connect("pressed", get_node("Camera2D"), "zoom_out")
@@ -107,6 +110,11 @@ func show_help_menu():
 	var scene = _root.scene_manager._load_scene("UI/Help Menu")
 	_root.scene_manager.save_and_hide_current_scene()
 	_root.add_child(scene)
+
+func toggle_info_visibility():
+	get_node("CanvasLayer/Player and Round Tracker").visible = !get_node("CanvasLayer/Player and Round Tracker").visible
+	for player in players.values():
+		player.get_node("Label").visible = !player.get_node("Label").visible
 
 # Button Removal and Hiding Functions
 #######

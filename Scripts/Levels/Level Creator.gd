@@ -9,7 +9,7 @@ var add_countries_button = null
 var export_level_button = null
 var connect_countries_button = null
 var information_label = null
-var _world_str = "Crucible"
+var _world_str = "No Mans Land"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():	
@@ -74,7 +74,7 @@ func _ready():
 	var save_game = File.new()
 	
 	#Comment out the below lines to have a brand new world
-	.import_level(self, _world_str)	
+	.import_level(self, _world_str)
 
 func toggle_lines():
 	if lines_drawn:
@@ -109,7 +109,7 @@ func _input(event):
 			# Dead zone for buttons
 			if coordinate[0] < 250 and coordinate[1] < 250:
 				return
-			var new_country = Country.instance().init(coordinate[0], coordinate[1], hash(OS.get_system_time_msecs()))
+			var new_country = Country.instance().init(coordinate[0], coordinate[1], hash(OS.get_system_time_msecs()), null)
 			add_country_to_level(new_country)
 			add_child(new_country)
 	
