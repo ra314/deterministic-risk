@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Assets/Our World.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Levels/Level Main.gd" type="Script" id=2]
@@ -8,6 +8,8 @@
 [ext_resource path="res://Scenes/Levels/Level Components/Player.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Assets/Montserrat-Regular.ttf" type="DynamicFontData" id=7]
 [ext_resource path="res://Assets/new_dynamicfont.tres" type="DynamicFont" id=8]
+[ext_resource path="res://Assets/zoom-out-line.svg" type="Texture" id=9]
+[ext_resource path="res://Assets/zoom-in-line.svg" type="Texture" id=10]
 
 [sub_resource type="DynamicFont" id=1]
 font_data = ExtResource( 7 )
@@ -99,6 +101,34 @@ margin_top = 200.0
 margin_right = 40.0
 margin_bottom = 221.0
 custom_fonts/font = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Zoom Out" type="TextureButton" parent="CanvasLayer"]
+anchor_left = -5.46773e-05
+anchor_top = -9.73172e-05
+anchor_right = -5.46773e-05
+anchor_bottom = -9.73172e-05
+margin_left = 1801.1
+margin_top = 958.105
+margin_right = 1920.1
+margin_bottom = 1080.11
+texture_normal = ExtResource( 9 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Zoom In" type="TextureButton" parent="CanvasLayer"]
+anchor_left = -5.46773e-05
+anchor_top = -9.73172e-05
+anchor_right = -5.46773e-05
+anchor_bottom = -9.73172e-05
+margin_left = 1682.1
+margin_top = 958.105
+margin_right = 1801.1
+margin_bottom = 1080.11
+texture_normal = ExtResource( 10 )
 __meta__ = {
 "_edit_use_anchors_": false
 }

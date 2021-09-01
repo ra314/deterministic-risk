@@ -71,6 +71,10 @@ func spawn_and_allocate():
 func _ready():
 	spawn_and_allocate()
 	
+	# Buttons to zoom in and out
+	get_node("CanvasLayer/Zoom In").connect("pressed", get_node("Camera2D"), "zoom_in")
+	get_node("CanvasLayer/Zoom Out").connect("pressed", get_node("Camera2D"), "zoom_out")
+	
 	# Button to end attack
 	get_node("CanvasLayer/End Attack").connect("pressed", self, "change_to_reinforcement")
 	
@@ -352,7 +356,7 @@ remote func move_to_country(origin_country_name, destination_country_name):
 
 const sync_period = 2
 var time_since_sync = 0
-const input_frequency = 0.2
+const input_frequency = 0.05
 var time_since_last_input = 0
 
 func _process(delta):
