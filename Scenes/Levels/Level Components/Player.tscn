@@ -5,7 +5,7 @@
 [ext_resource path="res://Assets/label_background.tres" type="StyleBox" id=3]
 
 [sub_resource type="DynamicFont" id=1]
-size = 25
+size = 50
 font_data = ExtResource( 2 )
 
 [node name="Player" type="Node2D"]

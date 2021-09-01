@@ -1,16 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Scripts/UI/MenuItem.gd" type="Script" id=1]
-[ext_resource path="res://Assets/new_dynamicfont.tres" type="DynamicFont" id=2]
-[ext_resource path="res://Assets/Montserrat-Regular.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://Assets/Fonts/Font_100.tres" type="DynamicFont" id=2]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 1, 1, 1, 0 )
 border_color = Color( 1, 1, 1, 0 )
-
-[sub_resource type="DynamicFont" id=2]
-size = 75
-font_data = ExtResource( 3 )
 
 [node name="StartContainer" type="HBoxContainer"]
 anchor_left = -0.000424226
@@ -35,11 +30,11 @@ custom_colors/font_color = Color( 0.101961, 0.101961, 0.101961, 1 )
 text = "-"
 
 [node name="Button" type="ToolButton" parent="."]
-margin_left = 300.0
-margin_right = 500.0
-margin_bottom = 100.0
+margin_left = 269.0
+margin_right = 531.0
+margin_bottom = 131.0
 custom_styles/focus = SubResource( 1 )
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = ExtResource( 2 )
 custom_colors/font_color = Color( 0.101961, 0.101961, 0.101961, 1 )
 custom_colors/font_color_hover = Color( 0.101961, 0.101961, 0.101961, 1 )
 custom_colors/font_color_pressed = Color( 0.101961, 0.101961, 0.101961, 1 )
