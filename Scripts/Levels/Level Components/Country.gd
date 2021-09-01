@@ -40,10 +40,12 @@ func change_ownership_to(player):
 	get_node("Sprite").change_color_to(player.color)
 
 func update_labels():
-	var label_text = str(num_troops)
+	get_node("Units").text = str(num_troops)
 	if num_reinforcements > 0:
-		label_text += " +" + str(num_reinforcements)
-	get_node("Label").text = label_text
+		get_node("Reinforcements").visible = true
+		get_node("Reinforcements").text = "+" + str(num_reinforcements)
+	else:
+		get_node("Reinforcements").visible = false
 	belongs_to.update_labels()
 
 func flash_attackable_neighbours(player):
