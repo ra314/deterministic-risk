@@ -9,7 +9,7 @@ Deterministic Risk is the game for people who like playing Risk, but can't get a
 
 The win condition is achieved when your opponent has no countries left in their possession. 
 
-Each turn is split into a attack and reinforce phase. During the attack phase, you may attack any adjacent country *(A)* that you don't own, with any country you own *(B)*, as long as *B* has more units in it than *A*. After the attack, *B* is left with 1 unit. *A* is left with *B*-*A*. 
+Each turn is split into a attack and reinforce phase. During the attack phase, you may attack any adjacent country **(A)** that you don't own, with any country you own **(B)**, as long as **B** has more units in it than **A**. After the attack, **B** is left with 1 unit. **A** is left with **B**-**A**.
 
 The reinforce phase automatically starts when you have no attacks to make or when you click on the button. During the reinforce phase the number of reinforcements is the number of countries you own halved, then rounded up. Reinforcements may be placed on any country you own.
 
