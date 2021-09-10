@@ -9,7 +9,9 @@ func zoom_in():
 	zoom *= 0.5
 
 func zoom_out():
-	zoom *= 2
+	# Prevent zooming out beyond full screen
+	if zoom[0]*2 <=1:
+		zoom *= 2
 
 func _input(event):
 	if event is InputEventMouseButton:
