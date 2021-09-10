@@ -1,9 +1,8 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Assets/Montserrat-Regular.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Scripts/UI/Help Menu.gd" type="Script" id=2]
 [ext_resource path="res://Assets/Fonts/Font_50.tres" type="DynamicFont" id=3]
-[ext_resource path="res://Assets/Fonts/Font_100.tres" type="DynamicFont" id=4]
 
 [sub_resource type="DynamicFont" id=1]
 size = 200
@@ -19,62 +18,64 @@ __meta__ = {
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 margin_top = 249.0
-margin_right = 1838.0
+margin_right = 1920.0
 margin_bottom = 1049.0
+size_flags_horizontal = 0
 scroll_horizontal_enabled = false
-scroll_vertical = 300
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="ScrollContainer"]
-margin_top = -300.0
-margin_right = 6561.0
-margin_bottom = 2595.0
+margin_right = 1908.0
+margin_bottom = 1752.0
+size_flags_horizontal = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Label2" type="Label" parent="ScrollContainer/VBoxContainer2"]
-margin_right = 6561.0
-margin_bottom = 2895.0
-custom_fonts/font = ExtResource( 4 )
+margin_right = 1908.0
+margin_bottom = 1752.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 3 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "Rules:
-    The win condition is achieved when your opponent has no countries left in their possession.
-	
-    Each turn is split into an attack and a reinforce phase. 
-    Suppose you want to attack country A with country B to conquer it.
-    This is only possible if B has more units than A, and B is adjacent to A.
-    Adjacency across oceans is represented with dashed white lines.
-    After the attack, B is left with 1 unit, and A is left with B-A units.
-    A is now under your ownership.
-	
-    The reinforce phase automatically starts when you have no attacks to make or when you click on the \"end attack\" button. 
-    During the reinforce phase the number of reinforcements you get  is the number of countries you own halved, then rounded up. 
+text = "Winning:
+You win when your opponent has no countries left in their possession.
+
+Attacking:
+Each turn is split into an attack and a reinforce phase. 
+Suppose you want to attack country A with country B to conquer it.
+This is only possible if B has more units than A, and B is adjacent to A.
+Adjacency across oceans is represented with dashed white lines.
+After the attack, B is left with 1 unit, and A is left with B-A units.
+A is now under your ownership.
+
+Reinforcing:
+The reinforce phase automatically starts when you have no attacks to make or when you click on the \"end attack\" button. 
+During the reinforce phase the number of reinforcements you get is the number of countries you own halved, then rounded up. 
 
 Controls:
-    In general:
-        Mouse 3 to pan the map.
-    During attack:
-        Left click to select a country that you own.
-        Left click again to attack a country that you don't own.
-    During reinforcement:
-        Left click to add a reinforcement.
-        Right click to remove a reinforcement.
-        You cannot remove more reinforcements than you have added."
+In general:
+    Click and drag to pan the map.
+During attack:
+    Click to select a country that you own.
+    Click again to attack a country that you don't own.
+During reinforcement:
+    Left click to add a reinforcement.
+    Right click to remove a reinforcement.
+    You cannot remove more reinforcements than you have added."
+autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-visible = false
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Label" type="Label" parent="VBoxContainer"]
-visible = false
 margin_right = 1838.0
 margin_bottom = 245.0
 custom_fonts/font = SubResource( 1 )
