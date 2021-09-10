@@ -21,4 +21,7 @@ func _input(event):
 		else:
 			dragging = false
 	elif event is InputEventMouseMotion and dragging:
-		position = zoom * (mouse_start_pos - event.position) + screen_start_position
+		# Ignore drag if the distance is less than 10 pixels.
+		# This is to prevent a single touch with an accidental mouse movement being interpeted as a drag
+		if event.position.distance_to(mouse_start_pos) > 10:
+			position = zoom * (mouse_start_pos - event.position) + screen_start_position
