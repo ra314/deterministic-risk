@@ -289,20 +289,18 @@ func change_to_attack():
 	phase = "attack"
 #######
 
-func get_player_with_most_troops():
-	var player_with_most_troops = null
-	var max_num_troops = 0
-	for player in players.values():
-		if player.get_num_troops() > max_num_troops:
-			player_with_most_troops = player
-			max_num_troops = player.get_num_troops()
-	return player_with_most_troops
-
-func end_game():
+func end_game(winner_color):
 	get_node("CanvasLayer/End Attack").visible = false
 	get_node("CanvasLayer/End Reinforcement").visible = false
 	phase = "game over"
-	get_node("CanvasLayer/Player and Round Tracker").text = get_player_with_most_troops().color + " Wins"
+	get_node("CanvasLayer/Player and Round Tracker").text = winner_color + " Wins"
+	
+	get_node("CanvasLayer/Win Screen").visible = true
+	get_node("CanvasLayer/Win Screen/Winner").text = winner_color
+	var players_without_winner = players.keys()
+	players_without_winner.erase(winner_color)
+	var loser_color = players_without_winner[0]
+	get_node("CanvasLayer/Win Screen/Loser").text = loser_color
 
 func update_labels():
 	get_node("CanvasLayer/Player and Round Tracker").text = "Current Player: " +\

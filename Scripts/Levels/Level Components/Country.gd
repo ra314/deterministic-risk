@@ -170,7 +170,7 @@ func on_click(event):
 							Game_Manager.change_to_reinforcement()
 						# Check if the opponent has any troops left
 						if Game_Manager.get_next_player().get_num_troops() == 0:
-							Game_Manager.end_game()
+							Game_Manager.end_game(belongs_to.color)
 			else:
 				print("flashing")
 				Game_Manager.selected_country = self	
