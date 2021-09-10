@@ -180,19 +180,16 @@ func on_click(event):
 			if belongs_to == Game_Manager.curr_player:
 				# Add a reinforcement
 				if event.button_index == BUTTON_LEFT:
-					num_reinforcements += 1
-					Game_Manager.curr_player.num_reinforcements -= 1
-					
-					# Changing to attack phase for the next player
-					if Game_Manager.curr_player.num_reinforcements == 0:
-						Game_Manager.change_to_attack()
-				
+					# Check that the player has reinforcements available to allocate
+					if Game_Manager.curr_player.num_reinforcements > 0:
+						Game_Manager.curr_player.num_reinforcements -= 1
+						num_reinforcements += 1
 				# Remove a reinforcement
 				if event.button_index == BUTTON_RIGHT:
 					# Check that a reinforcement has been previously added to this country
 					if num_reinforcements > 0:
-						Game_Manager.curr_player.num_reinforcements += 1
 						num_reinforcements -= 1
+						Game_Manager.curr_player.num_reinforcements += 1
 				
 				update_labels()
 				Game_Manager.curr_player.update_labels()
