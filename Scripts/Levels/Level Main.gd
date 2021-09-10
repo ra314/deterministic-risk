@@ -283,8 +283,8 @@ func change_to_attack():
 		country.update_labels()
 	
 	selected_country = null
-	change_to_next_player()
 	round_number += 1
+	change_to_next_player()
 	update_labels()
 	phase = "attack"
 #######
