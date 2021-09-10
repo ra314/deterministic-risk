@@ -7,11 +7,31 @@ https://user-images.githubusercontent.com/55324331/128356189-93544dfc-31dd-4c47-
 # Game Guide
 Deterministic Risk is the game for people who like playing Risk, but can't get a good roll to save their lives.
 
-The win condition is achieved when your opponent has no countries left in their possession. 
+### Winning:
+You win when your opponent has no countries left in their possession.
 
-Each turn is split into a attack and reinforce phase. During the attack phase, you may attack any adjacent country **(A)** that you don't own, with any country you own **(B)**, as long as **B** has more units in it than **A**. After the attack, **B** is left with 1 unit. **A** is left with **B**-**A**.
+### Attacking:
+Each turn is split into an attack and a reinforce phase. 
+Suppose you want to attack country A with country B to conquer it.
+This is only possible if B has more units than A, and B is adjacent to A.
+Adjacency across oceans is represented with dashed white lines.
+After the attack, B is left with 1 unit, and A is left with B-A units.
+A is now under your ownership.
 
-The reinforce phase automatically starts when you have no attacks to make or when you click on the button. During the reinforce phase the number of reinforcements is the number of countries you own halved, then rounded up. Reinforcements may be placed on any country you own.
+### Reinforcing:
+The reinforce phase automatically starts when you have no attacks to make or when you click on the "end attack" button. 
+During the reinforce phase the number of reinforcements you get is the number of countries you own halved, then rounded up. 
+
+### Controls:
+In general:
+    Click and drag to pan the map.
+During attack:
+    Click to select a country that you own.
+    Click again to attack a country that you don't own.
+During reinforcement:
+    Left click to add a reinforcement.
+    Right click to remove a reinforcement.
+    You cannot remove more reinforcements than you have added.
 
 # Behind the Scenes
 The allocation of countries to the blue and red players is done randomly when spawning. However, countries when being spawned, cannot be allocated such that they belong to different players and are adjacent. The player going first gets 3 countries with a unit distribution of [2,2,3]. The player going second gets 4 countries with a unit distribution of [1,2,2,3]. This is to counter the first player advantage.
