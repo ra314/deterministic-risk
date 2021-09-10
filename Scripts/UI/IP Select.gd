@@ -8,7 +8,7 @@ func _ready():
 
 func _load_scene(scene_str):
 	# Slicing out the IP address
-	var server_IP = $TextEdit.text.right(4)
+	var server_IP = get_node("HBoxContainer/TextEdit").text
 	_root.guest(server_IP)
 	print(server_IP)
 	
