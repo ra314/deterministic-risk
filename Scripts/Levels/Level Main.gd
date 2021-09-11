@@ -21,6 +21,7 @@ var round_number_label = null
 var curr_player = null
 var curr_player_index = null
 const num_players = 2
+# Dictionary mapping player names ("red", "blue") to player objects
 var players = null
 var game_started = false
 
@@ -105,6 +106,15 @@ func _ready():
 		
 	# Button to go to help menu
 	get_node("CanvasLayer/Help").connect("button_down", self, "show_help_menu")
+	
+	# Button to resign game
+	get_node("CanvasLayer/Resign").connect("button_down", self, "resign")
+
+func resign():
+	if _root.online_game:
+		end_game(get_player_by_network_id(_root.players[_root.player_name]).color)
+	else:
+		end_game(curr_player.color)
 
 func show_help_menu():
 	var scene = _root.scene_manager._load_scene("UI/Help Menu")
@@ -123,12 +133,16 @@ func remove_reroll_and_start_butttons():
 	remove_reroll_spawn_button()
 	get_node("CanvasLayer/Start Game").queue_free()
 	end_attack_disable(false)
+	show_resign_button()
 	game_started = true
 
-remotesync func remove_reroll_spawn_button():
+remotesync func show_resign_button():
+	get_node("CanvasLayer/Resign").visible = true
+
+func remove_reroll_spawn_button():
 	get_node("CanvasLayer/Reroll Spawn").queue_free()
 
-remotesync func remove_color_select_buttons():
+func remove_color_select_buttons():
 	get_node("CanvasLayer/Play Red").queue_free()
 	get_node("CanvasLayer/Play Blue").queue_free()
 
@@ -139,7 +153,7 @@ remote func end_attack_disable(hide_boolean):
 	else:
 		get_node("CanvasLayer/End Attack").show()
 
-remote func end_reinforcement_disable(hide_boolean):
+func end_reinforcement_disable(hide_boolean):
 	print("End reinforcement buttons is being " + str(hide_boolean))
 	if hide_boolean:
 		get_node("CanvasLayer/End Reinforcement").hide()
@@ -189,6 +203,12 @@ func reroll_spawn():
 func get_next_player():
 	return players.values()[(curr_player_index+1)%num_players]
 
+func get_player_by_network_id(network_id):
+	for player in players.values():
+		if player.network_id == network_id:
+			return player
+	return null
+
 # This relies on an assumption that this funciton is only called in online games
 func set_host_color(color):
 	# Assigning network ids to the players
@@ -203,6 +223,7 @@ func set_host_color(color):
 	# Changing the visibility of relevant buttons
 	remove_color_select_buttons()
 	remove_reroll_spawn_button()
+	rpc("show_resign_button")
 	
 	if curr_player.network_id == _root.players[_root.player_name]:
 		print("changing local button")
@@ -289,18 +310,26 @@ func change_to_attack():
 	phase = "attack"
 #######
 
-func end_game(winner_color):
+remote func end_game(loser_color):
+	# Hiding buttons to prevent further gameplay
 	get_node("CanvasLayer/End Attack").visible = false
 	get_node("CanvasLayer/End Reinforcement").visible = false
+	get_node("CanvasLayer/Resign").visible = false
 	phase = "game over"
-	get_node("CanvasLayer/Player and Round Tracker").text = winner_color + " Wins"
 	
+	# Making win screen visible
 	get_node("CanvasLayer/Win Screen").visible = true
-	get_node("CanvasLayer/Win Screen/Winner").text = winner_color
-	var players_without_winner = players.keys()
-	players_without_winner.erase(winner_color)
-	var loser_color = players_without_winner[0]
+	# Adding the loser and winners name in the right places
 	get_node("CanvasLayer/Win Screen/Loser").text = loser_color
+	# Finding out who the winne is
+	var players_without_loser = players.keys()
+	players_without_loser.erase(loser_color)
+	var winner_color = players_without_loser[0]
+	get_node("CanvasLayer/Win Screen/Winner").text = winner_color
+	
+	# Online component
+	if _root.online_game:
+		rpc_id(players[winner_color].network_id , "end_game", loser_color)
 
 func update_labels():
 	get_node("CanvasLayer/Player and Round Tracker").text = "Current Player: " +\
