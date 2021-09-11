@@ -86,23 +86,23 @@ func _ready():
 	get_node("CanvasLayer/End Reinforcement").connect("pressed", self, "change_to_attack")
 	
 	# Buttons to select if host plays as red or blue
-	get_node("CanvasLayer/Play Red").connect("button_down", self, "set_host_color", ["red"])
-	get_node("CanvasLayer/Play Blue").connect("button_down", self, "set_host_color", ["blue"])
+	get_node("CanvasLayer/Init Buttons/Online/Play Red").connect("button_down", self, "set_host_color", ["red"])
+	get_node("CanvasLayer/Init Buttons/Online/Play Blue").connect("button_down", self, "set_host_color", ["blue"])
 	# Don't let the guest choose who goes first
 	if not _root.online_game or _root.player_name == "guest":
-		remove_color_select_buttons()
+		get_node("CanvasLayer/Init Buttons/Online").queue_free()
 	
 	# Button to reroll the troop allocation to the countries
-	get_node("CanvasLayer/Reroll Spawn").connect("button_down", self, "reroll_spawn")
+	get_node("CanvasLayer/Init Buttons/Reroll Spawn").connect("button_down", self, "reroll_spawn")
 	# Don't let the guest reroll the spawn.
 	if _root.online_game and _root.player_name == "guest":
-		remove_reroll_spawn_button()
+		get_node("CanvasLayer/Init Buttons").queue_free()
 	
 	# Button to start the game, when clicked it removes itself and the reroll button
 	if _root.online_game:
-		get_node("CanvasLayer/Start Game").queue_free()
+		get_node("CanvasLayer/Init Buttons/Start Game").queue_free()
 	else:
-		get_node("CanvasLayer/Start Game").connect("button_down", self, "remove_reroll_and_start_butttons")
+		get_node("CanvasLayer/Init Buttons/Start Game").connect("button_down", self, "remove_reroll_and_start_butttons")
 		
 	# Button to go to help menu
 	get_node("CanvasLayer/Help").connect("button_down", self, "show_help_menu")
@@ -130,21 +130,13 @@ func toggle_info_visibility():
 #######
 # This relies on an assumption that this funciton is only called in offline games
 func remove_reroll_and_start_butttons():
-	remove_reroll_spawn_button()
-	get_node("CanvasLayer/Start Game").queue_free()
+	get_node("CanvasLayer/Init Buttons").queue_free()
 	end_attack_disable(false)
 	show_resign_button()
 	game_started = true
 
 remotesync func show_resign_button():
 	get_node("CanvasLayer/Resign").visible = true
-
-func remove_reroll_spawn_button():
-	get_node("CanvasLayer/Reroll Spawn").queue_free()
-
-func remove_color_select_buttons():
-	get_node("CanvasLayer/Play Red").queue_free()
-	get_node("CanvasLayer/Play Blue").queue_free()
 
 remote func end_attack_disable(hide_boolean):
 	print("End attack buttons is being " + str(hide_boolean))
@@ -221,8 +213,7 @@ func set_host_color(color):
 	synchronize(_root.players["guest"])
 	
 	# Changing the visibility of relevant buttons
-	remove_color_select_buttons()
-	remove_reroll_spawn_button()
+	get_node("CanvasLayer/Init Buttons").queue_free()
 	rpc("show_resign_button")
 	
 	if curr_player.network_id == _root.players[_root.player_name]:

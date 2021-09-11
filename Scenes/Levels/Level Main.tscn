@@ -75,18 +75,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Reroll Spawn" type="Button" parent="CanvasLayer"]
-margin_left = 0.0701532
-margin_top = 932.034
-margin_right = 341.07
-margin_bottom = 1000.03
-custom_fonts/font = ExtResource( 8 )
-text = "Reroll Spawn"
+[node name="Init Buttons" type="Control" parent="CanvasLayer"]
+margin_right = 40.0
+margin_bottom = 40.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Start Game" type="Button" parent="CanvasLayer"]
+[node name="Start Game" type="Button" parent="CanvasLayer/Init Buttons"]
 margin_left = 0.0701532
 margin_top = 1012.03
 margin_right = 298.07
@@ -97,24 +93,39 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Play Blue" type="Button" parent="CanvasLayer"]
+[node name="Reroll Spawn" type="Button" parent="CanvasLayer/Init Buttons"]
 margin_left = 0.0701532
-margin_top = 796.034
-margin_right = 464.07
-margin_bottom = 864.034
+margin_top = 932.034
+margin_right = 341.07
+margin_bottom = 1000.03
 custom_fonts/font = ExtResource( 8 )
-text = "Host plays as Blue"
+text = "Reroll Spawn"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Play Red" type="Button" parent="CanvasLayer"]
+[node name="Online" type="Control" parent="CanvasLayer/Init Buttons"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="Play Red" type="Button" parent="CanvasLayer/Init Buttons/Online"]
 margin_left = 0.0701532
 margin_top = 716.034
 margin_right = 449.07
 margin_bottom = 784.034
 custom_fonts/font = ExtResource( 8 )
 text = "Host plays as Red"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Play Blue" type="Button" parent="CanvasLayer/Init Buttons/Online"]
+margin_left = 0.0701532
+margin_top = 796.034
+margin_right = 464.07
+margin_bottom = 864.034
+custom_fonts/font = ExtResource( 8 )
+text = "Host plays as Blue"
 __meta__ = {
 "_edit_use_anchors_": false
 }
