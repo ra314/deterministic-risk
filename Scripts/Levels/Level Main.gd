@@ -108,7 +108,17 @@ func _ready():
 	get_node("CanvasLayer/Help").connect("button_down", self, "show_help_menu")
 	
 	# Button to resign game
-	get_node("CanvasLayer/Resign").connect("button_down", self, "resign")
+	get_node("CanvasLayer/Resign").connect("button_down", self, "show_resignation_menu")
+	get_node("CanvasLayer/Confirm Resign/VBoxContainer/CenterContainer/HBoxContainer/No").connect("button_down", self, "confirm_resign", [false])
+	get_node("CanvasLayer/Confirm Resign/VBoxContainer/CenterContainer/HBoxContainer/Yes").connect("button_down", self, "confirm_resign", [true])
+
+func show_resignation_menu():
+	get_node("CanvasLayer/Confirm Resign").visible = true
+
+func confirm_resign(confirmation_bool):
+	if confirmation_bool:
+		resign()
+	get_node("CanvasLayer/Confirm Resign").visible = false
 
 func resign():
 	if _root.online_game:
