@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Scripts/Levels/Level Components/Country.gd" type="Script" id=1]
-[ext_resource path="res://Assets/red-pentagon-3.svg" type="Texture" id=2]
+[ext_resource path="res://Assets/red-pentagon.svg" type="Texture" id=2]
 [ext_resource path="res://Assets/Montserrat-Regular.ttf" type="DynamicFontData" id=4]
 
 [sub_resource type="DynamicFont" id=1]
