@@ -5,6 +5,7 @@ var belongs_to = null
 var connected_countries = []
 var country_name = null
 var Game_Manager = null
+
 # This is so during reinforcement the label can show up as
 # {num_troops} + {num_reinforcements}
 var num_reinforcements: int = 0
@@ -29,6 +30,19 @@ func save():
 		save_dict["connections"].append(country.country_name)
 	return save_dict
 
+var colors = {"blue": load("res://Assets/blue-square.svg"), 
+				"red": load("res://Assets/red-pentagon.svg"),
+				"gray": load("res://Assets/neutral-circle.svg")}
+
+func change_color_to(color):
+	get_node("Sprite").texture = colors[color]
+	get_node("Reinforcements/Sprite").texture = colors[color]
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	Game_Manager = get_parent()
+	change_color_to(belongs_to.color)
+
 func change_ownership_to(player):
 	# Transfer of Ownership
 	belongs_to.owned_countries.erase(self)
@@ -36,17 +50,19 @@ func change_ownership_to(player):
 	player.owned_countries.append(self)
 	
 	# Visual Update
-	player.update_labels()
-	get_node("Sprite").change_color_to(player.color)
+	if Game_Manager:
+		Game_Manager.update_labels()
+	change_color_to(player.color)
 
 func update_labels():
 	get_node("Units").text = str(num_troops)
 	if num_reinforcements > 0:
 		get_node("Reinforcements").visible = true
-		get_node("Reinforcements").text = "+" + str(num_reinforcements)
+		get_node("Reinforcements/Label").text = "+" + str(num_reinforcements)
 	else:
 		get_node("Reinforcements").visible = false
-	belongs_to.update_labels()
+	if Game_Manager:
+		Game_Manager.update_labels()
 
 func flash_attackable_neighbours(player):
 	for country in connected_countries:
@@ -192,7 +208,7 @@ func on_click(event):
 						Game_Manager.curr_player.num_reinforcements += 1
 				
 				update_labels()
-				Game_Manager.curr_player.update_labels()
+				Game_Manager.update_labels()
 			pass
 		
 		"game over":
@@ -226,12 +242,6 @@ func init(_x, _y, _country_name, player):
 
 	update_labels()
 	return self
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	Game_Manager = get_parent()
-	
-	
 
 func stop_flashing():
 	if flash_mask_sprite != null:

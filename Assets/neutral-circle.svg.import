@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Blue_Square.png-ae535163e31b183d7b98f1e9b7ee13d3.stex"
+path="res://.import/neutral-circle.svg-859f043d8623e1f1ed54d84c7d672c2d.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Blue_Square.png"
-dest_files=[ "res://.import/Blue_Square.png-ae535163e31b183d7b98f1e9b7ee13d3.stex" ]
+source_file="res://Assets/neutral-circle.svg"
+dest_files=[ "res://.import/neutral-circle.svg-859f043d8623e1f1ed54d84c7d672c2d.stex" ]
 
 [params]
 
@@ -31,4 +31,4 @@ process/invert_color=false
 stream=false
 size_limit=0
 detect_3d=true
-svg/scale=2.0
+svg/scale=1.0

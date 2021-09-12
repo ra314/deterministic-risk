@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Gray_Square.png-d5ad6972cdab444707cd2d5ce5bcfd25.stex"
+path="res://.import/blue-square.svg-b5f89414f3fa8dd49701b4e6f92d0a18.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Gray_Square.png"
-dest_files=[ "res://.import/Gray_Square.png-d5ad6972cdab444707cd2d5ce5bcfd25.stex" ]
+source_file="res://Assets/blue-square.svg"
+dest_files=[ "res://.import/blue-square.svg-b5f89414f3fa8dd49701b4e6f92d0a18.stex" ]
 
 [params]
 

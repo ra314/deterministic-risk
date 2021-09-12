@@ -4,6 +4,10 @@ onready var _root: Main = get_tree().get_root().get_node("Main")
 
 var input_allowed = true
 
+var colors = {"blue": load("res://Assets/blue-square.svg"), 
+				"red": load("res://Assets/red-pentagon.svg"),
+				"gray": load("res://Assets/neutral-circle.svg")}
+
 func stop_flashing():
 	for country in all_countries.values():
 		country.stop_flashing()
@@ -66,14 +70,12 @@ func spawn_and_allocate():
 		country.update_labels()
 	
 	print("The first player is " + curr_player.color)
+	print(curr_player.color)
 	update_labels()
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	spawn_and_allocate()
-	
-	# Button to toggle showing player and round info
-	get_node("CanvasLayer/Toggle Info").connect("pressed", self, "toggle_info_visibility")
 	
 	# Buttons to zoom in and out
 	get_node("CanvasLayer/Zoom In").connect("pressed", get_node("Camera2D"), "zoom_in")
@@ -130,11 +132,6 @@ func show_help_menu():
 	var scene = _root.scene_manager._load_scene("UI/Help Menu")
 	_root.scene_manager.save_and_hide_current_scene()
 	_root.add_child(scene)
-
-func toggle_info_visibility():
-	get_node("CanvasLayer/Player and Round Tracker").visible = !get_node("CanvasLayer/Player and Round Tracker").visible
-	for player in players.values():
-		player.get_node("Label").visible = !player.get_node("Label").visible
 
 # Button Removal and Hiding Functions
 #######
@@ -196,6 +193,7 @@ func reroll_spawn():
 	for player in players.values():
 		if player.color == "gray": continue
 		player.reset()
+	curr_player = null
 	for country in all_countries.values():
 		country.change_ownership_to(players["gray"])
 		country.randomise_troops()
@@ -260,7 +258,7 @@ func add_random_countries(player, num_countries):
 		if country.belongs_to.color == "gray" and not is_country_neighbour_of_player(country, get_next_player()):
 			country.change_ownership_to(player)
 			num_added_countries += 1
-	player.update_labels()
+	update_labels()
 	
 func is_attack_over():
 	for country in curr_player.owned_countries:
@@ -333,8 +331,24 @@ remote func end_game(loser_color):
 		rpc_id(players[winner_color].network_id , "end_game", loser_color)
 
 func update_labels():
-	get_node("CanvasLayer/Player and Round Tracker").text = "Current Player: " +\
-		curr_player.color + "\nRound: " + str(round_number)
+	# Update Red labels
+	get_node("CanvasLayer/Game Info/HBoxContainer/Red/Reinforcements").text = \
+		str(players["red"].num_reinforcements) + "/" + str(players["red"].get_num_reinforcements())
+	get_node("CanvasLayer/Game Info/HBoxContainer/Red/Units").text = str(players["red"].get_num_troops())
+	get_node("CanvasLayer/Game Info/HBoxContainer/Red/Countries").text = str(len(players["red"].owned_countries))
+	
+	# Update Blue labels
+	get_node("CanvasLayer/Game Info/HBoxContainer/Blue/Reinforcements").text = \
+		str(players["blue"].num_reinforcements) + "/" + str(players["blue"].get_num_reinforcements())
+	get_node("CanvasLayer/Game Info/HBoxContainer/Blue/Units").text = str(players["blue"].get_num_troops())
+	get_node("CanvasLayer/Game Info/HBoxContainer/Blue/Countries").text = str(len(players["blue"].owned_countries))
+	
+	# Update Round info
+	get_node("CanvasLayer/Game Info/HBoxContainer/Round").text = "Round: " + str(round_number)
+	var curr_texture = colors["gray"]
+	if curr_player:
+		curr_texture = colors[curr_player.color]
+	get_node("CanvasLayer/Game Info/HBoxContainer/Curr Player").texture = curr_texture
 
 func _input(event):	
 	if event.is_pressed() and input_allowed:
@@ -373,7 +387,6 @@ remote func synchronise_player(player_info):
 	var curr_player = players[player_info["color"]]
 	curr_player.network_id = player_info["network_id"]
 	curr_player.num_reinforcements = player_info["num_reinforcements"]
-	curr_player.update_labels()
 
 remote func synchronise_meta_info(_curr_player_index, _round_number, _game_started):
 	game_started = _game_started

@@ -1,11 +1,10 @@
 extends Sprite
 
-var colors = {"blue": load("res://Assets/Blue_Square.png"), 
-				"red": load("res://Assets/Red_Square.png"),
-				"gray": load("res://Assets/Gray_Square.png")}
+var colors = {"blue": load("res://Assets/blue-square.svg"), 
+				"red": load("res://Assets/red-pentagon-3.svg"),
+				"gray": load("res://Assets/neutral-circle.svg")}
 
 func change_color_to(color):
-	print(color)
 	texture = colors[color]
 
 # Called when the node enters the scene tree for the first time.

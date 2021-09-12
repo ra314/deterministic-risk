@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/expand-arrow.svg-9aa23b22d64732fef59bcdc40100a283.stex"
+path="res://.import/red-pentagon-3.svg-2bd1014f4dae891be0b88dc7b61af3af.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/expand-arrow.svg"
-dest_files=[ "res://.import/expand-arrow.svg-9aa23b22d64732fef59bcdc40100a283.stex" ]
+source_file="res://Assets/red-pentagon-3.svg"
+dest_files=[ "res://.import/red-pentagon-3.svg-2bd1014f4dae891be0b88dc7b61af3af.stex" ]
 
 [params]
 

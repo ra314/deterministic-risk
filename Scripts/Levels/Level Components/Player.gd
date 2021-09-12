@@ -32,25 +32,3 @@ func get_num_reinforcements():
 
 func give_reinforcements():
 	num_reinforcements = get_num_reinforcements()
-	update_labels()
-
-func update_labels():
-	var player_name = "Player: "
-	if network_id != null:
-		if network_id == 1:
-			player_name = "Host: "
-		else:
-			player_name = "Guest: "
-	get_node("Label").text = player_name + color + \
-		"\nUnits: " + str(get_num_troops()) + \
-		"\nReinforcements: " + str(num_reinforcements) + "/" + str(get_num_reinforcements()) + \
-		"\nNumber of Countries: " + str(len(owned_countries))
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	update_labels()
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
