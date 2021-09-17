@@ -137,10 +137,9 @@ func show_help_menu():
 #######
 # This relies on an assumption that this funciton is only called in offline games
 func remove_reroll_and_start_butttons():
-	get_node("CanvasLayer/Init Buttons").queue_free()
 	end_attack_disable(false)
 	show_resign_button()
-	game_started = true
+	game_start_event()
 
 remotesync func show_resign_button():
 	get_node("CanvasLayer/Resign").visible = true
@@ -209,6 +208,12 @@ func get_player_by_network_id(network_id):
 			return player
 	return null
 
+# Called when the game starts (after color selection) regardless of online or offline
+func game_start_event():
+	game_started = true
+	get_node("CanvasLayer/Init Buttons").queue_free()
+	update_player_status(curr_player.color, true)
+
 # This relies on an assumption that this funciton is only called in online games
 func set_host_color(color):
 	# Assigning network ids to the players
@@ -217,11 +222,10 @@ func set_host_color(color):
 	if color == "blue":
 		other_color = "red"
 	players[other_color].network_id = _root.players["guest"]
-	game_started = true
 	synchronize(_root.players["guest"])
+	game_start_event()
 	
 	# Changing the visibility of relevant buttons
-	get_node("CanvasLayer/Init Buttons").queue_free()
 	rpc("show_resign_button")
 	
 	if curr_player.network_id == _root.players[_root.player_name]:
@@ -276,6 +280,20 @@ func change_to_next_player():
 	if _root.online_game:
 		synchronize(curr_player.network_id)
 
+# Update status to attack or defend
+remote func update_player_status(color, attacking):	
+	# Reset existing player statuses
+	get_node("CanvasLayer/Game Info/red/VBoxContainer/Status").visible = false
+	get_node("CanvasLayer/Game Info/blue/VBoxContainer/Status").visible = false
+	
+	# Selecting attack or defend for player status
+	var curr_player_status = get_node("CanvasLayer/Game Info/" + color + "/VBoxContainer/Status")
+	curr_player_status.visible = true
+	if attacking:
+		curr_player_status.texture = load("res://Assets/sword.svg")
+	else:
+		curr_player_status.texture = load("res://Assets/shield.svg")
+
 func change_to_reinforcement():	
 	selected_country = null
 	curr_level.stop_flashing()
@@ -284,6 +302,9 @@ func change_to_reinforcement():
 	# Modifying the visibility of the end attack and end reinforcement buttons
 	end_attack_disable(true)
 	end_reinforcement_disable(false)
+	
+	# Updating player status
+	update_player_status(curr_player.color, false)
 	
 	phase = "reinforcement"
 
@@ -296,7 +317,7 @@ func change_to_attack():
 		end_attack_disable(false)
 		end_reinforcement_disable(true)
 	
-	# Moving the troops from reinforcement to actual unit
+	# Moving the troops from reinforcement into active duty for each country
 	for country in all_countries.values():
 		country.num_troops += country.num_reinforcements
 		country.num_reinforcements = 0
@@ -304,9 +325,12 @@ func change_to_attack():
 	
 	selected_country = null
 	round_number += 1
+	phase = "attack"
 	change_to_next_player()
 	update_labels()
-	phase = "attack"
+	
+	# Updating player status
+	update_player_status(curr_player.color, true)
 #######
 
 remote func end_game(loser_color):
@@ -316,15 +340,21 @@ remote func end_game(loser_color):
 	get_node("CanvasLayer/Resign").visible = false
 	phase = "game over"
 	
-	# Making win screen visible
-	get_node("CanvasLayer/Win Screen").visible = true
-	# Adding the loser and winners name in the right places
-	get_node("CanvasLayer/Win Screen/Loser").text = loser_color
-	# Finding out who the winne is
+	# Finding out who the winner is
 	var players_without_loser = players.keys()
 	players_without_loser.erase(loser_color)
 	var winner_color = players_without_loser[0]
-	get_node("CanvasLayer/Win Screen/Winner").text = winner_color
+	
+	# Alternate win screen
+	var game_info = get_node("CanvasLayer/Game Info")
+	
+	var winner_icon = game_info.get_node(winner_color + "/VBoxContainer/Status")
+	winner_icon.visible = true
+	winner_icon.texture = load("res://Assets/Win.svg")
+	
+	var loser_icon = game_info.get_node(loser_color + "/VBoxContainer/Status")
+	loser_icon.visible = true
+	loser_icon.texture = load("res://Assets/Lose.svg")
 	
 	# Online component
 	if _root.online_game:
@@ -332,23 +362,23 @@ remote func end_game(loser_color):
 
 func update_labels():
 	# Update Red labels
-	get_node("CanvasLayer/Game Info/HBoxContainer/Red/Reinforcements").text = \
-		str(players["red"].num_reinforcements) + "/" + str(players["red"].get_num_reinforcements())
-	get_node("CanvasLayer/Game Info/HBoxContainer/Red/Units").text = str(players["red"].get_num_troops())
-	get_node("CanvasLayer/Game Info/HBoxContainer/Red/Countries").text = str(len(players["red"].owned_countries))
+	var red = get_node("CanvasLayer/Game Info/red/VBoxContainer2/HBoxContainer")
+	red.get_node("Reinforcements").text = str(players["red"].num_reinforcements) + "/" + str(players["red"].get_num_reinforcements())
+	red.get_node("Units").text = str(players["red"].get_num_troops())
+	red.get_node("Countries").text = str(len(players["red"].owned_countries))
 	
 	# Update Blue labels
-	get_node("CanvasLayer/Game Info/HBoxContainer/Blue/Reinforcements").text = \
-		str(players["blue"].num_reinforcements) + "/" + str(players["blue"].get_num_reinforcements())
-	get_node("CanvasLayer/Game Info/HBoxContainer/Blue/Units").text = str(players["blue"].get_num_troops())
-	get_node("CanvasLayer/Game Info/HBoxContainer/Blue/Countries").text = str(len(players["blue"].owned_countries))
+	var blue = get_node("CanvasLayer/Game Info/blue/VBoxContainer2/HBoxContainer")
+	blue.get_node("Reinforcements").text = str(players["blue"].num_reinforcements) + "/" + str(players["blue"].get_num_reinforcements())
+	blue.get_node("Units").text = str(players["blue"].get_num_troops())
+	blue.get_node("Countries").text = str(len(players["blue"].owned_countries))
 	
 	# Update Round info
-	get_node("CanvasLayer/Game Info/HBoxContainer/Round").text = "Round: " + str(round_number)
+	get_node("CanvasLayer/Game Info/Round Info/HBoxContainer/Round").text = "Round: " + str(round_number)
 	var curr_texture = colors["gray"]
 	if curr_player:
 		curr_texture = colors[curr_player.color]
-	get_node("CanvasLayer/Game Info/HBoxContainer/Curr Player").texture = curr_texture
+	get_node("CanvasLayer/Game Info/Round Info/HBoxContainer/Curr Player").texture = curr_texture
 
 func _input(event):	
 	if event.is_pressed() and input_allowed:
@@ -379,6 +409,10 @@ func synchronize(network_id):
 	
 	# Synchronising meta information
 	rpc_id(network_id, "synchronise_meta_info", curr_player_index, round_number, game_started)
+	
+	# Updating player status
+	if phase != "game over":
+		rpc_id(network_id, "update_player_status", curr_player.color, phase == "attack")
 
 remote func synchronise_country(country_name, num_troops, num_reinforcements, color):
 	all_countries[country_name].synchronise(num_troops, num_reinforcements, players[color])
