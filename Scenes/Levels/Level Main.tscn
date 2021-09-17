@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://Assets/Our World.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Levels/Level Main.gd" type="Script" id=2]
@@ -13,8 +13,6 @@
 [ext_resource path="res://Assets/red-pentagon.svg" type="Texture" id=11]
 [ext_resource path="res://Assets/label_background.tres" type="StyleBox" id=13]
 [ext_resource path="res://Assets/Parallax Background.png" type="Texture" id=14]
-[ext_resource path="res://Assets/Lose.svg" type="Texture" id=15]
-[ext_resource path="res://Assets/Win.svg" type="Texture" id=16]
 [ext_resource path="res://Assets/black-flag.svg" type="Texture" id=17]
 [ext_resource path="res://Assets/reinforcements.svg" type="Texture" id=18]
 [ext_resource path="res://Assets/soldier-army.svg" type="Texture" id=19]
@@ -77,165 +75,219 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Game Info" type="VBoxContainer" parent="CanvasLayer"]
-margin_top = 1016.0
+[node name="Game Info" type="HBoxContainer" parent="CanvasLayer"]
+margin_top = 960.0
 margin_right = 3840.0
-margin_bottom = 1144.0
+margin_bottom = 1196.0
 rect_scale = Vector2( 0.5, 0.5 )
 alignment = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Game Info"]
-margin_right = 3840.0
-margin_bottom = 128.0
-alignment = 1
+[node name="blue" type="HBoxContainer" parent="CanvasLayer/Game Info"]
+margin_left = 836.0
+margin_right = 1502.0
+margin_bottom = 236.0
 
-[node name="Curr Player" type="TextureRect" parent="CanvasLayer/Game Info/HBoxContainer"]
-margin_left = 862.0
-margin_right = 990.0
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Game Info/blue"]
+margin_right = 110.0
+margin_bottom = 236.0
+alignment = 2
+
+[node name="Status" type="TextureRect" parent="CanvasLayer/Game Info/blue/VBoxContainer"]
+visible = false
+margin_top = 15.0
+margin_right = 122.0
+margin_bottom = 122.0
+stretch_mode = 4
+
+[node name="Blue" type="TextureRect" parent="CanvasLayer/Game Info/blue/VBoxContainer"]
+margin_top = 126.0
+margin_right = 110.0
+margin_bottom = 236.0
+rect_min_size = Vector2( 110, 110 )
+texture = ExtResource( 21 )
+stretch_mode = 1
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/Game Info/blue"]
+margin_left = 114.0
+margin_right = 666.0
+margin_bottom = 236.0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Game Info/blue/VBoxContainer2"]
+margin_right = 552.0
+margin_bottom = 109.0
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Game Info/blue/VBoxContainer2"]
+margin_top = 113.0
+margin_right = 552.0
+margin_bottom = 236.0
+
+[node name="Unit Icon" type="TextureRect" parent="CanvasLayer/Game Info/blue/VBoxContainer2/HBoxContainer"]
+margin_right = 122.0
+margin_bottom = 123.0
+texture = ExtResource( 19 )
+
+[node name="Units" type="Label" parent="CanvasLayer/Game Info/blue/VBoxContainer2/HBoxContainer"]
+margin_left = 126.0
+margin_right = 183.0
+margin_bottom = 123.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 22 )
+text = "2"
+
+[node name="Reinforcement Icon" type="TextureRect" parent="CanvasLayer/Game Info/blue/VBoxContainer2/HBoxContainer"]
+margin_left = 187.0
+margin_right = 310.0
+margin_bottom = 123.0
+texture = ExtResource( 18 )
+
+[node name="Reinforcements" type="Label" parent="CanvasLayer/Game Info/blue/VBoxContainer2/HBoxContainer"]
+margin_left = 314.0
+margin_right = 371.0
+margin_bottom = 123.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 22 )
+text = "2"
+
+[node name="Country Icon" type="TextureRect" parent="CanvasLayer/Game Info/blue/VBoxContainer2/HBoxContainer"]
+margin_left = 375.0
+margin_right = 491.0
+margin_bottom = 123.0
+texture = ExtResource( 17 )
+
+[node name="Countries" type="Label" parent="CanvasLayer/Game Info/blue/VBoxContainer2/HBoxContainer"]
+margin_left = 495.0
+margin_right = 552.0
+margin_bottom = 123.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 22 )
+text = "2"
+
+[node name="Whitespace2" type="TextureRect" parent="CanvasLayer/Game Info"]
+modulate = Color( 1, 1, 1, 0 )
+margin_left = 1506.0
+margin_right = 1629.0
+margin_bottom = 236.0
+texture = ExtResource( 18 )
+
+[node name="Round Info" type="VBoxContainer" parent="CanvasLayer/Game Info"]
+margin_left = 1633.0
+margin_right = 2207.0
+margin_bottom = 236.0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Game Info/Round Info"]
+margin_right = 574.0
+margin_bottom = 104.0
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Game Info/Round Info"]
+margin_top = 108.0
+margin_right = 574.0
+margin_bottom = 236.0
+
+[node name="Curr Player" type="TextureRect" parent="CanvasLayer/Game Info/Round Info/HBoxContainer"]
+margin_right = 128.0
 margin_bottom = 128.0
 rect_min_size = Vector2( 128, 128 )
 texture = ExtResource( 21 )
 stretch_mode = 1
 
-[node name="Round" type="Label" parent="CanvasLayer/Game Info/HBoxContainer"]
-margin_left = 994.0
+[node name="Round" type="Label" parent="CanvasLayer/Game Info/Round Info/HBoxContainer"]
+margin_left = 132.0
 margin_top = 2.0
-margin_right = 1383.0
+margin_right = 574.0
 margin_bottom = 125.0
 custom_fonts/font = ExtResource( 22 )
-text = "round 2"
+text = "Round: 2"
 
-[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/Game Info/HBoxContainer"]
+[node name="Whitespace" type="TextureRect" parent="CanvasLayer/Game Info"]
 modulate = Color( 0, 0, 0, 0 )
-margin_left = 1387.0
-margin_right = 1510.0
-margin_bottom = 128.0
+margin_left = 2211.0
+margin_right = 2334.0
+margin_bottom = 236.0
 texture = ExtResource( 18 )
 
-[node name="Blue" type="HBoxContainer" parent="CanvasLayer/Game Info/HBoxContainer"]
-margin_left = 1514.0
-margin_right = 2180.0
-margin_bottom = 128.0
+[node name="red" type="HBoxContainer" parent="CanvasLayer/Game Info"]
+margin_left = 2338.0
+margin_right = 3004.0
+margin_bottom = 236.0
 
-[node name="Container" type="HBoxContainer" parent="CanvasLayer/Game Info/HBoxContainer/Blue"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Game Info/red"]
 margin_right = 110.0
-margin_bottom = 128.0
+margin_bottom = 236.0
+alignment = 2
 
-[node name="TextureRect4" type="TextureRect" parent="CanvasLayer/Game Info/HBoxContainer/Blue/Container"]
+[node name="Status" type="TextureRect" parent="CanvasLayer/Game Info/red/VBoxContainer"]
+margin_top = 122.0
 margin_right = 110.0
-margin_bottom = 128.0
-rect_min_size = Vector2( 110, 110 )
-texture = ExtResource( 21 )
-stretch_mode = 1
+margin_bottom = 122.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch_mode = 4
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Game Info/HBoxContainer/Blue"]
-margin_left = 114.0
-margin_right = 236.0
-margin_bottom = 128.0
-texture = ExtResource( 19 )
-
-[node name="Units" type="Label" parent="CanvasLayer/Game Info/HBoxContainer/Blue"]
-margin_left = 240.0
-margin_top = 2.0
-margin_right = 297.0
-margin_bottom = 125.0
-size_flags_horizontal = 3
-custom_fonts/font = ExtResource( 22 )
-text = "2"
-
-[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/Game Info/HBoxContainer/Blue"]
-margin_left = 301.0
-margin_right = 424.0
-margin_bottom = 128.0
-texture = ExtResource( 18 )
-
-[node name="Reinforcements" type="Label" parent="CanvasLayer/Game Info/HBoxContainer/Blue"]
-margin_left = 428.0
-margin_top = 2.0
-margin_right = 485.0
-margin_bottom = 125.0
-size_flags_horizontal = 3
-custom_fonts/font = ExtResource( 22 )
-text = "2"
-
-[node name="TextureRect3" type="TextureRect" parent="CanvasLayer/Game Info/HBoxContainer/Blue"]
-margin_left = 489.0
-margin_right = 605.0
-margin_bottom = 128.0
-texture = ExtResource( 17 )
-
-[node name="Countries" type="Label" parent="CanvasLayer/Game Info/HBoxContainer/Blue"]
-margin_left = 609.0
-margin_top = 2.0
-margin_right = 666.0
-margin_bottom = 125.0
-size_flags_horizontal = 3
-custom_fonts/font = ExtResource( 22 )
-text = "2"
-
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Game Info/HBoxContainer"]
-modulate = Color( 0, 0, 0, 0 )
-margin_left = 2184.0
-margin_right = 2307.0
-margin_bottom = 128.0
-texture = ExtResource( 18 )
-
-[node name="Red" type="HBoxContainer" parent="CanvasLayer/Game Info/HBoxContainer"]
-margin_left = 2311.0
-margin_right = 2977.0
-margin_bottom = 128.0
-
-[node name="TextureRect4" type="TextureRect" parent="CanvasLayer/Game Info/HBoxContainer/Red"]
+[node name="Red" type="TextureRect" parent="CanvasLayer/Game Info/red/VBoxContainer"]
+margin_top = 126.0
 margin_right = 110.0
-margin_bottom = 128.0
+margin_bottom = 236.0
 rect_min_size = Vector2( 110, 110 )
 texture = ExtResource( 11 )
 stretch_mode = 1
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Game Info/HBoxContainer/Red"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/Game Info/red"]
 margin_left = 114.0
-margin_right = 236.0
-margin_bottom = 128.0
+margin_right = 666.0
+margin_bottom = 236.0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Game Info/red/VBoxContainer2"]
+margin_right = 552.0
+margin_bottom = 109.0
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Game Info/red/VBoxContainer2"]
+margin_top = 113.0
+margin_right = 552.0
+margin_bottom = 236.0
+
+[node name="Unit Icon" type="TextureRect" parent="CanvasLayer/Game Info/red/VBoxContainer2/HBoxContainer"]
+margin_right = 122.0
+margin_bottom = 123.0
 texture = ExtResource( 19 )
 
-[node name="Units" type="Label" parent="CanvasLayer/Game Info/HBoxContainer/Red"]
-margin_left = 240.0
-margin_top = 2.0
-margin_right = 297.0
-margin_bottom = 125.0
+[node name="Units" type="Label" parent="CanvasLayer/Game Info/red/VBoxContainer2/HBoxContainer"]
+margin_left = 126.0
+margin_right = 183.0
+margin_bottom = 123.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 22 )
 text = "2"
 
-[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/Game Info/HBoxContainer/Red"]
-margin_left = 301.0
-margin_right = 424.0
-margin_bottom = 128.0
+[node name="Reinforcement Icon" type="TextureRect" parent="CanvasLayer/Game Info/red/VBoxContainer2/HBoxContainer"]
+margin_left = 187.0
+margin_right = 310.0
+margin_bottom = 123.0
 texture = ExtResource( 18 )
 
-[node name="Reinforcements" type="Label" parent="CanvasLayer/Game Info/HBoxContainer/Red"]
-margin_left = 428.0
-margin_top = 2.0
-margin_right = 485.0
-margin_bottom = 125.0
+[node name="Reinforcements" type="Label" parent="CanvasLayer/Game Info/red/VBoxContainer2/HBoxContainer"]
+margin_left = 314.0
+margin_right = 371.0
+margin_bottom = 123.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 22 )
 text = "2"
 
-[node name="TextureRect3" type="TextureRect" parent="CanvasLayer/Game Info/HBoxContainer/Red"]
-margin_left = 489.0
-margin_right = 605.0
-margin_bottom = 128.0
+[node name="Country Icon" type="TextureRect" parent="CanvasLayer/Game Info/red/VBoxContainer2/HBoxContainer"]
+margin_left = 375.0
+margin_right = 491.0
+margin_bottom = 123.0
 texture = ExtResource( 17 )
 
-[node name="Countries" type="Label" parent="CanvasLayer/Game Info/HBoxContainer/Red"]
-margin_left = 609.0
-margin_top = 2.0
-margin_right = 666.0
-margin_bottom = 125.0
+[node name="Countries" type="Label" parent="CanvasLayer/Game Info/red/VBoxContainer2/HBoxContainer"]
+margin_left = 495.0
+margin_right = 552.0
+margin_bottom = 123.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 22 )
 text = "2"
@@ -269,6 +321,7 @@ __meta__ = {
 }
 
 [node name="Resign" type="Button" parent="CanvasLayer"]
+visible = false
 margin_left = 1739.63
 margin_top = 68.0
 margin_right = 1922.63
@@ -334,52 +387,6 @@ margin_right = 464.07
 margin_bottom = 864.034
 custom_fonts/font = ExtResource( 8 )
 text = "Host plays as Blue"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Win Screen" type="Control" parent="CanvasLayer"]
-visible = false
-margin_left = 1620.0
-margin_top = 400.0
-margin_right = 1920.0
-margin_bottom = 700.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Win" type="Sprite" parent="CanvasLayer/Win Screen"]
-position = Vector2( 176, 0 )
-texture = ExtResource( 16 )
-centered = false
-
-[node name="Lose" type="Sprite" parent="CanvasLayer/Win Screen"]
-position = Vector2( 204, 150 )
-texture = ExtResource( 15 )
-centered = false
-
-[node name="Winner" type="Label" parent="CanvasLayer/Win Screen"]
-margin_left = 60.0
-margin_top = 48.0
-margin_right = 171.0
-margin_bottom = 110.0
-grow_horizontal = 0
-custom_fonts/font = ExtResource( 8 )
-text = "red"
-align = 2
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Loser" type="Label" parent="CanvasLayer/Win Screen"]
-margin_left = 92.0
-margin_top = 184.0
-margin_right = 176.0
-margin_bottom = 246.0
-grow_horizontal = 0
-custom_fonts/font = ExtResource( 8 )
-text = "red"
-align = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
