@@ -12,6 +12,9 @@ func zoom_out():
 	# Prevent zooming out beyond full screen
 	if zoom[0]*2 <=1:
 		zoom *= 2
+	# Center camera if already at max zoom
+	else:
+		position = Vector2(0,0)
 
 func _input(event):
 	if event is InputEventMouseButton:

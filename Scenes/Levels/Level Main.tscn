@@ -451,7 +451,8 @@ texture = ExtResource( 1 )
 centered = false
 
 [node name="Camera2D" parent="." instance=ExtResource( 3 )]
-visible = false
+position = Vector2( 0, 0 )
+anchor_mode = 0
 
 [node name="Crucible" type="Sprite" parent="."]
 visible = false
