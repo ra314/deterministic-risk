@@ -113,6 +113,8 @@ func _ready():
 	get_node("CanvasLayer/Resign").connect("button_down", self, "show_resignation_menu")
 	get_node("CanvasLayer/Confirm Resign/VBoxContainer/CenterContainer/HBoxContainer/No").connect("button_down", self, "confirm_resign", [false])
 	get_node("CanvasLayer/Confirm Resign/VBoxContainer/CenterContainer/HBoxContainer/Yes").connect("button_down", self, "confirm_resign", [true])
+	
+	update_player_status(curr_player.color, true)
 
 func show_resignation_menu():
 	get_node("CanvasLayer/Confirm Resign").visible = true
@@ -197,6 +199,7 @@ func reroll_spawn():
 		country.change_ownership_to(players["gray"])
 		country.randomise_troops()
 	spawn_and_allocate()
+	update_player_status(curr_player.color, true)
 
 # Because we mod by the number of players, it doesn't matter that there' an extra player_neutral
 func get_next_player():
@@ -212,7 +215,6 @@ func get_player_by_network_id(network_id):
 func game_start_event():
 	game_started = true
 	get_node("CanvasLayer/Init Buttons").queue_free()
-	update_player_status(curr_player.color, true)
 
 # This relies on an assumption that this funciton is only called in online games
 func set_host_color(color):

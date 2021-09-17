@@ -18,7 +18,6 @@ var players = {}
 remotesync func load_level(scene_str, world_str):
 	var scene = scene_manager._load_scene(scene_str).init(world_str)
 	scene_manager._replace_scene(scene)
-	print("uwu :)")
 
 func _ready():
 	# The event that triggers when a player connects to this instance of the game
@@ -29,22 +28,28 @@ func _ready():
 
 # Callback from SceneTree.
 func _player_connected(id):
-	# Adding yourself to the list of players if not already there
-	if not player_name in players.keys():
-		players[player_name] = get_tree().get_network_unique_id()
-
 	# Registering the new player that connected
-	rpc_id(id, "register_player", player_name)
+	rpc_id(id, "register_player", player_name, get_tree().get_network_unique_id())
 
 # Register a player to a dictionary that contains player names and player ids
-remote func register_player(player_name):	
-	players[player_name] = get_tree().get_rpc_sender_id()
+remote func register_player(player_name, id):	
+	players[player_name] = id
+	notify_player_connection(player_name)
+
+func notify_player_connection(player_name):
+	var notification = Label.new()
+	notification.text = player_name + " has connected."
+	notification.add_font_override("font", load("res://Assets/Fonts/Font_50.tres"))
+	get_children()[0].add_child(notification)
 
 # Create a server and set the network peer to the peer you created
 func host():
 	peer = NetworkedMultiplayerENet.new()
 	peer.create_server(SERVER_PORT, MAX_PLAYERS)
 	get_tree().network_peer = peer
+	
+	# Adding yourself to the list of players 
+	register_player(player_name, get_tree().get_network_unique_id())
 
 func guest(server_IP):
 	# Default of 127.0.0.1
