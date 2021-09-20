@@ -44,8 +44,7 @@ func notify_player_connection(connecting_player_name):
 	get_children()[0].add_child(notification)
 	
 	# Remove the back button for the host once the guest has connected
-	if player_name == "host":
-		get_children()[0].get_node("TextureButton").visible = false
+	get_children()[0].get_node("TextureButton").visible = false
 
 # Create a server and set the network peer to the peer you created
 func host():
