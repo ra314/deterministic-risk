@@ -9,12 +9,14 @@ func _init(root: Node2D):
 
 func _load_scene(name: String):
 	var scene: String = 'res://Scenes/' + name + '.tscn' 
+	_root.loaded_scene_history.append(name)
 	return load(scene).instance()
 
 func _replace_scene(scene):
 	var container = _root.get_children()[0]
 	_remove_children(container)
 	container.replace_by(scene)
+	print(_root.loaded_scene_history)
 
 func _remove_children(node: Node):
 	for child in node.get_children():

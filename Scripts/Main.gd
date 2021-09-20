@@ -7,6 +7,7 @@ var scene_manager: SceneManager = SceneManager.new(self)
 var online_game = false
 var player_name = ""
 var network_data = {}
+var loaded_scene_history = []
 
 var peer = null
 const SERVER_PORT = 9658
