@@ -63,5 +63,7 @@ func guest(server_IP):
 	peer = NetworkedMultiplayerENet.new()
 	peer.create_client(server_IP, SERVER_PORT)
 	get_tree().network_peer = peer
-
+	
+	# Adding yourself to the list of players 
+	register_player(player_name, get_tree().get_network_unique_id())
 	print(server_IP)

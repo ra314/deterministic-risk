@@ -113,22 +113,9 @@ func _ready():
 	get_node("CanvasLayer/Resign").connect("button_down", self, "show_resignation_menu")
 	get_node("CanvasLayer/Confirm Resign/VBoxContainer/CenterContainer/HBoxContainer/No").connect("button_down", self, "confirm_resign", [false])
 	get_node("CanvasLayer/Confirm Resign/VBoxContainer/CenterContainer/HBoxContainer/Yes").connect("button_down", self, "confirm_resign", [true])
+	get_node("CanvasLayer/Restart").connect("button_down", self, "restart")
 	
 	update_player_status(curr_player.color, true)
-
-func show_resignation_menu():
-	get_node("CanvasLayer/Confirm Resign").visible = true
-
-func confirm_resign(confirmation_bool):
-	if confirmation_bool:
-		resign()
-	get_node("CanvasLayer/Confirm Resign").visible = false
-
-func resign():
-	if _root.online_game:
-		end_game(get_player_by_network_id(_root.players[_root.player_name]).color)
-	else:
-		end_game(curr_player.color)
 
 func show_help_menu():
 	var scene = _root.scene_manager._load_scene("UI/Help Menu")
@@ -335,11 +322,28 @@ func change_to_attack():
 	update_player_status(curr_player.color, true)
 #######
 
+# Ending the game
+#######
+func show_resignation_menu():
+	get_node("CanvasLayer/Confirm Resign").visible = true
+
+func confirm_resign(confirmation_bool):
+	if confirmation_bool:
+		resign()
+	get_node("CanvasLayer/Confirm Resign").visible = false
+
+func resign():
+	if _root.online_game:
+		end_game(get_player_by_network_id(_root.players[_root.player_name]).color)
+	else:
+		end_game(curr_player.color)
+
 remote func end_game(loser_color):
-	# Hiding buttons to prevent further gameplay
+	# Hiding buttons to prevent further gameplay and allowing game restart
 	get_node("CanvasLayer/End Attack").visible = false
 	get_node("CanvasLayer/End Reinforcement").visible = false
 	get_node("CanvasLayer/Resign").visible = false
+	get_node("CanvasLayer/Restart").visible = true
 	phase = "game over"
 	
 	# Finding out who the winner is
@@ -347,13 +351,15 @@ remote func end_game(loser_color):
 	players_without_loser.erase(loser_color)
 	var winner_color = players_without_loser[0]
 	
-	# Alternate win screen
+	# Win screen
 	var game_info = get_node("CanvasLayer/Game Info")
 	
+	# Placing a crown above the icon of the winner
 	var winner_icon = game_info.get_node(winner_color + "/VBoxContainer/Status")
 	winner_icon.visible = true
 	winner_icon.texture = load("res://Assets/Win.svg")
 	
+	# Placing a skull above the icon of the loser
 	var loser_icon = game_info.get_node(loser_color + "/VBoxContainer/Status")
 	loser_icon.visible = true
 	loser_icon.texture = load("res://Assets/Lose.svg")
@@ -361,6 +367,22 @@ remote func end_game(loser_color):
 	# Online component
 	if _root.online_game:
 		rpc_id(players[winner_color].network_id , "end_game", loser_color)
+
+func restart():
+	back()
+
+func back():
+	# Removing the current scene from history
+	_root.loaded_scene_history.pop_back()
+	# Removing the previous scene from history since we're going to load it again
+	var prev_scene_str = _root.loaded_scene_history.pop_back()
+	# Reverting side effects
+	# There were none
+	# Loading the previous scene
+	var scene = _root.scene_manager._load_scene(prev_scene_str)
+	_root.scene_manager._replace_scene(scene)
+
+#######
 
 func update_labels():
 	# Update Red labels

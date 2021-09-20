@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://Assets/Our World.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Levels/Level Main.gd" type="Script" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://Assets/zoom-out-line.svg" type="Texture" id=9]
 [ext_resource path="res://Assets/zoom-in-line.svg" type="Texture" id=10]
 [ext_resource path="res://Assets/red-pentagon.svg" type="Texture" id=11]
+[ext_resource path="res://Assets/restart.svg" type="Texture" id=12]
 [ext_resource path="res://Assets/label_background.tres" type="StyleBox" id=13]
 [ext_resource path="res://Assets/Parallax Background.png" type="Texture" id=14]
 [ext_resource path="res://Assets/black-flag.svg" type="Texture" id=17]
@@ -440,6 +441,15 @@ margin_right = 186.0
 margin_bottom = 68.0
 custom_fonts/font = ExtResource( 8 )
 text = "No"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Restart" type="TextureButton" parent="CanvasLayer"]
+visible = false
+margin_right = 40.0
+margin_bottom = 40.0
+texture_normal = ExtResource( 12 )
 __meta__ = {
 "_edit_use_anchors_": false
 }

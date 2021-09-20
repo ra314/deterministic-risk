@@ -44,6 +44,10 @@ window/size/fullscreen=true
 window/stretch/mode="viewport"
 window/stretch/aspect="keep"
 
+[global]
+
+port=false
+
 [rendering]
 
 quality/driver/driver_name="GLES2"
