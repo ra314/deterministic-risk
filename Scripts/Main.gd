@@ -37,11 +37,15 @@ remote func register_player(player_name, id):
 	players[player_name] = id
 	notify_player_connection(player_name)
 
-func notify_player_connection(player_name):
+func notify_player_connection(connecting_player_name):
 	var notification = Label.new()
-	notification.text = player_name + " has connected."
+	notification.text = connecting_player_name + " has connected"
 	notification.add_font_override("font", load("res://Assets/Fonts/Font_50.tres"))
 	get_children()[0].add_child(notification)
+	
+	# Remove the back button for the host once the guest has connected
+	if player_name == "host":
+		get_children()[0].get_node("TextureButton").visible = false
 
 # Create a server and set the network peer to the peer you created
 func host():

@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Assets/Fonts/Font_100.tres" type="DynamicFont" id=1]
 [ext_resource path="res://Scripts/UI/IP Select.gd" type="Script" id=2]
 [ext_resource path="res://Scenes/UI/Menu Item.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Assets/Montserrat-Regular.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://Assets/back-arrow.svg" type="Texture" id=5]
 
 [sub_resource type="DynamicFont" id=1]
 size = 200
@@ -12,6 +13,7 @@ font_data = ExtResource( 4 )
 [node name="Menu1" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -29,7 +31,6 @@ margin_left = 40.0
 margin_top = 280.0
 margin_right = 1878.0
 margin_bottom = 799.0
-script = ExtResource( 2 )
 
 [node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
 margin_right = 1838.0
@@ -65,3 +66,8 @@ margin_top = 388.0
 margin_right = 1838.0
 margin_bottom = 519.0
 item_name = "Connect"
+
+[node name="TextureButton" type="TextureButton" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+texture_normal = ExtResource( 5 )
