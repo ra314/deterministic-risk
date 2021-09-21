@@ -166,6 +166,7 @@ func on_click(event):
 				if Game_Manager.selected_country != null:
 					# And if it is a neighbour and the attacker has sufficient troops, then attack
 					var attacker = Game_Manager.selected_country
+					var defender = belongs_to
 					if (attacker in connected_countries) and (attacker.num_troops > num_troops):
 						# Attack logic that changes troops and updates labels
 						num_troops = attacker.num_troops - num_troops
@@ -186,7 +187,7 @@ func on_click(event):
 							Game_Manager.change_to_reinforcement()
 						# Check if the opponent has any troops left
 						if Game_Manager.get_next_player().get_num_troops() == 0:
-							Game_Manager.end_game(belongs_to.color)
+							Game_Manager.end_game(defender.color)
 			else:
 				print("flashing")
 				Game_Manager.selected_country = self	
