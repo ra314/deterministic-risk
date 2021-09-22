@@ -14,7 +14,7 @@ func zoom_out():
 		zoom *= 2
 	# Center camera if already at max zoom
 	else:
-		position = Vector2(0,0)
+		position = Vector2(1,1)
 
 func _input(event):
 	if event is InputEventMouseButton:
