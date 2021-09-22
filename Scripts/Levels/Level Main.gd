@@ -211,8 +211,9 @@ func set_host_color(color):
 	if color == "blue":
 		other_color = "red"
 	players[other_color].network_id = _root.players["guest"]
-	synchronize(_root.players["guest"])
+	
 	game_start_event()
+	synchronize(_root.players["guest"])
 	
 	# Changing the visibility of relevant buttons
 	rpc("show_resign_button")
