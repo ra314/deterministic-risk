@@ -1,30 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://Scripts/Levels/Level Creator.gd" type="Script" id=1]
-[ext_resource path="res://Assets/Our World.png" type="Texture" id=2]
 [ext_resource path="res://Scenes/Levels/Level Components/Drag_Camera.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Assets/No Mans Land.png" type="Texture" id=4]
-[ext_resource path="res://Assets/Crucible.png" type="Texture" id=5]
 
 [node name="Level Creator" type="Node2D"]
 script = ExtResource( 1 )
 
 [node name="Camera2D" parent="." instance=ExtResource( 3 )]
-
-[node name="Our World" type="Sprite" parent="."]
-visible = false
-scale = Vector2( 0.5, 0.5 )
-texture = ExtResource( 2 )
-centered = false
-
-[node name="Crucible" type="Sprite" parent="."]
-visible = false
-scale = Vector2( 0.5, 0.5 )
-texture = ExtResource( 5 )
-centered = false
-
-[node name="No Mans Land" type="Sprite" parent="."]
-visible = false
-scale = Vector2( 0.5, 0.5 )
-texture = ExtResource( 4 )
-centered = false

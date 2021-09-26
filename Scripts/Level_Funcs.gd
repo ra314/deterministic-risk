@@ -50,8 +50,8 @@ func export_level(save_name):
 	save_game.open("res://" + save_name + ".save", File.WRITE)
 	# Converting each country to a json and dumping them all
 	var arr = all_countries.values()
+	print(arr)
 	arr.sort_custom(self, "country_comparator")
-	print(all_countries)
 	for country in arr:
 		save_game.store_line(to_json(country.save()))
 	save_game.close()
@@ -64,16 +64,14 @@ func select_random(array):
 	rng.randomize()
 	return array[rng.randi() % len(array)]
 
-func import_level(level_node, _world_str):
+func import_level(level_node, _world_str, bool_load_countries):
 	world_str = _world_str
 	
 	# Instantiating countries
 	var save_game = File.new()
 	
-	# Set up the save locations and sprite references
-	var worlds = {"Crucible": level_node.get_node("Crucible"), \
-		"Our World": level_node.get_node("Our World"), \
-		"No Mans Land": level_node.get_node("No Mans Land")}
+	# Set up the save locations
+	var worlds = ["Crucible", "Our World", "No Mans Land", "Isle of the Fyre"]
 	
 	# Check if all the save files exist
 	for world in worlds:
@@ -83,15 +81,27 @@ func import_level(level_node, _world_str):
 	
 	# Pick the random world if the world_str is empty
 	if not world_str:
-		world_str = select_random(worlds.keys())
-	world_sprite = worlds[world_str]
+		world_str = select_random(worlds)
 	
-	# Make visible the sprite of the selected world and get the location of the save
-	var save_file_location = "res://" + world_str + ".save"
+	# Make visible the sprite of the selected world 
+	world_sprite = Sprite.new()
+	world_sprite.texture = load("res://Assets/" + world_str + ".png")
 	world_sprite.visible = true
+	world_sprite.scale = Vector2(0.5,0.5)
+	world_sprite.centered = false
+	world_sprite.z_index = -5
+	level_node.add_child(world_sprite)
+	
+	# Get the location of the save
+	var save_file_location = "res://" + world_str + ".save"
+	
 	# Load up the mask
 	world_mask = load("res://Assets/" + world_str + " Mask.png").get_data()
 	world_mask.lock()
+	
+	# Early return if asked to not load countries
+	if not bool_load_countries:
+		return true
 	
 	save_game.open(save_file_location, File.READ)
 	
@@ -113,8 +123,10 @@ func import_level(level_node, _world_str):
 # A line to visualize adjacent countries in the level creator
 func draw_lines_between_countries():
 	for country in all_countries.values():
-		for neighbour in country.connected_countries:
-			country.draw_line_to_country(neighbour)
+		if country:
+			if country.connected_countries:
+				for neighbour in country.connected_countries:
+					country.draw_line_to_country(neighbour)
 
 func remove_lines_between_countries():
 	for country in all_countries.values():
@@ -130,5 +142,5 @@ func add_connections(source_country_name, destination_country_names):
 		all_countries[source_country_name].add_connection(all_countries[destination_country_name])
 
 func get_color_in_mask():
-	return world_mask.get_pixel(get_local_mouse_position()[0]*scale_ratio, get_local_mouse_position()[1]*scale_ratio)*255
+	return world_mask.get_pixel(get_local_mouse_position()[0]*scale_ratio, get_local_mouse_position()[1]*scale_ratio).to_html()
 

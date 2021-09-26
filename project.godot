@@ -35,6 +35,7 @@ _global_script_class_icons={
 config/name="Risky Nodes"
 run/main_scene="res://Scenes/Main.tscn"
 config/icon="res://icon.png"
+config/windows_native_icon="res://icon.ico"
 
 [display]
 

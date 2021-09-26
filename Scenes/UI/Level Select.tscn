@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Assets/Montserrat-Regular.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Assets/Fonts/Font_100.tres" type="DynamicFont" id=2]
@@ -6,10 +6,14 @@
 [ext_resource path="res://Assets/Our World.png" type="Texture" id=4]
 [ext_resource path="res://Assets/Crucible.png" type="Texture" id=5]
 [ext_resource path="res://Scripts/UI/Level Select.gd" type="Script" id=6]
-[ext_resource path="res://Assets/Crucible_Hover.png" type="Texture" id=7]
-[ext_resource path="res://Assets/Our World Hover.png" type="Texture" id=8]
-[ext_resource path="res://Assets/No Mans Land Hover.png" type="Texture" id=9]
+[ext_resource path="res://Assets/No Mans Land Mask.png" type="Texture" id=7]
+[ext_resource path="res://Assets/Our World Mask.png" type="Texture" id=8]
+[ext_resource path="res://Assets/Crucible Mask.png" type="Texture" id=9]
 [ext_resource path="res://Assets/back-arrow.svg" type="Texture" id=10]
+[ext_resource path="res://Assets/Isle of the Fyre Mask.png" type="Texture" id=11]
+[ext_resource path="res://Assets/Novingrad.png" type="Texture" id=12]
+[ext_resource path="res://Assets/Isle of the Fyre.png" type="Texture" id=13]
+[ext_resource path="res://Assets/Novingrad Mask.png" type="Texture" id=14]
 
 [sub_resource type="DynamicFont" id=1]
 size = 200
@@ -34,9 +38,9 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 margin_left = 41.0
-margin_top = 151.0
+margin_top = 175.0
 margin_right = 1879.0
-margin_bottom = 927.0
+margin_bottom = 1005.0
 
 [node name="CenterContainer3" type="CenterContainer" parent="CenterContainer/VBoxContainer"]
 margin_right = 1838.0
@@ -66,50 +70,83 @@ __meta__ = {
 [node name="CenterContainer" type="CenterContainer" parent="CenterContainer/VBoxContainer"]
 margin_top = 376.0
 margin_right = 1838.0
-margin_bottom = 776.0
+margin_bottom = 601.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer/CenterContainer"]
-margin_left = 63.0
-margin_right = 1775.0
-margin_bottom = 400.0
+margin_left = 315.0
+margin_right = 1523.0
+margin_bottom = 225.0
 rect_clip_content = true
 
 [node name="Crucible" type="TextureButton" parent="CenterContainer/VBoxContainer/CenterContainer/HBoxContainer"]
 margin_right = 400.0
-margin_bottom = 400.0
-rect_min_size = Vector2( 400, 400 )
+margin_bottom = 225.0
+rect_min_size = Vector2( 400, 225 )
 texture_normal = ExtResource( 5 )
-texture_hover = ExtResource( 7 )
+texture_hover = ExtResource( 9 )
 expand = true
 stretch_mode = 5
 
 [node name="No Mans Land" type="TextureButton" parent="CenterContainer/VBoxContainer/CenterContainer/HBoxContainer"]
 margin_left = 404.0
 margin_right = 804.0
-margin_bottom = 400.0
-rect_min_size = Vector2( 400, 400 )
+margin_bottom = 225.0
+rect_min_size = Vector2( 400, 225 )
 texture_normal = ExtResource( 3 )
-texture_hover = ExtResource( 9 )
+texture_hover = ExtResource( 7 )
 expand = true
 stretch_mode = 5
 
 [node name="Our World" type="TextureButton" parent="CenterContainer/VBoxContainer/CenterContainer/HBoxContainer"]
 margin_left = 808.0
 margin_right = 1208.0
-margin_bottom = 400.0
-rect_min_size = Vector2( 400, 400 )
+margin_bottom = 225.0
+rect_min_size = Vector2( 400, 225 )
 texture_normal = ExtResource( 4 )
 texture_hover = ExtResource( 8 )
 expand = true
 stretch_mode = 5
 
-[node name="Random" type="Button" parent="CenterContainer/VBoxContainer/CenterContainer/HBoxContainer"]
-margin_left = 1212.0
-margin_right = 1712.0
-margin_bottom = 400.0
-rect_min_size = Vector2( 400, 400 )
+[node name="CenterContainer4" type="CenterContainer" parent="CenterContainer/VBoxContainer"]
+margin_top = 605.0
+margin_right = 1838.0
+margin_bottom = 830.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer/CenterContainer4"]
+margin_left = 315.0
+margin_right = 1523.0
+margin_bottom = 225.0
+
+[node name="Isle of the Fyre" type="TextureButton" parent="CenterContainer/VBoxContainer/CenterContainer4/HBoxContainer"]
+margin_right = 400.0
+margin_bottom = 225.0
+rect_min_size = Vector2( 400, 225 )
+texture_normal = ExtResource( 13 )
+texture_hover = ExtResource( 11 )
+expand = true
+stretch_mode = 5
+
+[node name="Novingrad" type="TextureButton" parent="CenterContainer/VBoxContainer/CenterContainer4/HBoxContainer"]
+margin_left = 404.0
+margin_right = 804.0
+margin_bottom = 225.0
+rect_min_size = Vector2( 400, 225 )
+texture_normal = ExtResource( 12 )
+texture_hover = ExtResource( 14 )
+expand = true
+stretch_mode = 5
+
+[node name="Random" type="Button" parent="CenterContainer/VBoxContainer/CenterContainer4/HBoxContainer"]
+margin_left = 808.0
+margin_right = 1208.0
+margin_bottom = 225.0
+grow_horizontal = 2
+grow_vertical = 2
+rect_min_size = Vector2( 400, 225 )
+size_flags_horizontal = 15
+size_flags_vertical = 15
 custom_fonts/font = ExtResource( 2 )
-text = "RANDOM"
+text = "RAND"
 
 [node name="TextureButton" type="TextureButton" parent="."]
 margin_right = 40.0

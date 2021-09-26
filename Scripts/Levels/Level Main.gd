@@ -35,7 +35,7 @@ func init(world_str):
 
 func load_world(world_str):
 	# Loading existing level
-	if .import_level(self, world_str):
+	if .import_level(self, world_str, true):
 		print("imported")
 	# Load the default half complete earth level
 	else:
@@ -410,11 +410,9 @@ func _input(event):
 		input_allowed = false
 		if not (Rect2(Vector2(0,0), world_mask.get_size()).has_point(get_local_mouse_position())):
 			return
-
-		# Print color of pixel under mouse cursor when clicked
-		print(get_color_in_mask())
-
-		var country_name = get_color_in_mask()[0]
+		
+		var country_name = str(get_color_in_mask())
+		print(all_countries)
 		if country_name in all_countries:
 			all_countries[country_name].on_click(event)
 

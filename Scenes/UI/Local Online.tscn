@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Assets/Fonts/Font_200.tres" type="DynamicFont" id=1]
 [ext_resource path="res://Scripts/UI/Local Online.gd" type="Script" id=2]
 [ext_resource path="res://Scenes/UI/Menu Item.tscn" type="PackedScene" id=3]
+[ext_resource path="res://icon.png" type="Texture" id=4]
 
 [node name="Menu1" type="Control"]
 anchor_right = 1.0
@@ -17,14 +18,25 @@ margin_bottom = 1080.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 margin_left = 41.0
-margin_top = 282.0
+margin_top = 152.0
 margin_right = 1879.0
-margin_bottom = 797.0
+margin_bottom = 927.0
 script = ExtResource( 2 )
 
-[node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
+[node name="CenterContainer" type="CenterContainer" parent="CenterContainer/VBoxContainer"]
 margin_right = 1838.0
-margin_bottom = 245.0
+margin_bottom = 256.0
+
+[node name="Sprite" type="TextureRect" parent="CenterContainer/VBoxContainer/CenterContainer"]
+margin_left = 791.0
+margin_right = 1047.0
+margin_bottom = 256.0
+texture = ExtResource( 4 )
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
+margin_top = 260.0
+margin_right = 1838.0
+margin_bottom = 505.0
 custom_fonts/font = ExtResource( 1 )
 text = "Deterministic Risk"
 
@@ -32,16 +44,16 @@ text = "Deterministic Risk"
 anchor_left = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 249.0
+margin_top = 509.0
 margin_right = 1838.0
-margin_bottom = 380.0
+margin_bottom = 640.0
 item_name = "Local"
 
 [node name="Online" parent="CenterContainer/VBoxContainer" instance=ExtResource( 3 )]
 anchor_left = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 384.0
+margin_top = 644.0
 margin_right = 1838.0
-margin_bottom = 515.0
+margin_bottom = 775.0
 item_name = "Online"

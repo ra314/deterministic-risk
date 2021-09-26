@@ -9,6 +9,9 @@ func _ready():
 	container.get_node("Crucible").connect("button_down", self, "_load_scene", ["Levels/Level Main", "Crucible"])
 	container.get_node("No Mans Land").connect("button_down", self, "_load_scene",  ["Levels/Level Main", "No Mans Land"])
 	container.get_node("Our World").connect("button_down", self, "_load_scene", ["Levels/Level Main", "Our World"])
+	container = $CenterContainer/VBoxContainer/CenterContainer4/HBoxContainer/
+	container.get_node("Isle of the Fyre").connect("button_down", self, "_load_scene", ["Levels/Level Main", "Isle of the Fyre"])
+	container.get_node("Novingrad").connect("button_down", self, "_load_scene", ["Levels/Level Main", "Novingrad"])
 	container.get_node("Random").connect("button_down", self, "_load_scene", ["Levels/Level Main", ""])
 	
 	$TextureButton.connect("button_down", self, "back")

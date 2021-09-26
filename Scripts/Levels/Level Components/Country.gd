@@ -76,8 +76,8 @@ func flash_attackable_neighbours(player):
 func draw_line_to_country(selected_country):
 	var new_line = Line2D.new()
 	add_child(new_line)
-	new_line.add_point(Vector2(0,0))
-	new_line.add_point(selected_country.position - position)
+	new_line.add_point(Vector2(20,20))
+	new_line.add_point(selected_country.position - position + Vector2(20,20))
 
 func get_attackable_countries():
 	var attackable_countries = []
@@ -88,7 +88,7 @@ func get_attackable_countries():
 
 func _input_event(viewport, event, shape_idx):
 	if get_tree().get_current_scene().get_name() == "Level Creator":
-		if event.is_action_just_released():
+		if event.is_pressed():
 			self.on_click(event)
 
 func move_to_location_with_duration(location, duration):
@@ -112,8 +112,12 @@ func on_click(event):
 						num_troops -=1
 			
 			"add countries":
+				# Country deletion
 				if event.button_index == BUTTON_RIGHT:
-					Game_Manager.all_countries.erase(self)
+					Game_Manager.all_countries.erase(country_name)
+					for country in connected_countries:
+						print(country.name)
+						country.connected_countries.erase(self)
 					queue_free()
 			
 			"connect countries":
@@ -122,17 +126,18 @@ func on_click(event):
 				elif Game_Manager.selected_country != self:
 					connected_countries.append(Game_Manager.selected_country)
 					Game_Manager.selected_country.connected_countries.append(self)
-					draw_line_to_country(Game_Manager.selected_country)
+					if Game_Manager.lines_drawn:
+						draw_line_to_country(Game_Manager.selected_country)
 					Game_Manager.selected_country = null
 			
 			"move countries":
 				Game_Manager.selected_country = self
 			
 			"add color to country":
-				var color = Game_Manager.get_color_in_mask()[0]
+				var color = str(Game_Manager.get_color_in_mask())
 				for country in connected_countries:
 					for i in len(country.connected_countries):
-						if country.connected_countries[i].country_name == country_name:
+						if str(country.connected_countries[i].country_name) == str(country_name):
 							country.connected_countries[i].country_name = color
 				country_name = color
 		
@@ -274,7 +279,7 @@ func create_flash_mask_sprite():
 
 	# Changing the select country to white and everything else to transparent
 	var flash_shader = Game_Manager.flash_shader.duplicate()
-	flash_shader.set_shader_param("u_color_key", Color8(country_name,country_name,country_name,255))
+	flash_shader.set_shader_param("u_color_key", Color(country_name))
 	flash_shader.set_shader_param("u_highlight_color", Color8(255,255,255,255))
 	flash_shader.set_shader_param("u_background_color", Color8(0,0,0,0))
 	flash_mask_sprite.set_material(flash_shader)
