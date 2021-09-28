@@ -64,13 +64,15 @@ func update_labels():
 	if Game_Manager:
 		Game_Manager.update_labels()
 
-func flash_attackable_neighbours(player):
+func flash_attackable_neighbours(player_color):
+	# Creation of a mask sprite to do the flashing
 	for country in connected_countries:
 		if not country.flash_mask_sprite:
 			print(str(country.create_flash_mask_sprite()) + "ms")
 	
+	# Flash all countries that are not owned by the provided player
 	for country in connected_countries:
-		if country.belongs_to != player:
+		if country.belongs_to.color != player_color:
 			country.flashing = true
 
 func draw_line_to_country(selected_country):
@@ -182,10 +184,7 @@ func on_click(event):
 						Game_Manager.selected_country = null
 						
 						# Movement animation
-						attacker.move_to_country(self)
-						# Networked component of movement animation
-						if Game_Manager._root.online_game:
-							Game_Manager.move_country_across_network(attacker.country_name, country_name)
+						Game_Manager.move_country_across_network(attacker.country_name, country_name)
 						
 						# Phase change
 						if Game_Manager.is_attack_over():
@@ -195,8 +194,8 @@ func on_click(event):
 							Game_Manager.end_game(defender.color)
 			else:
 				print("flashing")
-				Game_Manager.selected_country = self	
-				flash_attackable_neighbours(Game_Manager.curr_player)
+				Game_Manager.selected_country = self
+				Game_Manager.flash_across_network(Game_Manager.curr_player.color, country_name)
 
 		"reinforcement":
 			if belongs_to == Game_Manager.curr_player:
@@ -289,7 +288,6 @@ func create_flash_mask_sprite():
 	
 	# Measuring performance
 	var time_taken = OS.get_ticks_msec() - time_start
-	#print(str(time_taken) + "ms")
 	return time_taken
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -297,7 +295,6 @@ func _process(delta):
 	if flashing:
 		time_since_last_flash += delta
 		if time_since_last_flash > flashing_period:
-			
 			flash_mask_sprite.visible = !flash_mask_sprite.visible
 			
 			#Flashing the country sprite
@@ -306,10 +303,3 @@ func _process(delta):
 			else:
 				get_node("Sprite").modulate = Color(1,1,1)
 			time_since_last_flash = 0
-	
-	# Moving to a spot if the locations_to_move_to list is non empty
-#	if locations_to_move_to:
-#		position = position.linear_interpolate(locations_to_move_to[0], movement_speed)
-#		# Checking if the destination has been reached
-#		if position.distance_to(locations_to_move_to[0]) < distance_to_stop_moving_at:
-#			position = locations_to_move_to.pop_front()

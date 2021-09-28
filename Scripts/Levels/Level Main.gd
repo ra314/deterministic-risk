@@ -8,10 +8,6 @@ var colors = {"blue": load("res://Assets/blue-square.svg"),
 				"red": load("res://Assets/red-pentagon.svg"),
 				"gray": load("res://Assets/neutral-circle.svg")}
 
-func stop_flashing():
-	for country in all_countries.values():
-		country.stop_flashing()
-	
 var game_over = false
 var selected_country = null
 var phase = "attack"
@@ -412,7 +408,6 @@ func _input(event):
 			return
 		
 		var country_name = str(get_color_in_mask())
-		print(all_countries)
 		if country_name in all_countries:
 			all_countries[country_name].on_click(event)
 
@@ -453,12 +448,27 @@ remote func synchronise_meta_info(_curr_player_index, _round_number, _game_start
 	update_labels()
 
 # Below functions are for the movement of countries during the attack phase to propagate across network
-func move_country_across_network(origin_country_name, destination_country_name):
-	rpc_id(get_next_player().network_id, "move_to_country", origin_country_name, destination_country_name)
-	synchronize(get_next_player().network_id)
-
-remote func move_to_country(origin_country_name, destination_country_name):
+remote func move_country_across_network(origin_country_name, destination_country_name):
 	all_countries[origin_country_name].move_to_country(all_countries[destination_country_name])
+	# If the game is online and the the function wasn't called via RPC
+	if _root.online_game and (get_tree().get_rpc_sender_id() == 0):
+		rpc_id(get_next_player().network_id, "move_country_across_network", origin_country_name, destination_country_name)
+		synchronize(get_next_player().network_id)
+
+# Below functions are for the flashing of countries during the attack phase to propagate across network
+remote func flash_across_network(player_color, country_name):
+	all_countries[country_name].flash_attackable_neighbours(player_color)
+	# If the game is online and the the function wasn't called via RPC
+	if _root.online_game and (get_tree().get_rpc_sender_id() == 0):
+		rpc_id(get_next_player().network_id, "flash_across_network", player_color, country_name)
+
+# Below functions to stop the flashing of countries to propagate across network
+remote func stop_flashing():
+	for country in all_countries.values():
+		country.stop_flashing()
+	# If the game is online and the the function wasn't called via RPC
+	if _root.online_game and (get_tree().get_rpc_sender_id() == 0):
+		rpc_id(get_next_player().network_id, "stop_flashing")
 #######
 
 const sync_period = 2
