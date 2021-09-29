@@ -68,7 +68,7 @@ func update_labels():
 func flash_attackable_neighbours(player_color):
 	# Creation of a mask sprite to do the flashing
 	for country in connected_countries:
-		if not ('flash_mask' in mask_sprites):
+		if not ('flash_mask' in country.mask_sprites):
 			print(str(country.create_mask_sprite("flash_mask")) + "ms")
 	
 	# Flash all countries that are not owned by the provided player
@@ -282,7 +282,9 @@ func create_mask_sprite(type):
 		"flash_mask":
 			flash_shader.set_shader_param("u_highlight_color", Color8(255,255,255,255))
 			mask_sprite.visible = false
+			mask_sprite.z_index = 4
 		"color_mask":
+			mask_sprite.z_index = 3
 			match belongs_to.color:
 				"blue":
 					flash_shader.set_shader_param("u_highlight_color", Color8(70,70,185,255))
