@@ -196,6 +196,8 @@ func get_player_by_network_id(network_id):
 
 # Called when the game starts (after color selection) regardless of online or offline
 func game_start_event():
+#	for country in all_countries.values():
+#		country.create_flash_mask_sprite()
 	game_started = true
 	get_node("CanvasLayer/Init Buttons").queue_free()
 
