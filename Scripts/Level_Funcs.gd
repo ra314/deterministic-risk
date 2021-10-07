@@ -71,17 +71,18 @@ func import_level(level_node, _world_str, bool_load_countries):
 	var save_game = File.new()
 	
 	# Set up the save locations
-	var worlds = ["Crucible", "Our World", "No Mans Land", "Isle of the Fyre"]
-	
+	var worlds = ["Crucible", "Our World", "No Mans Land", "Isle of the Fyre", "Novingrad"]
+
 	# Check if all the save files exist
 	for world in worlds:
 		if not save_game.file_exists("res://" + world + ".save"):
 			print("res://" + world + ".save" + " Does not Exist")
 			return false
-	
-	# Pick the random world if the world_str is empty
-	if not world_str:
-		world_str = select_random(worlds)
+
+	# Check if the selected world exists
+	if not (world_str in worlds):
+		print("The selected world string is not valid.")
+		return false
 	
 	# Make visible the sprite of the selected world 
 	world_sprite = Sprite.new()

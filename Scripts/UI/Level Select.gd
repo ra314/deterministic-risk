@@ -34,7 +34,18 @@ func back():
 func brighten_sprite(sprite):
 	sprite.modulate = Color(0.5,0.5,0.5)
 
+func select_random(array):
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
+	return array[rng.randi() % len(array)]
+
 func _load_scene(scene_str, world_str):
+	var worlds = ["Crucible", "Our World", "No Mans Land", "Isle of the Fyre", "Novingrad"]
+
+	# Pick the random world if the world_str is empty
+	if world_str == "":
+		world_str = select_random(worlds)
+	
 	# Remote Procedure Call if the game is online
 	if _root.online_game:
 		_root.rpc("load_level", scene_str, world_str)
