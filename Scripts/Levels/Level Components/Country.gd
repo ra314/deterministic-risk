@@ -92,7 +92,7 @@ func get_attackable_countries():
 func _input_event(viewport, event, shape_idx):
 	if get_tree().get_current_scene().get_name() == "Level Creator":
 		if event.is_pressed():
-			self.on_click(event)
+			self.on_click(event, false)
 
 func move_to_location_with_duration(location, duration):
 	get_node("Tween").interpolate_property(self, "position", position, location, duration)
@@ -103,7 +103,7 @@ func move_to_country(destination_country):
 	get_node("Tween").interpolate_callback(self, destination_movement_duration, "move_to_location_with_duration", position, origin_movement_duration)
 	get_node("Tween").start()
 
-func on_click(event):	
+func on_click(event, is_long_press):	
 	# Level Creator Behaviour
 	if get_tree().get_current_scene().get_name() == "Level Creator":
 		match Game_Manager.phase:
@@ -207,11 +207,16 @@ func on_click(event):
 						Game_Manager.curr_player.num_reinforcements -= 1
 						num_reinforcements += 1
 				# Remove a reinforcement
-				if event.button_index == BUTTON_RIGHT:
+				elif event.button_index == BUTTON_RIGHT:
 					# Check that a reinforcement has been previously added to this country
 					if num_reinforcements > 0:
 						num_reinforcements -= 1
 						Game_Manager.curr_player.num_reinforcements += 1
+				elif is_long_press:
+					# Remove all reinforcements
+					if num_reinforcements > 0:
+						Game_Manager.curr_player.num_reinforcements += num_reinforcements
+						num_reinforcements = 0
 				
 				update_labels()
 				Game_Manager.update_labels()

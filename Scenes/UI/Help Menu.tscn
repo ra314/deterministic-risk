@@ -63,7 +63,7 @@ During attack:
     Click again to attack a country that you don't own.
 During reinforcement:
     Left click to add a reinforcement.
-    Right click to remove a reinforcement.
+    Right click  (or long press) to remove a reinforcement.
     You cannot remove more reinforcements than you have added."
 autowrap = true
 __meta__ = {

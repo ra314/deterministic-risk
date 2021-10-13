@@ -3,6 +3,8 @@ extends "res://Scripts/Level_Funcs.gd"
 onready var _root: Main = get_tree().get_root().get_node("Main")
 
 var input_allowed = true
+var input_pressed = false
+var time_pressed = 0
 
 var colors = {"blue": load("res://Assets/blue-square.svg"), 
 				"red": load("res://Assets/red-pentagon.svg"),
@@ -403,15 +405,28 @@ func update_labels():
 		curr_texture = colors[curr_player.color]
 	get_node("CanvasLayer/Game Info/Round Info/HBoxContainer/Curr Player").texture = curr_texture
 
-func _input(event):	
-	if event.is_pressed() and input_allowed:
-		input_allowed = false
-		if not (Rect2(Vector2(0,0), world_mask.get_size()).has_point(get_local_mouse_position())):
-			return
+func _unhandled_input(event):
+	if (event is InputEventMouseButton) or (event is InputEventScreenTouch):
+		if event.pressed and input_allowed:
+			input_allowed = false
+			input_pressed = true
 		
-		var country_name = str(get_color_in_mask())
-		if country_name in all_countries:
-			all_countries[country_name].on_click(event)
+		if not event.pressed:
+			var is_long_press = time_pressed > 0.5
+			input_pressed = false
+			time_pressed = 0
+			click_country(event, is_long_press)
+
+func click_country(event, is_long_press):
+	# Check if the click is actually inside the map
+	if not (Rect2(Vector2(0,0), world_mask.get_size()).has_point(get_local_mouse_position())):
+		return
+	
+	# Since it's possible for the click to be in something like the ocean,
+	# We verify that the color returned is actually assigned to a country
+	var country_name = str(get_color_in_mask())
+	if country_name in all_countries:
+		all_countries[country_name].on_click(event, is_long_press)
 
 # Network synchronisation
 #######
@@ -479,6 +494,10 @@ const input_frequency = 0.05
 var time_since_last_input = 0
 
 func _process(delta):
+	# Measuring time input is held down
+	if input_pressed:
+		time_pressed += delta
+	
 	# Preventing mouse input repeats
 	time_since_last_input += delta
 	if time_since_last_input > input_frequency:
