@@ -5,6 +5,9 @@ var screen_start_position
 
 var dragging = false
 
+func _ready():
+	make_current()
+
 func zoom_in():
 	zoom *= 0.5
 

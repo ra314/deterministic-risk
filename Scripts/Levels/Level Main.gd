@@ -5,6 +5,7 @@ onready var _root: Main = get_tree().get_root().get_node("Main")
 var input_allowed = true
 var input_pressed = false
 var time_pressed = 0
+var game_mode = ""
 
 var colors = {"blue": load("res://Assets/blue-square.svg"), 
 				"red": load("res://Assets/red-pentagon.svg"),
@@ -112,8 +113,9 @@ func _ready():
 	get_node("CanvasLayer/Confirm Resign/VBoxContainer/CenterContainer/HBoxContainer/No").connect("button_down", self, "confirm_resign", [false])
 	get_node("CanvasLayer/Confirm Resign/VBoxContainer/CenterContainer/HBoxContainer/Yes").connect("button_down", self, "confirm_resign", [true])
 	get_node("CanvasLayer/Restart").connect("button_down", self, "restart")
-	
 	update_player_status(curr_player.color, true)
+	
+	print(game_mode)
 
 func show_help_menu():
 	var scene = _root.scene_manager._load_scene("UI/Help Menu")
@@ -132,7 +134,9 @@ remotesync func show_resign_button():
 	get_node("CanvasLayer/Resign").visible = true
 
 remote func end_attack_disable(hide_boolean):
-	print("End attack buttons is being " + str(hide_boolean))
+	# Do nothing in the checkers game mode since the end attack button is hidden by default
+	if game_mode == "checkers":
+		return
 	if hide_boolean:
 		get_node("CanvasLayer/End Attack").hide()
 	else:
@@ -185,6 +189,7 @@ func reroll_spawn():
 		country.randomise_troops()
 	spawn_and_allocate()
 	update_player_status(curr_player.color, true)
+	synchronize(_root.players["guest"])
 
 # Because we mod by the number of players, it doesn't matter that there' an extra player_neutral
 func get_next_player():
@@ -202,6 +207,8 @@ func game_start_event():
 #		country.create_flash_mask_sprite()
 	game_started = true
 	get_node("CanvasLayer/Init Buttons").queue_free()
+	if game_mode == "checkers":
+		get_node("CanvasLayer/End Attack").visible = false
 
 # This relies on an assumption that this funciton is only called in online games
 func set_host_color(color):

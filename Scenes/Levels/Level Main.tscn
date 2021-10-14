@@ -25,6 +25,10 @@ font_data = ExtResource( 7 )
 position = Vector2( 0.347961, 1 )
 script = ExtResource( 2 )
 
+[node name="Camera2D" parent="." instance=ExtResource( 3 )]
+position = Vector2( 0, 0 )
+anchor_mode = 0
+
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="Help" type="Button" parent="CanvasLayer"]
@@ -450,10 +454,6 @@ texture_normal = ExtResource( 12 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="Camera2D" parent="." instance=ExtResource( 3 )]
-position = Vector2( 0, 0 )
-anchor_mode = 0
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 scroll_limit_end = Vector2( 0, 1080 )

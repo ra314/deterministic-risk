@@ -172,16 +172,23 @@ func on_click(event, is_long_press):
 			if belongs_to != Game_Manager.curr_player:
 				# Checking if there was a previous country selection
 				if Game_Manager.selected_country != null:
-					# And if it is a neighbour and the attacker has sufficient troops, then attack
 					var attacker = Game_Manager.selected_country
 					var defender = belongs_to
-					if (attacker in connected_countries) and (attacker.num_troops > num_troops):
-						# Attack logic that changes troops and updates labels
-						num_troops = attacker.num_troops - num_troops
-						attacker.num_troops = 1
+					# Check if the attacker is a neighbour
+					if (attacker in connected_countries):
+						# If the attacker has more troops
+						if attacker.num_troops > num_troops:
+							num_troops = attacker.num_troops - num_troops
+							attacker.num_troops = 1
+							change_ownership_to(attacker.belongs_to)
+						# If it has less or equal and the game mode is drain
+						elif Game_Manager.game_mode == "drain":
+							num_troops -= (attacker.num_troops - 1)
+							attacker.num_troops = 1
+						
+						# Common component between modes
 						update_labels()
 						attacker.update_labels()
-						change_ownership_to(attacker.belongs_to)
 						Game_Manager.selected_country = null
 						
 						# Movement animation
