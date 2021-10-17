@@ -6,7 +6,8 @@ onready var _root: Main = get_tree().get_root().get_node("Main")
 func _ready():
 	var container = $CenterContainer/VBoxContainer
 	container.get_node("Connect/Button").connect("button_down", self, "_load_scene", ["UI/Waiting"])
-	
+	if _root.stored_IP:
+		$CenterContainer/VBoxContainer/HBoxContainer/TextEdit.text = _root.stored_IP
 	$TextureButton.connect("button_down", self, "back")
 
 func back():
@@ -24,6 +25,7 @@ func _load_scene(scene_str):
 	# Slicing out the IP address
 	var server_IP = $CenterContainer/VBoxContainer/HBoxContainer/TextEdit.text
 	_root.guest(server_IP)
+	_root.stored_IP = server_IP
 	
 	var scene = _root.scene_manager._load_scene(scene_str)
 	_root.scene_manager._replace_scene(scene)

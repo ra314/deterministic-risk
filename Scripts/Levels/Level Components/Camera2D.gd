@@ -2,6 +2,7 @@ extends Camera2D
 
 var mouse_start_pos
 var screen_start_position
+var zoom_level = 0
 
 var dragging = false
 
@@ -9,12 +10,16 @@ func _ready():
 	make_current()
 
 func zoom_in():
-	zoom *= 0.5
+	# Preventing zoom in beyond 3 levels
+	if zoom_level < 3:
+		zoom *= 0.5
+		zoom_level += 1
 
 func zoom_out():
 	# Prevent zooming out beyond full screen
 	if zoom[0]*2 <=1:
 		zoom *= 2
+		zoom_level -= 1
 	# Center camera if already at max zoom
 	else:
 		position = Vector2(1,1)

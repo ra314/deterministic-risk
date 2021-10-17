@@ -37,6 +37,7 @@ var colors = {"blue": load("res://Assets/blue-square.svg"),
 func change_color_to(color):
 	get_node("Sprite").texture = colors[color]
 	get_node("Reinforcements/Sprite").texture = colors[color]
+	# Turned off for performance reasons
 	create_mask_sprite("color_mask")
 
 # Called when the node enters the scene tree for the first time.
@@ -181,8 +182,8 @@ func on_click(event, is_long_press):
 							num_troops = attacker.num_troops - num_troops
 							attacker.num_troops = 1
 							change_ownership_to(attacker.belongs_to)
-						# If it has less or equal and the game mode is drain
-						elif Game_Manager.game_mode == "drain":
+						# If it has less or equal and drain is one of the game modes
+						elif "drain" in Game_Manager.game_modes:
 							num_troops -= (attacker.num_troops - 1)
 							attacker.num_troops = 1
 						
@@ -196,7 +197,7 @@ func on_click(event, is_long_press):
 						
 						# Phase change
 						if Game_Manager.is_attack_over():
-							Game_Manager.change_to_reinforcement()
+							Game_Manager.change_to_reinforcement(true)
 						# Check if the opponent has any troops left
 						if Game_Manager.get_next_player().get_num_troops() == 0:
 							Game_Manager.end_game(defender.color)

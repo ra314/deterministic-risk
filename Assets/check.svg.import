@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Isle of the Fyre Mask.png-efedb28591fb0c1669e33a9fcd04cad3.stex"
+path="res://.import/check.svg-e284970394ed2b9b1aa84fb5508baa18.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Isle of the Fyre Mask.png"
-dest_files=[ "res://.import/Isle of the Fyre Mask.png-efedb28591fb0c1669e33a9fcd04cad3.stex" ]
+source_file="res://Assets/check.svg"
+dest_files=[ "res://.import/check.svg-e284970394ed2b9b1aa84fb5508baa18.stex" ]
 
 [params]
 

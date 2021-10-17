@@ -5,9 +5,7 @@ onready var _root: Main = get_tree().get_root().get_node("Main")
 # Called when the node enters the scene tree for the first time.
 func _ready(): 
 	var container = $CenterContainer/VBoxContainer
-	container.get_node("Classic/Button").connect("button_down", self, "_load_scene", ["UI/Level Select", "classic"])
-	container.get_node("Drain/Button").connect("button_down", self, "_load_scene",  ["UI/Level Select", "drain"])
-	container.get_node("Checkers/Button").connect("button_down", self, "_load_scene",  ["UI/Level Select", "checkers"])
+	container.get_node("Next/Button").connect("button_down", self, "_load_scene", ["UI/Level Select", get_modes()])
 	$TextureButton.connect("button_down", self, "back")
 
 func back():
@@ -25,7 +23,16 @@ func back():
 	var scene = _root.scene_manager._load_scene(prev_scene_str)
 	_root.scene_manager._replace_scene(scene)
 
-func _load_scene(scene_str, game_mode):
-	_root.game_mode = game_mode
+func get_modes():
+	var container = $CenterContainer/VBoxContainer
+	var game_modes = []
+	for child in container.get_children():
+		if child is CheckBox:
+			if child.is_pressed():
+				game_modes.append(child.name.to_lower())
+	return game_modes
+
+func _load_scene(scene_str, game_modes):
+	_root.game_modes = game_modes
 	var scene = _root.scene_manager._load_scene(scene_str)
 	_root.scene_manager._replace_scene(scene)

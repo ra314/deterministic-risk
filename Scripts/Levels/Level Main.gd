@@ -5,7 +5,7 @@ onready var _root: Main = get_tree().get_root().get_node("Main")
 var input_allowed = true
 var input_pressed = false
 var time_pressed = 0
-var game_mode = ""
+var game_modes = []
 
 var colors = {"blue": load("res://Assets/blue-square.svg"), 
 				"red": load("res://Assets/red-pentagon.svg"),
@@ -109,13 +109,32 @@ func _ready():
 	get_node("CanvasLayer/Help").connect("button_down", self, "show_help_menu")
 	
 	# Button to resign game
-	get_node("CanvasLayer/Resign").connect("button_down", self, "show_resignation_menu")
-	get_node("CanvasLayer/Confirm Resign/VBoxContainer/CenterContainer/HBoxContainer/No").connect("button_down", self, "confirm_resign", [false])
-	get_node("CanvasLayer/Confirm Resign/VBoxContainer/CenterContainer/HBoxContainer/Yes").connect("button_down", self, "confirm_resign", [true])
+	get_node("CanvasLayer/Resign").connect("button_down", self, "show_confirmation_menu", ["Are you sure you want to resign?", "resign", []])
 	get_node("CanvasLayer/Restart").connect("button_down", self, "restart")
-	update_player_status(curr_player.color, true)
 	
-	print(game_mode)
+	# Confirmation buttons
+	get_node("CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/No").connect("button_down", self, "confirm", [false])
+	get_node("CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes").connect("button_down", self, "confirm", [true])
+	
+	update_player_status(curr_player.color, true)
+	print(game_modes)
+
+# Confirmation System
+#######
+var confirmation_callback = ""
+var confirmation_callback_args = []
+
+func confirm(confirmation_bool):
+	if confirmation_bool:
+		callv(confirmation_callback, confirmation_callback_args)
+	get_node("CanvasLayer/Confirm").visible = false
+
+func show_confirmation_menu(confirmation_text, callback, args):
+	get_node("CanvasLayer/Confirm/VBoxContainer/Label").text = confirmation_text
+	confirmation_callback = callback
+	confirmation_callback_args = args
+	get_node("CanvasLayer/Confirm").visible = true
+#######
 
 func show_help_menu():
 	var scene = _root.scene_manager._load_scene("UI/Help Menu")
@@ -134,8 +153,8 @@ remotesync func show_resign_button():
 	get_node("CanvasLayer/Resign").visible = true
 
 remote func end_attack_disable(hide_boolean):
-	# Do nothing in the checkers game mode since the end attack button is hidden by default
-	if game_mode == "checkers":
+	# Do nothing if checkers is one of the game modes since the end attack button is hidden by default
+	if "checkers" in game_modes:
 		return
 	if hide_boolean:
 		get_node("CanvasLayer/End Attack").hide()
@@ -189,7 +208,8 @@ func reroll_spawn():
 		country.randomise_troops()
 	spawn_and_allocate()
 	update_player_status(curr_player.color, true)
-	synchronize(_root.players["guest"])
+	if _root.online_game:
+		synchronize(_root.players["guest"])
 
 # Because we mod by the number of players, it doesn't matter that there' an extra player_neutral
 func get_next_player():
@@ -203,11 +223,9 @@ func get_player_by_network_id(network_id):
 
 # Called when the game starts (after color selection) regardless of online or offline
 func game_start_event():
-#	for country in all_countries.values():
-#		country.create_flash_mask_sprite()
 	game_started = true
 	get_node("CanvasLayer/Init Buttons").queue_free()
-	if game_mode == "checkers":
+	if "checkers" in game_modes:
 		get_node("CanvasLayer/End Attack").visible = false
 
 # This relies on an assumption that this funciton is only called in online games
@@ -291,7 +309,13 @@ remote func update_player_status(color, attacking):
 	else:
 		curr_player_status.texture = load("res://Assets/shield.svg")
 
-func change_to_reinforcement():	
+func change_to_reinforcement(surity_bool=false):
+	# When the surity bool is true, you get to skip the confirmation menu
+	if not surity_bool:
+		show_confirmation_menu("You have an attack left.\nAre you sure you want to end attacks?",\
+							 "change_to_reinforcement", [true])
+		return
+	
 	selected_country = null
 	curr_level.stop_flashing()
 	curr_player.give_reinforcements()
@@ -305,7 +329,13 @@ func change_to_reinforcement():
 	
 	phase = "reinforcement"
 
-func change_to_attack():
+func change_to_attack(surity_bool=false):
+	# When the surity bool is true, you get to skip the confirmation menu
+	if not surity_bool and curr_player.num_reinforcements > 0:
+		show_confirmation_menu("You have a reinforcement left to place on the map.\nAre you sure you want to end reinforcement?",\
+							 "change_to_attack", [true])
+		return
+	
 	# Modifying the visibility of the end attack and end reinforcement buttons	
 	if _root.online_game:
 		end_reinforcement_disable(true)
@@ -332,14 +362,6 @@ func change_to_attack():
 
 # Ending the game
 #######
-func show_resignation_menu():
-	get_node("CanvasLayer/Confirm Resign").visible = true
-
-func confirm_resign(confirmation_bool):
-	if confirmation_bool:
-		resign()
-	get_node("CanvasLayer/Confirm Resign").visible = false
-
 func resign():
 	if _root.online_game:
 		end_game(get_player_by_network_id(_root.players[_root.player_name]).color)
@@ -353,6 +375,7 @@ remote func end_game(loser_color):
 	get_node("CanvasLayer/Resign").visible = false
 	get_node("CanvasLayer/Restart").visible = true
 	phase = "game over"
+	stop_flashing()
 	
 	# Finding out who the winner is
 	var players_without_loser = players.keys()
@@ -450,7 +473,7 @@ func synchronize(network_id):
 		rpc_id(network_id, "synchronise_player", player.save())
 	
 	# Synchronising meta information
-	rpc_id(network_id, "synchronise_meta_info", curr_player_index, round_number, game_started)
+	rpc_id(network_id, "synchronise_meta_info", curr_player_index, round_number, game_started, game_modes)
 	
 	# Updating player status
 	if phase != "game over":
@@ -464,7 +487,8 @@ remote func synchronise_player(player_info):
 	curr_player.network_id = player_info["network_id"]
 	curr_player.num_reinforcements = player_info["num_reinforcements"]
 
-remote func synchronise_meta_info(_curr_player_index, _round_number, _game_started):
+remote func synchronise_meta_info(_curr_player_index, _round_number, _game_started, _game_modes):
+	game_modes = _game_modes
 	game_started = _game_started
 	round_number = _round_number
 	curr_player_index = _curr_player_index

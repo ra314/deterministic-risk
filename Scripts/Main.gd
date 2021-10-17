@@ -8,7 +8,8 @@ var online_game = false
 var player_name = ""
 var network_data = {}
 var loaded_scene_history = []
-var game_mode = ""
+var game_modes = []
+var stored_IP = ""
 
 var peer = null
 const SERVER_PORT = 9658
@@ -19,7 +20,7 @@ var players = {}
 
 remotesync func load_level(scene_str, world_str):
 	var scene = scene_manager._load_scene(scene_str).init(world_str)
-	scene.game_mode = game_mode
+	scene.game_modes = game_modes
 	scene_manager._replace_scene(scene)
 
 func _ready():
