@@ -1,5 +1,6 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=19 format=2]
 
+[ext_resource path="res://Assets/notification.wav" type="AudioStream" id=1]
 [ext_resource path="res://Scripts/Levels/Level Main.gd" type="Script" id=2]
 [ext_resource path="res://Scenes/Levels/Level Components/Drag_Camera.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Scenes/Levels/Level Components/Player.tscn" type="PackedScene" id=6]
@@ -465,3 +466,6 @@ motion_mirroring = Vector2( 1920, 1080 )
 visible = false
 texture = ExtResource( 14 )
 centered = false
+
+[node name="Notification" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 1 )
