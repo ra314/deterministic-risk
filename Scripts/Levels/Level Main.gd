@@ -504,11 +504,11 @@ remote func move_country_across_network(origin_country_name, destination_country
 		synchronize(get_next_player().network_id)
 
 # Below functions are for the flashing of countries during the attack phase to propagate across network
-remote func flash_across_network(player_color, country_name):
-	all_countries[country_name].flash_attackable_neighbours(player_color)
+remote func flash_across_network(country_name):
+	all_countries[country_name].flash_attackable_neighbours()
 	# If the game is online and the the function wasn't called via RPC
 	if _root.online_game and (get_tree().get_rpc_sender_id() == 0):
-		rpc_id(get_next_player().network_id, "flash_across_network", player_color, country_name)
+		rpc_id(get_next_player().network_id, "flash_across_network", country_name)
 
 # Below functions to stop the flashing of countries to propagate across network
 remote func stop_flashing():

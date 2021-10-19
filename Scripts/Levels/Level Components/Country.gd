@@ -38,7 +38,7 @@ func change_color_to(color):
 	get_node("Sprite").texture = colors[color]
 	get_node("Reinforcements/Sprite").texture = colors[color]
 	# Turned off for performance reasons
-	create_mask_sprite("color_mask")
+	#create_mask_sprite("color_mask")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -66,16 +66,13 @@ func update_labels():
 	if Game_Manager:
 		Game_Manager.update_labels()
 
-func flash_attackable_neighbours(player_color):
-	# Creation of a mask sprite to do the flashing
-	for country in connected_countries:
+# Flash all countries that can be attacked
+func flash_attackable_neighbours():
+	for country in get_attackable_countries():
+		# Creation of a mask sprite to do the flashing
 		if not ('flash_mask' in country.mask_sprites):
 			print(str(country.create_mask_sprite("flash_mask")) + "ms")
-	
-	# Flash all countries that are not owned by the provided player
-	for country in connected_countries:
-		if country.belongs_to.color != player_color:
-			country.flashing = true
+		country.flashing = true
 
 func draw_line_to_country(selected_country):
 	var new_line = Line2D.new()
@@ -83,10 +80,21 @@ func draw_line_to_country(selected_country):
 	new_line.add_point(Vector2(20,20))
 	new_line.add_point(selected_country.position - position + Vector2(20,20))
 
+func can_attack(attacker, defender):
+	# Check if the defender and attacker are connected
+	if defender in attacker.connected_countries:
+		# Check if the defender and attacker had different owners
+		if defender.belongs_to != attacker.belongs_to:
+			# Check if the number of units is sufficient for an attack
+			if "drain" in Game_Manager.game_modes:
+				return attacker.num_troops > 1
+			else:
+				return attacker.num_troops > defender.num_troops
+
 func get_attackable_countries():
 	var attackable_countries = []
 	for country in connected_countries:
-		if country.num_troops < num_troops and country.belongs_to != belongs_to:
+		if can_attack(self, country):
 			attackable_countries.append(country)
 	return attackable_countries
 
@@ -170,41 +178,40 @@ func on_click(event, is_long_press):
 	
 	match Game_Manager.phase:
 		"attack":
-			if belongs_to != Game_Manager.curr_player:
-				# Checking if there was a previous country selection
-				if Game_Manager.selected_country != null:
-					var attacker = Game_Manager.selected_country
-					var defender = belongs_to
-					# Check if the attacker is a neighbour
-					if (attacker in connected_countries):
-						# If the attacker has more troops
-						if attacker.num_troops > num_troops:
-							num_troops = attacker.num_troops - num_troops
-							attacker.num_troops = 1
-							change_ownership_to(attacker.belongs_to)
-						# If it has less or equal and drain is one of the game modes
-						elif "drain" in Game_Manager.game_modes:
-							num_troops -= (attacker.num_troops - 1)
-							attacker.num_troops = 1
-						
-						# Common component between modes
-						update_labels()
-						attacker.update_labels()
-						Game_Manager.selected_country = null
-						
-						# Movement animation
-						Game_Manager.move_country_across_network(attacker.country_name, country_name)
-						
-						# Phase change
-						if Game_Manager.is_attack_over():
-							Game_Manager.change_to_reinforcement(true)
-						# Check if the opponent has any troops left
-						if Game_Manager.get_next_player().get_num_troops() == 0:
-							Game_Manager.end_game(defender.color)
-			else:
-				print("flashing")
+			# If this country belongs to the current player, start flashing
+			if belongs_to == Game_Manager.curr_player:
 				Game_Manager.selected_country = self
-				Game_Manager.flash_across_network(Game_Manager.curr_player.color, country_name)
+				Game_Manager.flash_across_network(country_name)
+			# Checking if there was a previous country selection
+			elif Game_Manager.selected_country != null:
+				var attacker = Game_Manager.selected_country
+				# Check if this country is attackable by the attacker
+				if can_attack(attacker, self):
+					# If the attacker has more troops
+					if attacker.num_troops > num_troops:
+						num_troops = attacker.num_troops - num_troops
+						attacker.num_troops = 1
+						change_ownership_to(attacker.belongs_to)
+					# If it has less or equal and drain is one of the game modes
+					elif "drain" in Game_Manager.game_modes:
+						num_troops -= (attacker.num_troops - 1)
+						attacker.num_troops = 1
+					
+					# Common component between modes
+					update_labels()
+					attacker.update_labels()
+					Game_Manager.selected_country = null
+					
+					# Movement animation
+					Game_Manager.move_country_across_network(attacker.country_name, country_name)
+					
+					# Phase change
+					if Game_Manager.is_attack_over():
+						Game_Manager.change_to_reinforcement(true)
+					# Check if the opponent has any troops left
+					if Game_Manager.get_next_player().get_num_troops() == 0:
+						Game_Manager.end_game(belongs_to.color)
+
 
 		"reinforcement":
 			if belongs_to == Game_Manager.curr_player:
