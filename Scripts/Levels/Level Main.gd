@@ -28,13 +28,9 @@ const num_players = 2
 var players = null
 var game_started = false
 
-func init(world_str):
-	load_world(world_str)
-	return self
-
-func load_world(world_str):
+func load_world():
 	# Loading existing level
-	if .import_level(self, world_str, true):
+	if .import_level(self, true):
 		print("imported")
 	# Load the default half complete earth level
 	else:
@@ -74,6 +70,7 @@ func spawn_and_allocate():
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	load_world()
 	spawn_and_allocate()
 	
 	# Buttons to zoom in and out

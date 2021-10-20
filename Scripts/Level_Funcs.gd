@@ -5,7 +5,6 @@ var all_countries = {}
 var world_mask = null
 var world_str = null
 var world_sprite = null
-var flash_shader = load("res://Assets/flash_shader.tres")
 var Player = load("res://Scenes/Levels/Level Components/Player.tscn")
 # Player neutral is a dummy container for all of the unoccupied countries, 
 # it simplifies the code when changing ownership and syncing ownership
@@ -64,9 +63,7 @@ func select_random(array):
 	rng.randomize()
 	return array[rng.randi() % len(array)]
 
-func import_level(level_node, _world_str, bool_load_countries):
-	world_str = _world_str
-	
+func import_level(level_node, bool_load_countries):	
 	# Instantiating countries
 	var save_game = File.new()
 	

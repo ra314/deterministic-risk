@@ -13,7 +13,7 @@ var num_reinforcements: int = 0
 var flashing = false
 var time_since_last_flash = 0
 const flashing_period = 0.5
-var mask_sprites = {}
+var mask_sprite = null
 
 # List of locations to move to to complete the attack animation.
 const destination_movement_duration = 0.2
@@ -34,11 +34,29 @@ var colors = {"blue": load("res://Assets/blue-square.svg"),
 				"red": load("res://Assets/red-pentagon.svg"),
 				"gray": load("res://Assets/neutral-circle.svg")}
 
+const mask_colors = {"white": Color8(255,255,255,255),
+					"blue": Color8(70,70,185,255),
+					"red": Color8(195,60,60,255),
+					"gray": Color8(165,165,165,255)}
+
+func change_mask_color(color):
+	# Performance hack
+	# Don't bother creating mask sprite if one hasn't been created and the color of the country is grey
+	# This is true for the majority of countries when the game is spawned
+	if mask_sprite == null:
+		if color == "gray":
+			return
+		else:
+			print(str(create_mask_sprite()) + "ms")
+
+	var shader = mask_sprite.get_material()
+	shader.set_shader_param("u_highlight_color", mask_colors[color])
+	mask_sprite.set_material(shader)
+
 func change_color_to(color):
 	get_node("Sprite").texture = colors[color]
 	get_node("Reinforcements/Sprite").texture = colors[color]
-	# Turned off for performance reasons
-	#create_mask_sprite("color_mask")
+	change_mask_color(color)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -52,6 +70,7 @@ func change_ownership_to(player):
 	player.owned_countries.append(self)
 	
 	# Visual Update
+	# If statement is present in case the country scene is run without a game manager
 	if Game_Manager:
 		Game_Manager.update_labels()
 	change_color_to(player.color)
@@ -70,8 +89,6 @@ func update_labels():
 func flash_attackable_neighbours():
 	for country in get_attackable_countries():
 		# Creation of a mask sprite to do the flashing
-		if not ('flash_mask' in country.mask_sprites):
-			print(str(country.create_mask_sprite("flash_mask")) + "ms")
 		country.flashing = true
 
 func draw_line_to_country(selected_country):
@@ -246,7 +263,6 @@ func add_connection(country):
 # Randomise num_troops
 func randomise_troops():
 	# Distribution 1: 0.5, 2: 0.3, 3: 0.1, 4: 0.1
-	# TODO, HAVE A STATIC GLOBAL rng
 	var rng = RandomNumberGenerator.new()
 	rng.randomize()
 	var rand_num = rng.randf_range(0,10)
@@ -269,8 +285,7 @@ func init(_x, _y, _country_name, player):
 	return self
 
 func stop_flashing():
-	if 'flash_mask' in mask_sprites:
-		mask_sprites['flash_mask'].visible = false
+	change_mask_color(belongs_to.color)
 	get_node("Sprite").modulate = Color(1,1,1)
 	time_since_last_flash = 0
 	self.flashing = false
@@ -283,41 +298,30 @@ func synchronise(_num_troops, _num_reinforcements, _belongs_to):
 		change_ownership_to(_belongs_to)
 	update_labels()
 
-func create_mask_sprite(type):
+func create_mask_sprite():
 	# Measuring performance
 	var time_start = OS.get_ticks_msec()
 	
+	# Changing the select country to white and everything else to transparent
+	var mask_shader = load("res://Assets/mask_shader.tres").duplicate()
+	mask_shader.set_shader_param("u_color_key", Color(country_name))
+	mask_shader.set_shader_param("u_highlight_color", Color8(255,255,255,255))
+	mask_shader.set_shader_param("u_background_color", Color8(0,0,0,0))
+	
 	# Creating a sprite that contains the world's mask texture and add it to level
-	var mask_sprite = Sprite.new()
-	mask_sprite.centered = false
 	var tex = ImageTexture.new()
 	tex.create_from_image(Game_Manager.world_mask)
-	mask_sprite.texture = tex
-	Game_Manager.add_child(mask_sprite)
-
-	# Changing the select country to white and everything else to transparent
-	var flash_shader = Game_Manager.flash_shader.duplicate()
-	flash_shader.set_shader_param("u_color_key", Color(country_name))
-	match type:
-		"flash_mask":
-			flash_shader.set_shader_param("u_highlight_color", Color8(255,255,255,255))
-			mask_sprite.visible = false
-			mask_sprite.z_index = 4
-		"color_mask":
-			mask_sprite.z_index = 3
-			match belongs_to.color:
-				"blue":
-					flash_shader.set_shader_param("u_highlight_color", Color8(70,70,185,255))
-				"red":
-					flash_shader.set_shader_param("u_highlight_color", Color8(195,60,60,255))
-				"gray":
-					flash_shader.set_shader_param("u_highlight_color", Color8(165,165,165,255))
-	flash_shader.set_shader_param("u_background_color", Color8(0,0,0,0))
-	mask_sprite.set_material(flash_shader)
 	
+	mask_sprite = Sprite.new()
+	mask_sprite.centered = false
+	mask_sprite.texture = tex
+	mask_sprite.visible = true
+	mask_sprite.z_index = 4
+	mask_sprite.set_material(mask_shader)
 	# Scale after the shader has run to avoid AA issues
 	mask_sprite.set_scale(Vector2(1/Game_Manager.scale_ratio,1/Game_Manager.scale_ratio))
-	mask_sprites[type] = mask_sprite
+	
+	Game_Manager.add_child(mask_sprite)
 	
 	# Measuring performance
 	var time_taken = OS.get_ticks_msec() - time_start
@@ -328,12 +332,11 @@ func _process(delta):
 	if flashing:
 		time_since_last_flash += delta
 		if time_since_last_flash > flashing_period:
-			if "flash_mask" in mask_sprites:
-				mask_sprites['flash_mask'].visible = !mask_sprites['flash_mask'].visible
-			
 			#Flashing the country sprite
 			if get_node("Sprite").modulate == Color(1,1,1):
+				change_mask_color("white")
 				get_node("Sprite").modulate = Color(0.5,0.5,0.5)
 			else:
+				change_mask_color(belongs_to.color)
 				get_node("Sprite").modulate = Color(1,1,1)
 			time_since_last_flash = 0

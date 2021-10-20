@@ -19,8 +19,9 @@ const LOCAL_HOST = "127.0.0.1"
 var players = {}
 
 remotesync func load_level(scene_str, world_str):
-	var scene = scene_manager._load_scene(scene_str).init(world_str)
+	var scene = scene_manager._load_scene(scene_str)
 	scene.game_modes = game_modes
+	scene.world_str = world_str
 	scene_manager._replace_scene(scene)
 
 func _ready():
