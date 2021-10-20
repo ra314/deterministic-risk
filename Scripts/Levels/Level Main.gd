@@ -36,11 +36,23 @@ func load_world():
 	else:
 		.create_default_level(self)
 
+# Clear the player dictionary, rerandomise troop allocation and redo player turn order and country allocation
+func reset_spawn():
+	for player in players.values():
+		if player.color == "gray": continue
+		player.reset()
+	curr_player = null
+	for country in all_countries.values():
+		country.change_ownership_to(players["gray"])
+		country.randomise_troops()
+
 func spawn_and_allocate():
 	# Creating players
 	players = {"red": get_node("CanvasLayer/Player Red").init("red"), "blue": get_node("CanvasLayer/Player Blue").init("blue")}
 	# Adding the neutral player
 	players["gray"] = player_neutral
+	
+	reset_spawn()
 
 	# Randomizing players
 	randomize()
@@ -64,14 +76,35 @@ func spawn_and_allocate():
 		troops_to_assign.erase(country.num_troops)
 		country.update_labels()
 	
-	print("The first player is " + curr_player.color)
-	print(curr_player.color)
+	# Checking if all player owned countries have a country they can attack
+	for player in players.values().slice(0,1):
+		for country in player.owned_countries:
+			if country.num_troops > 1:
+				if len(country.get_attackable_countries()) == 0:
+					print("BAD spawn, I have " + str(country.num_troops) + " units and am " + country.belongs_to.color)
+					return false
+	
+	# Check that all player owned countries cannot immediately attack another player owned country
+	for player in players.values().slice(0,1):
+		for attacker in player.owned_countries:
+			for defender in attacker.get_attackable_countries():
+				if defender.belongs_to.color != "gray":
+					print("BAD spawn, I have " + str(defender.num_troops) + " units and am " + defender.belongs_to.color + " and can be attacked")
+					return false
+	
+#	print("The first player is " + curr_player.color)
+#	print(curr_player.color)
 	update_labels()
+	update_player_status(curr_player.color, true)
+	print("Found good spawn")
+	return true
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	load_world()
-	spawn_and_allocate()
+	
+	while not spawn_and_allocate():
+		pass
 	
 	# Buttons to zoom in and out
 	get_node("CanvasLayer/Zoom In").connect("pressed", get_node("Camera2D"), "zoom_in")
@@ -113,7 +146,6 @@ func _ready():
 	get_node("CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/No").connect("button_down", self, "confirm", [false])
 	get_node("CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes").connect("button_down", self, "confirm", [true])
 	
-	update_player_status(curr_player.color, true)
 	print(game_modes)
 
 # Confirmation System
@@ -193,18 +225,8 @@ func get_child_states(game_state, curr_player_color):
 func minimax(game_state, depth, alpha, beta, maximizing_player):
 	pass
 ######
-
-# Clear the player dictionary, rerandomise troop allocation and redo player turn order and country allocation
 func reroll_spawn():
-	for player in players.values():
-		if player.color == "gray": continue
-		player.reset()
-	curr_player = null
-	for country in all_countries.values():
-		country.change_ownership_to(players["gray"])
-		country.randomise_troops()
 	spawn_and_allocate()
-	update_player_status(curr_player.color, true)
 	if _root.online_game:
 		synchronize(_root.players["guest"])
 

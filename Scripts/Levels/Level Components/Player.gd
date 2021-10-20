@@ -14,7 +14,6 @@ func save():
 func reset():
 	owned_countries = []
 	num_reinforcements = 0
-	color = ""
 	network_id = null
 
 func init(_color):
