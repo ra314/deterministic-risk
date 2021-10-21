@@ -24,7 +24,7 @@ func back():
 	_root.scene_manager._replace_scene(scene)
 
 func get_modes():
-	var container = $CenterContainer/VBoxContainer
+	var container = $CenterContainer/VBoxContainer/GridContainer
 	var game_modes = []
 	for child in container.get_children():
 		if child is CheckBox:
