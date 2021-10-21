@@ -80,14 +80,14 @@ func spawn_and_allocate():
 	for player in players.values().slice(0,1):
 		for country in player.owned_countries:
 			if country.num_troops > 1:
-				if len(country.get_attackable_countries()) == 0:
+				if len(country.get_attackable_countries(["classic"])) == 0:
 					print("BAD spawn, I have " + str(country.num_troops) + " units and am " + country.belongs_to.color)
 					return false
 	
 	# Check that all player owned countries cannot immediately attack another player owned country
 	for player in players.values().slice(0,1):
 		for attacker in player.owned_countries:
-			for defender in attacker.get_attackable_countries():
+			for defender in attacker.get_attackable_countries(["classic"]):
 				if defender.belongs_to.color != "gray":
 					print("BAD spawn, I have " + str(defender.num_troops) + " units and am " + defender.belongs_to.color + " and can be attacked")
 					return false
@@ -226,7 +226,8 @@ func minimax(game_state, depth, alpha, beta, maximizing_player):
 	pass
 ######
 func reroll_spawn():
-	spawn_and_allocate()
+	while not spawn_and_allocate():
+		pass
 	if _root.online_game:
 		synchronize(_root.players["guest"])
 

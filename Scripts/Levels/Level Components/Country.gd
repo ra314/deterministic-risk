@@ -87,7 +87,7 @@ func update_labels():
 
 # Flash all countries that can be attacked
 func flash_attackable_neighbours():
-	for country in get_attackable_countries():
+	for country in get_attackable_countries(Game_Manager.game_modes):
 		# Creation of a mask sprite to do the flashing
 		country.flashing = true
 
@@ -97,21 +97,21 @@ func draw_line_to_country(selected_country):
 	new_line.add_point(Vector2(20,20))
 	new_line.add_point(selected_country.position - position + Vector2(20,20))
 
-func can_attack(attacker, defender):
+func can_attack(attacker, defender, game_modes):
 	# Check if the defender and attacker are connected
 	if defender in attacker.connected_countries:
 		# Check if the defender and attacker had different owners
 		if defender.belongs_to != attacker.belongs_to:
 			# Check if the number of units is sufficient for an attack
-			if "drain" in Game_Manager.game_modes:
+			if "drain" in game_modes:
 				return attacker.num_troops > 1
 			else:
 				return attacker.num_troops > defender.num_troops
 
-func get_attackable_countries():
+func get_attackable_countries(game_modes):
 	var attackable_countries = []
 	for country in connected_countries:
-		if can_attack(self, country):
+		if can_attack(self, country, game_modes):
 			attackable_countries.append(country)
 	return attackable_countries
 
@@ -203,7 +203,7 @@ func on_click(event, is_long_press):
 			elif Game_Manager.selected_country != null:
 				var attacker = Game_Manager.selected_country
 				# Check if this country is attackable by the attacker
-				if can_attack(attacker, self):
+				if can_attack(attacker, self, Game_Manager.game_modes):
 					# If the attacker has more troops
 					if attacker.num_troops > num_troops:
 						num_troops = attacker.num_troops - num_troops
