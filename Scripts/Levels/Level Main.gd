@@ -301,7 +301,7 @@ func add_random_countries(player, num_countries):
 	
 func is_attack_over():
 	for country in curr_player.owned_countries:
-		if country.get_attackable_countries():
+		if country.get_attackable_countries(game_modes):
 			return false
 	return true
 
