@@ -329,7 +329,7 @@ remote func update_player_status(color, attacking):
 	else:
 		curr_player_status.texture = load("res://Assets/shield.svg")
 
-func change_to_reinforcement(surity_bool=false):
+remote func change_to_reinforcement(surity_bool=false):
 	# When the surity bool is true, you get to skip the confirmation menu
 	if not surity_bool:
 		show_confirmation_menu("You have an attack left.\nAre you sure you want to end attacks?",\
@@ -382,7 +382,7 @@ func change_to_attack(surity_bool=false):
 	
 	# Automatically end the attack phase if in checkers mode and no attacks are available
 	if "checkers" in game_modes and is_attack_over():
-		change_to_reinforcement(true)
+		rpc_id(curr_player.network_id, "change_to_reinforcement", true)
 
 remote func notify():
 	$Notification.play()
