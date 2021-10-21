@@ -357,9 +357,9 @@ func change_to_attack(surity_bool=false):
 	
 	# Modifying the visibility of the end attack and end reinforcement buttons	
 	if _root.online_game:
-		$Notification.play()
 		end_reinforcement_disable(true)
 		rpc_id(get_next_player().network_id, "end_attack_disable", false)
+		rpc_id(get_next_player().network_id, "notify")
 	else:
 		end_attack_disable(false)
 		end_reinforcement_disable(true)
@@ -378,6 +378,9 @@ func change_to_attack(surity_bool=false):
 	
 	# Updating player status
 	update_player_status(curr_player.color, true)
+
+remote func notify():
+	$Notification.play()
 #######
 
 # Ending the game

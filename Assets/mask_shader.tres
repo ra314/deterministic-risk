@@ -11,7 +11,7 @@ void fragment() {
 	vec4 col = texture(TEXTURE, UV);
 	vec4 d4 = abs(col - u_color_key);
 	float d = max(max(d4.r, d4.g), d4.b);
-	if(d < 0.00001) {
+	if(d < 0.000000001) {
 		col = u_highlight_color;
 	}
 	else {
