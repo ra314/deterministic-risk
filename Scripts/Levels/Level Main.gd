@@ -379,6 +379,10 @@ func change_to_attack(surity_bool=false):
 	
 	# Updating player status
 	update_player_status(curr_player.color, true)
+	
+	# Automatically end the attack phase if in checkers mode and no attacks are available
+	if "checkers" in game_modes and is_attack_over():
+		change_to_reinforcement(true)
 
 remote func notify():
 	$Notification.play()
