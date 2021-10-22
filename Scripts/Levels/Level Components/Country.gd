@@ -5,7 +5,7 @@ var belongs_to = null
 var connected_countries = []
 var country_name = null
 var Game_Manager = null
-var attack_cooldown = false
+var is_fatigued = false
 
 # This is so during reinforcement the label can show up as
 # {num_troops} + {num_reinforcements}
@@ -99,8 +99,8 @@ func draw_line_to_country(selected_country):
 	new_line.add_point(selected_country.position - position + Vector2(20,20))
 
 static func can_attack(attacker, defender, game_modes):
-	# Attack not possible if currently in cooldown
-	if "cooldown" in game_modes and attacker.attack_cooldown == true:
+	# Attack not possible if currently fatigued
+	if "fatigue" in game_modes and attacker.is_fatigued == true:
 		return false
 	# Check if the defender and attacker are connected
 	if defender in attacker.connected_countries:
@@ -218,8 +218,9 @@ func on_click(event, is_long_press):
 					elif "drain" in Game_Manager.game_modes:
 						num_troops -= (attacker.num_troops - 1)
 						attacker.num_troops = 1
-					if "cooldown" in Game_Manager.game_modes:
-						attack_cooldown = true
+					if "fatigue" in Game_Manager.game_modes:
+						attacker.is_fatigued = true
+						is_fatigued = true
 					
 					# Common component between modes
 					update_labels()

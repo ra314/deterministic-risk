@@ -340,9 +340,9 @@ remote func change_to_reinforcement(surity_bool=false):
 	curr_level.stop_flashing()
 	curr_player.give_reinforcements()
 	
-	# Disabling cooldown
+	# Disabling fatigue
 	for country in all_countries.values():
-		country.attack_cooldown = false
+		country.is_fatigued = false
 	
 	# Modifying the visibility of the end attack and end reinforcement buttons
 	end_attack_disable(true)

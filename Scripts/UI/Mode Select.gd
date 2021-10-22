@@ -7,6 +7,13 @@ func _ready():
 	var container = $CenterContainer/VBoxContainer
 	container.get_node("Next/Button").connect("button_down", self, "_load_scene", ["UI/Level Select"])
 	$TextureButton.connect("button_down", self, "back")
+	# Button to go to help menu
+	get_node("Help").connect("button_down", self, "show_help_menu")
+
+func show_help_menu():
+	var scene = _root.scene_manager._load_scene("UI/Help Menu")
+	_root.scene_manager.save_and_hide_current_scene()
+	_root.add_child(scene)
 
 func back():
 	# Removing the current scene from history
@@ -23,10 +30,17 @@ func back():
 	var scene = _root.scene_manager._load_scene(prev_scene_str)
 	_root.scene_manager._replace_scene(scene)
 
+func get_all_children(object):
+	var output = []
+	for child in object.get_children():
+		output.append(child)
+		output.append_array(get_all_children(child))
+	return output
+	
 func get_modes():
-	var container = $CenterContainer/VBoxContainer/GridContainer
+	var container = $CenterContainer/VBoxContainer
 	var game_modes = []
-	for child in container.get_children():
+	for child in get_all_children(container):
 		if child is CheckBox:
 			if child.is_pressed():
 				game_modes.append(child.name.to_lower())

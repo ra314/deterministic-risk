@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Assets/Montserrat-Regular.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Scripts/UI/Mode Select.gd" type="Script" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://Assets/check.svg" type="Texture" id=5]
 [ext_resource path="res://Assets/cross.svg" type="Texture" id=6]
 [ext_resource path="res://Scenes/UI/Menu Item.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Assets/Fonts/Font_50.tres" type="DynamicFont" id=8]
 
 [sub_resource type="DynamicFont" id=1]
 size = 200
@@ -22,31 +23,37 @@ __meta__ = {
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 margin_right = 1920.0
-margin_bottom = 1080.0
+margin_bottom = 1038.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
-margin_left = 74.0
-margin_top = 215.0
-margin_right = 1912.0
-margin_bottom = 865.0
+margin_top = 63.0
+margin_right = 1919.0
+margin_bottom = 975.0
 
 [node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
-margin_right = 1838.0
+margin_right = 1919.0
 margin_bottom = 245.0
 custom_fonts/font = SubResource( 1 )
 text = "Deterministic Risk"
 
-[node name="GridContainer" type="GridContainer" parent="CenterContainer/VBoxContainer"]
+[node name="Label2" type="Label" parent="CenterContainer/VBoxContainer"]
 margin_top = 249.0
-margin_right = 1838.0
-margin_bottom = 515.0
+margin_right = 1919.0
+margin_bottom = 372.0
+custom_fonts/font = ExtResource( 3 )
+text = "Select any number of game modes: "
+
+[node name="GridContainer" type="GridContainer" parent="CenterContainer/VBoxContainer"]
+margin_top = 376.0
+margin_right = 1919.0
+margin_bottom = 777.0
 columns = 3
 
 [node name="Classic" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
-margin_right = 473.0
+margin_right = 586.0
 margin_bottom = 131.0
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
@@ -55,29 +62,29 @@ pressed = true
 text = "Classic"
 align = 1
 
-[node name="Checkers" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
-margin_left = 477.0
-margin_right = 1159.0
+[node name="Fatigue" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
+margin_left = 590.0
+margin_right = 1201.0
 margin_bottom = 131.0
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
 custom_fonts/font = ExtResource( 3 )
-text = "Checkers"
+text = "Fatigue"
 align = 1
 
-[node name="Pandemic" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
-margin_left = 1163.0
-margin_right = 1813.0
+[node name="Movement" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
+margin_left = 1205.0
+margin_right = 1919.0
 margin_bottom = 131.0
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
 custom_fonts/font = ExtResource( 3 )
-text = "Pandemic"
+text = "Movement"
 align = 1
 
 [node name="Drain" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
 margin_top = 135.0
-margin_right = 473.0
+margin_right = 586.0
 margin_bottom = 266.0
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
@@ -85,41 +92,83 @@ custom_fonts/font = ExtResource( 3 )
 text = "Drain"
 align = 1
 
-[node name="Movement" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
-margin_left = 477.0
+[node name="Blitzkrieg" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
+margin_left = 590.0
 margin_top = 135.0
-margin_right = 1159.0
+margin_right = 1201.0
 margin_bottom = 266.0
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
 custom_fonts/font = ExtResource( 3 )
-text = "Movement"
+text = "Blitzkrieg"
 align = 1
 
-[node name="Cooldown" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
-margin_left = 1163.0
+[node name="Pandemic" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
+margin_left = 1205.0
 margin_top = 135.0
-margin_right = 1813.0
+margin_right = 1919.0
 margin_bottom = 266.0
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
 custom_fonts/font = ExtResource( 3 )
-text = "Cooldown"
+text = "Pandemic"
+align = 1
+
+[node name="Diffusion" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
+margin_top = 270.0
+margin_right = 586.0
+margin_bottom = 401.0
+custom_icons/checked = ExtResource( 5 )
+custom_icons/unchecked = ExtResource( 6 )
+custom_fonts/font = ExtResource( 3 )
+text = "Diffusion"
+align = 1
+
+[node name="Checkers" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
+margin_left = 590.0
+margin_top = 270.0
+margin_right = 1201.0
+margin_bottom = 401.0
+custom_icons/checked = ExtResource( 5 )
+custom_icons/unchecked = ExtResource( 6 )
+custom_fonts/font = ExtResource( 3 )
+text = "Checkers"
+align = 1
+
+[node name="Congestion" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
+margin_left = 1205.0
+margin_top = 270.0
+margin_right = 1919.0
+margin_bottom = 401.0
+custom_icons/checked = ExtResource( 5 )
+custom_icons/unchecked = ExtResource( 6 )
+custom_fonts/font = ExtResource( 3 )
+text = "Congestion"
 align = 1
 
 [node name="Next" parent="CenterContainer/VBoxContainer" instance=ExtResource( 7 )]
 anchor_left = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 519.0
-margin_right = 1838.0
-margin_bottom = 650.0
+margin_top = 781.0
+margin_right = 1919.0
+margin_bottom = 912.0
 item_name = "Next"
 
 [node name="TextureButton" type="TextureButton" parent="."]
 margin_right = 40.0
 margin_bottom = 40.0
 texture_normal = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Help" type="Button" parent="."]
+margin_left = 1791.0
+margin_right = 1921.0
+margin_bottom = 68.0
+custom_fonts/font = ExtResource( 8 )
+text = "Help"
 __meta__ = {
 "_edit_use_anchors_": false
 }

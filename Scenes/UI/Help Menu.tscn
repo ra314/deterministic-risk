@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Assets/Fonts/Font_100.tres" type="DynamicFont" id=1]
 [ext_resource path="res://Scripts/UI/Help Menu.gd" type="Script" id=2]
 [ext_resource path="res://Assets/Fonts/Font_50.tres" type="DynamicFont" id=3]
+[ext_resource path="res://Assets/label_background.tres" type="StyleBox" id=4]
 
 [node name="Menu1" type="Control"]
 anchor_right = 1.0
@@ -12,27 +13,353 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
-margin_top = 104.0
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 margin_right = 1920.0
-margin_bottom = 1080.0
-size_flags_horizontal = 0
-scroll_horizontal_enabled = false
+margin_bottom = 199.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="ScrollContainer"]
-margin_right = 1908.0
-margin_bottom = 1752.0
+[node name="Label" type="Label" parent="VBoxContainer"]
+margin_right = 1920.0
+margin_bottom = 123.0
+rect_min_size = Vector2( 1920, 0 )
+custom_fonts/font = ExtResource( 1 )
+text = "Deterministic Risk"
+align = 1
+
+[node name="Menu Options" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 127.0
+margin_right = 1920.0
+margin_bottom = 195.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Controls" type="Button" parent="VBoxContainer/Menu Options"]
+margin_right = 221.0
+margin_bottom = 68.0
+custom_fonts/font = ExtResource( 3 )
+text = "Controls"
+
+[node name="Game Modes" type="Button" parent="VBoxContainer/Menu Options"]
+margin_left = 225.0
+margin_right = 569.0
+margin_bottom = 68.0
+custom_fonts/font = ExtResource( 3 )
+text = "Game Modes"
+
+[node name="Objective" type="Button" parent="VBoxContainer/Menu Options"]
+margin_left = 573.0
+margin_right = 823.0
+margin_bottom = 68.0
+custom_fonts/font = ExtResource( 3 )
+text = "Objective"
+
+[node name="Menu Display" type="Control" parent="VBoxContainer"]
+margin_top = 199.0
+margin_right = 1920.0
+margin_bottom = 199.0
+
+[node name="Controls" type="Label" parent="VBoxContainer/Menu Display"]
+margin_right = 40.0
+margin_bottom = 14.0
+custom_fonts/font = ExtResource( 3 )
+text = "Controls:
+In general:
+    Click and drag to pan the map.
+During attack:
+    Click to select a country that you own.
+    Click again to attack a country that you don't own.
+During reinforcement:
+    Left click to add a reinforcement.
+    Right click  (or long press) to remove a reinforcement.
+    You cannot remove more reinforcements than you have added."
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Objective" type="Label" parent="VBoxContainer/Menu Display"]
+visible = false
+margin_right = 1920.0
+margin_bottom = 322.0
+custom_fonts/font = ExtResource( 3 )
+text = "Objective:
+You win when your opponent has no countries left in their possession.
+
+During the reinforce phase the number of reinforcements you get is the number of countries you own halved, then rounded up. "
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Game Modes" type="VBoxContainer" parent="VBoxContainer/Menu Display"]
+visible = false
+margin_right = 1920.0
+margin_bottom = 395.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Game Modes" type="GridContainer" parent="VBoxContainer/Menu Display/Game Modes"]
+margin_right = 1920.0
+margin_bottom = 395.0
+columns = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Classic" type="Button" parent="VBoxContainer/Menu Display/Game Modes/Game Modes"]
+margin_right = 637.0
+margin_bottom = 129.0
 size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "Classic"
+flat = true
+
+[node name="Fatigue" type="Button" parent="VBoxContainer/Menu Display/Game Modes/Game Modes"]
+margin_left = 641.0
+margin_right = 1278.0
+margin_bottom = 129.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "Fatigue"
+flat = true
+
+[node name="Movement" type="Button" parent="VBoxContainer/Menu Display/Game Modes/Game Modes"]
+margin_left = 1282.0
+margin_right = 1919.0
+margin_bottom = 129.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "Movement"
+flat = true
+
+[node name="Drain" type="Button" parent="VBoxContainer/Menu Display/Game Modes/Game Modes"]
+margin_top = 133.0
+margin_right = 637.0
+margin_bottom = 262.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "Drain"
+flat = true
+
+[node name="Blitzkrieg" type="Button" parent="VBoxContainer/Menu Display/Game Modes/Game Modes"]
+margin_left = 641.0
+margin_top = 133.0
+margin_right = 1278.0
+margin_bottom = 262.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "Blitzkrieg"
+flat = true
+
+[node name="Pandemic" type="Button" parent="VBoxContainer/Menu Display/Game Modes/Game Modes"]
+margin_left = 1282.0
+margin_top = 133.0
+margin_right = 1919.0
+margin_bottom = 262.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "Pandemic"
+flat = true
+
+[node name="Diffusion" type="Button" parent="VBoxContainer/Menu Display/Game Modes/Game Modes"]
+margin_top = 266.0
+margin_right = 637.0
+margin_bottom = 395.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "Diffusion"
+flat = true
+
+[node name="Checkers" type="Button" parent="VBoxContainer/Menu Display/Game Modes/Game Modes"]
+margin_left = 641.0
+margin_top = 266.0
+margin_right = 1278.0
+margin_bottom = 395.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "Checkers"
+flat = true
+
+[node name="Congestion" type="Button" parent="VBoxContainer/Menu Display/Game Modes/Game Modes"]
+margin_left = 1282.0
+margin_top = 266.0
+margin_right = 1919.0
+margin_bottom = 395.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "Congestion"
+flat = true
+
+[node name="Control" type="Control" parent="VBoxContainer/Menu Display/Game Modes"]
+margin_top = 399.0
+margin_right = 1920.0
+margin_bottom = 399.0
+size_flags_horizontal = 3
+
+[node name="Classic" type="Label" parent="VBoxContainer/Menu Display/Game Modes/Control"]
+visible = false
+margin_right = 1920.0
+margin_bottom = 482.0
+size_flags_horizontal = 3
+custom_styles/normal = ExtResource( 4 )
+custom_fonts/font = ExtResource( 3 )
+text = "Classic:
+You can attack a country if it has less units than you and conquer it.
+
+If a 7 attacks a 3
+    - 1 will remain in the attacking country
+    - 4 (7-3) will be at the defending country
+    - You conquer defending country"
+autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Label2" type="Label" parent="ScrollContainer/VBoxContainer2"]
-margin_right = 1908.0
-margin_bottom = 1752.0
+[node name="Drain" type="Label" parent="VBoxContainer/Menu Display/Game Modes/Control"]
+visible = false
+margin_right = 1920.0
+margin_bottom = 482.0
+size_flags_horizontal = 3
+custom_styles/normal = ExtResource( 4 )
+custom_fonts/font = ExtResource( 3 )
+text = "Drain:
+You can attack a country if you have at least 1 unit.
+
+If a 3 attacks a 7
+    - 1 will remain in the attacking country
+    - 5 will remain in the defending country"
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Fatigue" type="Label" parent="VBoxContainer/Menu Display/Game Modes/Control"]
+visible = false
+margin_right = 1920.0
+margin_bottom = 482.0
+size_flags_horizontal = 3
+custom_styles/normal = ExtResource( 4 )
+custom_fonts/font = ExtResource( 3 )
+text = "Fatigue:
+When you conquer a new country, it cannot attack on the same turn."
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Blitzkrieg" type="Label" parent="VBoxContainer/Menu Display/Game Modes/Control"]
+visible = false
+margin_right = 1920.0
+margin_bottom = 482.0
+size_flags_horizontal = 3
+custom_styles/normal = ExtResource( 4 )
+custom_fonts/font = ExtResource( 3 )
+text = "Blitzkrieg:
+If a country has been attacked on a given turn, successive attacks on the same turn deal +1 damage."
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Pandemic" type="Label" parent="VBoxContainer/Menu Display/Game Modes/Control"]
+visible = false
+margin_right = 1920.0
+margin_bottom = 482.0
+size_flags_horizontal = 3
+custom_styles/normal = ExtResource( 4 )
+custom_fonts/font = ExtResource( 3 )
+text = "Pandemic:
+If a country after reinforcement has 4 or more units, it loses 1 unit for every 3 units higher than the threshold (4).
+
+3 is safe
+4 loses 1 unit
+7 loses 2 units, etc."
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Diffusion" type="Label" parent="VBoxContainer/Menu Display/Game Modes/Control"]
+visible = false
+margin_right = 1920.0
+margin_bottom = 482.0
+size_flags_horizontal = 3
+custom_styles/normal = ExtResource( 4 )
+custom_fonts/font = ExtResource( 3 )
+text = "Diffusion:
+When conquering, half the surviving units (round down) remain in the attacker. Half the surving units (round up) end up in the defender.
+
+If a 8 attacks a 3     ->     5 (8-3) units survive
+    - 3 (1+(floor(5/2)) will remain in the attacking country
+    - 3 (ceil(5/2)) will remain in the defending country"
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Congestion" type="Label" parent="VBoxContainer/Menu Display/Game Modes/Control"]
+visible = false
+margin_right = 1920.0
+margin_bottom = 482.0
+size_flags_horizontal = 3
+custom_styles/normal = ExtResource( 4 )
+custom_fonts/font = ExtResource( 3 )
+text = "Congestion:
+Countries have a maximum reinforcement cap 2x of its starting amount.
+
+If a country spawned with 4 units inside, then the cap is 8."
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Movement" type="Label" parent="VBoxContainer/Menu Display/Game Modes/Control"]
+visible = false
+margin_right = 1920.0
+margin_bottom = 482.0
+size_flags_horizontal = 3
+custom_styles/normal = ExtResource( 4 )
+custom_fonts/font = ExtResource( 3 )
+text = "Movement:
+You can move units from one country to another."
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Checkers" type="Label" parent="VBoxContainer/Menu Display/Game Modes/Control"]
+visible = false
+margin_right = 1920.0
+margin_bottom = 482.0
+size_flags_horizontal = 3
+custom_styles/normal = ExtResource( 4 )
+custom_fonts/font = ExtResource( 3 )
+text = "Checkers:
+If you can make an attack, you must perform the attack."
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Return To Game" type="Button" parent="."]
+margin_left = 1495.0
+margin_right = 1919.0
+margin_bottom = 68.0
+custom_fonts/font = ExtResource( 3 )
+text = "Return To Game"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label2" type="Label" parent="."]
+visible = false
+margin_top = 33215.0
+margin_right = 1920.0
+margin_bottom = 34967.0
+rect_min_size = Vector2( 1920, 0 )
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 3 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
@@ -62,27 +389,6 @@ During reinforcement:
     Right click  (or long press) to remove a reinforcement.
     You cannot remove more reinforcements than you have added."
 autowrap = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="VBoxContainer" type="CenterContainer" parent="."]
-margin_right = 1920.0
-margin_bottom = 123.0
-
-[node name="Label" type="Label" parent="VBoxContainer"]
-margin_left = 500.0
-margin_right = 1419.0
-margin_bottom = 123.0
-custom_fonts/font = ExtResource( 1 )
-text = "Deterministic Risk"
-
-[node name="Return To Game" type="Button" parent="."]
-margin_left = 1495.0
-margin_right = 1919.0
-margin_bottom = 68.0
-custom_fonts/font = ExtResource( 3 )
-text = "Return To Game"
 __meta__ = {
 "_edit_use_anchors_": false
 }
