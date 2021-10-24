@@ -340,10 +340,11 @@ remote func change_to_reinforcement(surity_bool=false):
 	curr_level.stop_flashing()
 	curr_player.give_reinforcements()
 	
-	# Disabling fatigue
+	# Disabling fatigue and blitz
 	for country in all_countries.values():
-		country.set_status("Fatigue", false)
-		country.set_status("Blitz", false)
+		country.statused["Fatigue"] = false
+		country.statused["Blitz"] = false
+		country.update_labels()
 	
 	# Modifying the visibility of the end attack and end reinforcement buttons
 	end_attack_disable(true)
@@ -371,9 +372,11 @@ func change_to_attack(surity_bool=false):
 		end_reinforcement_disable(true)
 	
 	# Moving the troops from reinforcement into active duty for each country
+	# and subtracting pandemic deaths
 	for country in all_countries.values():
 		country.num_troops += country.num_reinforcements
 		country.num_reinforcements = 0
+		country.num_troops -= country.calc_pandemic_deaths()
 		country.update_labels()
 	
 	selected_country = null

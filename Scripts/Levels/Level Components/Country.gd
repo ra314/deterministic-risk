@@ -75,20 +75,38 @@ func change_ownership_to(player):
 	if Game_Manager:
 		Game_Manager.update_labels()
 	change_color_to(player.color)
-	
+	update_labels()
+
+func reset_status():
+	# Enable fatigue and remove blitz
 	if "fatigue" in Game_Manager.game_modes:
-		set_status("Fatigue", true)
+		statused["Fatigue"] = true
 	if "blitzkrieg" in Game_Manager.game_modes:
-		set_status("Blitz", false)
+		statused["Blitz"] = false
+
+func calc_pandemic_deaths():
+	var total = num_troops + num_reinforcements
+	if total <= 3:
+		return 0
+	else:
+		return int(ceil(float(total-3)/3))
 
 func update_labels():
 	get_node("Units").text = str(num_troops)
-	if num_reinforcements > 0:
-		get_node("Reinforcements").visible = true
-		get_node("Reinforcements/Label").text = "+" + str(num_reinforcements)
-	else:
-		get_node("Reinforcements").visible = false
+
+	get_node("Reinforcements").visible = num_reinforcements > 0
+	get_node("Reinforcements/Label").text = "+" + str(num_reinforcements)
+	
 	if Game_Manager:
+		if "pandemic" in Game_Manager.game_modes:
+			var num_deaths = calc_pandemic_deaths()
+			get_node("Status/Num Pandemic").visible = num_deaths > 0
+			get_node("Status/Pandemic").visible = num_deaths > 0
+			get_node("Status/Num Pandemic").text = str(num_deaths)
+		if "blitzkrieg" in Game_Manager.game_modes:
+			get_node("Status/Blitz").visible = statused["Blitz"]
+		if "fatigue" in Game_Manager.game_modes:
+			get_node("Status/Fatigue").visible = statused["Fatigue"]
 		Game_Manager.update_labels()
 
 # Flash all countries that can be attacked
@@ -126,13 +144,6 @@ func _input_event(viewport, event, shape_idx):
 	if get_tree().get_current_scene().get_name() == "Level Creator":
 		if event.is_pressed():
 			self.on_click(event, false)
-
-func set_status(status_name, boolean):
-	if not (status_name in statused):
-		print("You done goofed")
-		return
-	statused[status_name] = boolean
-	get_node("Status/" + status_name).visible = boolean
 
 func move_to_location_with_duration(location, duration):
 	get_node("Tween").interpolate_property(self, "position", position, location, duration)
@@ -228,7 +239,9 @@ func on_click(event, is_long_press):
 						else:
 							num_troops = survivors
 							attacker.num_troops = 1
+							
 						change_ownership_to(attacker.belongs_to)
+						reset_status()
 					# If it has less or equal and drain is one of the game modes
 					elif "drain" in Game_Manager.game_modes:
 						if "blitzkrieg" in Game_Manager.game_modes:
@@ -238,11 +251,12 @@ func on_click(event, is_long_press):
 							else:
 								num_troops -= (attacker.num_troops - 1)
 								attacker.num_troops = 1
-							set_status("Blitz", true)
+							statused["Blitz"] = true
 							
 							# Change ownership if drained to 0
 							if num_troops == 0:
 								change_ownership_to(Game_Manager.player_neutral)
+								reset_status()
 						
 					# Common component between modes
 					update_labels()
