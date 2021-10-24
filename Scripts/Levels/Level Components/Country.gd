@@ -124,6 +124,10 @@ func _input_event(viewport, event, shape_idx):
 		if event.is_pressed():
 			self.on_click(event, false)
 
+func set_fatigue(boolean):
+	is_fatigued = boolean
+	get_node("Status/Fatigue").visible = boolean
+
 func move_to_location_with_duration(location, duration):
 	get_node("Tween").interpolate_property(self, "position", position, location, duration)
 
@@ -220,7 +224,7 @@ func on_click(event, is_long_press):
 							attacker.num_troops = 1
 						change_ownership_to(attacker.belongs_to)
 						if "fatigue" in Game_Manager.game_modes:
-							attacker.is_fatigued = true
+							set_fatigue(true)
 					# If it has less or equal and drain is one of the game modes
 					elif "drain" in Game_Manager.game_modes:
 						num_troops -= (attacker.num_troops - 1)

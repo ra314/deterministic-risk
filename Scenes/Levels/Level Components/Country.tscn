@@ -1,8 +1,11 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Scripts/Levels/Level Components/Country.gd" type="Script" id=1]
 [ext_resource path="res://Assets/red-pentagon.svg" type="Texture" id=2]
+[ext_resource path="res://Assets/Icons/fatigue.svg" type="Texture" id=3]
 [ext_resource path="res://Assets/Montserrat-Regular.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://Assets/Icons/blitz.svg" type="Texture" id=5]
+[ext_resource path="res://Assets/Icons/pandemic.svg" type="Texture" id=6]
 
 [sub_resource type="DynamicFont" id=1]
 size = 25
@@ -68,3 +71,41 @@ __meta__ = {
 }
 
 [node name="Tween" type="Tween" parent="."]
+
+[node name="Status" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Fatigue" type="Sprite" parent="Status"]
+visible = false
+position = Vector2( 0, -16 )
+scale = Vector2( 0.132231, 0.126984 )
+texture = ExtResource( 3 )
+centered = false
+
+[node name="Blitz" type="Sprite" parent="Status"]
+visible = false
+position = Vector2( 16, -16 )
+scale = Vector2( 0.0987654, 0.131148 )
+texture = ExtResource( 5 )
+centered = false
+
+[node name="Pandemic" type="Sprite" parent="Status"]
+visible = false
+position = Vector2( 32, -16 )
+scale = Vector2( 0.131148, 0.137931 )
+texture = ExtResource( 6 )
+centered = false
+
+[node name="Num Pandemic" type="Label" parent="Status"]
+visible = false
+margin_left = 24.0
+margin_top = -16.0
+margin_right = 32.0
+text = "9"
+__meta__ = {
+"_edit_use_anchors_": false
+}

@@ -4,7 +4,7 @@
 [ext_resource path="res://Scripts/UI/IP Select.gd" type="Script" id=2]
 [ext_resource path="res://Scenes/UI/Menu Item.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Assets/Montserrat-Regular.ttf" type="DynamicFontData" id=4]
-[ext_resource path="res://Assets/back-arrow.svg" type="Texture" id=5]
+[ext_resource path="res://Assets/Icons/back-arrow.svg" type="Texture" id=5]
 
 [sub_resource type="DynamicFont" id=1]
 size = 200

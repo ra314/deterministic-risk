@@ -83,7 +83,7 @@ func import_level(level_node, bool_load_countries):
 	
 	# Make visible the sprite of the selected world 
 	world_sprite = Sprite.new()
-	world_sprite.texture = load("res://Assets/" + world_str + ".png")
+	world_sprite.texture = load("res://Assets/Maps/" + world_str + ".png")
 	world_sprite.visible = true
 	world_sprite.scale = Vector2(0.5,0.5)
 	world_sprite.centered = false
@@ -94,7 +94,7 @@ func import_level(level_node, bool_load_countries):
 	var save_file_location = "res://" + world_str + ".save"
 	
 	# Load up the mask
-	world_mask = load("res://Assets/" + world_str + " Mask.png").get_data()
+	world_mask = load("res://Assets/Maps/" + world_str + " Mask.png").get_data()
 	world_mask.lock()
 	
 	# Early return if asked to not load countries

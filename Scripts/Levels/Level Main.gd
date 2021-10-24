@@ -325,9 +325,9 @@ remote func update_player_status(color, attacking):
 	var curr_player_status = get_node("CanvasLayer/Game Info/" + color + "/VBoxContainer/Status")
 	curr_player_status.visible = true
 	if attacking:
-		curr_player_status.texture = load("res://Assets/sword.svg")
+		curr_player_status.texture = load("res://Assets/Icons/sword.svg")
 	else:
-		curr_player_status.texture = load("res://Assets/shield.svg")
+		curr_player_status.texture = load("res://Assets/Icons/shield.svg")
 
 remote func change_to_reinforcement(surity_bool=false):
 	# When the surity bool is true, you get to skip the confirmation menu
@@ -342,7 +342,7 @@ remote func change_to_reinforcement(surity_bool=false):
 	
 	# Disabling fatigue
 	for country in all_countries.values():
-		country.is_fatigued = false
+		country.set_fatigue(false)
 	
 	# Modifying the visibility of the end attack and end reinforcement buttons
 	end_attack_disable(true)
@@ -420,12 +420,12 @@ remote func end_game(loser_color):
 	# Placing a crown above the icon of the winner
 	var winner_icon = game_info.get_node(winner_color + "/VBoxContainer/Status")
 	winner_icon.visible = true
-	winner_icon.texture = load("res://Assets/Win.svg")
+	winner_icon.texture = load("res://Assets/Icons/Win.svg")
 	
 	# Placing a skull above the icon of the loser
 	var loser_icon = game_info.get_node(loser_color + "/VBoxContainer/Status")
 	loser_icon.visible = true
-	loser_icon.texture = load("res://Assets/Lose.svg")
+	loser_icon.texture = load("res://Assets/Icons/Lose.svg")
 	
 	# Online component
 	if _root.online_game:
