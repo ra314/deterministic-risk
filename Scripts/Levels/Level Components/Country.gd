@@ -5,7 +5,7 @@ var belongs_to = null
 var connected_countries = []
 var country_name = null
 var Game_Manager = null
-var is_fatigued = false
+var statused = {"Fatigue": false, "Blitz": false, "Pandemic": false}
 
 # This is so during reinforcement the label can show up as
 # {num_troops} + {num_reinforcements}
@@ -75,6 +75,11 @@ func change_ownership_to(player):
 	if Game_Manager:
 		Game_Manager.update_labels()
 	change_color_to(player.color)
+	
+	if "fatigue" in Game_Manager.game_modes:
+		set_status("Fatigue", true)
+	if "blitzkrieg" in Game_Manager.game_modes:
+		set_status("Blitz", false)
 
 func update_labels():
 	get_node("Units").text = str(num_troops)
@@ -100,17 +105,15 @@ func draw_line_to_country(selected_country):
 
 static func can_attack(attacker, defender, game_modes):
 	# Attack not possible if currently fatigued
-	if "fatigue" in game_modes and attacker.is_fatigued == true:
+	if "fatigue" in game_modes and attacker.statused['Fatigue'] == true:
 		return false
 	# Check if the defender and attacker are connected
 	if defender in attacker.connected_countries:
 		# Check if the defender and attacker had different owners
 		if defender.belongs_to != attacker.belongs_to:
 			# Check if the number of units is sufficient for an attack
-			if "drain" in game_modes:
-				return attacker.num_troops > 1
-			else:
-				return attacker.num_troops > defender.num_troops
+			return (attacker.num_troops > defender.num_troops) or\
+				(("drain" in game_modes) and (attacker.num_troops > 1))
 
 func get_attackable_countries(game_modes):
 	var attackable_countries = []
@@ -124,9 +127,12 @@ func _input_event(viewport, event, shape_idx):
 		if event.is_pressed():
 			self.on_click(event, false)
 
-func set_fatigue(boolean):
-	is_fatigued = boolean
-	get_node("Status/Fatigue").visible = boolean
+func set_status(status_name, boolean):
+	if not (status_name in statused):
+		print("You done goofed")
+		return
+	statused[status_name] = boolean
+	get_node("Status/" + status_name).visible = boolean
 
 func move_to_location_with_duration(location, duration):
 	get_node("Tween").interpolate_property(self, "position", position, location, duration)
@@ -223,13 +229,21 @@ func on_click(event, is_long_press):
 							num_troops = survivors
 							attacker.num_troops = 1
 						change_ownership_to(attacker.belongs_to)
-						if "fatigue" in Game_Manager.game_modes:
-							set_fatigue(true)
 					# If it has less or equal and drain is one of the game modes
 					elif "drain" in Game_Manager.game_modes:
-						num_troops -= (attacker.num_troops - 1)
-						attacker.num_troops = 1
-					
+						if "blitzkrieg" in Game_Manager.game_modes:
+							if statused["Blitz"]:
+								num_troops -= (attacker.num_troops)
+								attacker.num_troops = 1
+							else:
+								num_troops -= (attacker.num_troops - 1)
+								attacker.num_troops = 1
+							set_status("Blitz", true)
+							
+							# Change ownership if drained to 0
+							if num_troops == 0:
+								change_ownership_to(Game_Manager.player_neutral)
+						
 					# Common component between modes
 					update_labels()
 					attacker.update_labels()

@@ -342,7 +342,8 @@ remote func change_to_reinforcement(surity_bool=false):
 	
 	# Disabling fatigue
 	for country in all_countries.values():
-		country.set_fatigue(false)
+		country.set_status("Fatigue", false)
+		country.set_status("Blitz", false)
 	
 	# Modifying the visibility of the end attack and end reinforcement buttons
 	end_attack_disable(true)
