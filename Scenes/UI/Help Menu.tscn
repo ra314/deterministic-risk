@@ -258,7 +258,7 @@ size_flags_horizontal = 3
 custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
 text = "Blitzkrieg:
-If a country has been attacked on a given turn, successive attacks on the same turn deal +1 damage."
+If a country has been drained on a given turn, successive drains on the same turn deal +1 damage."
 autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false
@@ -308,7 +308,7 @@ size_flags_horizontal = 3
 custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
 text = "Congestion:
-Countries have a maximum reinforcement cap 2x of its starting amount.
+The maximum number of troops a country can have is 2x its starting amount.
 
 If a country spawned with 4 units inside, then the cap is 8."
 autowrap = true
@@ -338,7 +338,7 @@ size_flags_horizontal = 3
 custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
 text = "Checkers:
-If you can make an attack, you must perform the attack."
+If you can make an attack/drain, you must perform the attack/drain."
 autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false

@@ -5,6 +5,8 @@ var belongs_to = null
 var connected_countries = []
 var country_name = null
 var Game_Manager = null
+var suffix = ""
+var max_troops = 0
 var statused = {"Fatigue": false, "Blitz": false, "Pandemic": false}
 
 # This is so during reinforcement the label can show up as
@@ -92,7 +94,7 @@ func calc_pandemic_deaths():
 		return int(ceil(float(total-3)/3))
 
 func update_labels():
-	get_node("Units").text = str(num_troops)
+	get_node("Units").text = str(num_troops) + suffix
 
 	get_node("Reinforcements").visible = num_reinforcements > 0
 	get_node("Reinforcements/Label").text = "+" + str(num_reinforcements)
@@ -239,6 +241,10 @@ func on_click(event, is_long_press):
 						else:
 							num_troops = survivors
 							attacker.num_troops = 1
+						
+						if "congestion" in Game_Manager.game_modes:
+							num_troops = min(num_troops, max_troops)
+							attacker.num_troops = min(attacker.num_troops, attacker.max_troops)
 							
 						change_ownership_to(attacker.belongs_to)
 						reset_status()
@@ -280,8 +286,10 @@ func on_click(event, is_long_press):
 				if event.button_index == BUTTON_LEFT:
 					# Check that the player has reinforcements available to allocate
 					if Game_Manager.curr_player.num_reinforcements > 0:
-						Game_Manager.curr_player.num_reinforcements -= 1
-						num_reinforcements += 1
+						if ("congestion" in Game_Manager.game_modes) and\
+							((num_reinforcements + num_troops) < max_troops):
+							Game_Manager.curr_player.num_reinforcements -= 1
+							num_reinforcements += 1
 				# Remove a reinforcement
 				elif event.button_index == BUTTON_RIGHT:
 					# Check that a reinforcement has been previously added to this country
@@ -335,9 +343,12 @@ func stop_flashing():
 	self.flashing = false
 
 # Synchronise the country over network
-func synchronise(_num_troops, _num_reinforcements, _belongs_to):
+func synchronise(_num_troops, _num_reinforcements, _belongs_to, _statused, _max_troops, _suffix):
 	num_troops = _num_troops
 	num_reinforcements = _num_reinforcements
+	statused = _statused
+	max_troops = _max_troops
+	suffix = _suffix
 	if belongs_to != _belongs_to:
 		change_ownership_to(_belongs_to)
 	update_labels()

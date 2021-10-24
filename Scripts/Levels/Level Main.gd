@@ -92,6 +92,13 @@ func spawn_and_allocate():
 					print("BAD spawn, I have " + str(defender.num_troops) + " units and am " + defender.belongs_to.color + " and can be attacked")
 					return false
 	
+	# Visual update for congestion mode
+	if "congestion" in game_modes:
+		for country in all_countries.values():
+			country.suffix = "/" + str(country.num_troops*2)
+			country.max_troops = country.num_troops*2
+			country.update_labels()
+	
 #	print("The first player is " + curr_player.color)
 #	print(curr_player.color)
 	update_labels()
@@ -376,7 +383,8 @@ func change_to_attack(surity_bool=false):
 	for country in all_countries.values():
 		country.num_troops += country.num_reinforcements
 		country.num_reinforcements = 0
-		country.num_troops -= country.calc_pandemic_deaths()
+		if "pandemic" in game_modes:
+			country.num_troops -= country.calc_pandemic_deaths()
 		country.update_labels()
 	
 	selected_country = null
@@ -502,7 +510,8 @@ func synchronize(network_id):
 	# Synchronising the countries in terms of colors and troops
 	for country in all_countries.values():
 		rpc_id(network_id, "synchronise_country", country.country_name, \
-			country.num_troops, country.num_reinforcements, country.belongs_to.color)
+			country.num_troops, country.num_reinforcements, \
+			country.belongs_to.color, country.statused, country.max_troops, country.suffix)
 	
 	# Synchrosing the game in terms of player information
 	for player in players.values():
@@ -515,8 +524,8 @@ func synchronize(network_id):
 	if phase != "game over":
 		rpc_id(network_id, "update_player_status", curr_player.color, phase == "attack")
 
-remote func synchronise_country(country_name, num_troops, num_reinforcements, color):
-	all_countries[country_name].synchronise(num_troops, num_reinforcements, players[color])
+remote func synchronise_country(country_name, num_troops, num_reinforcements, color, statused, max_troops, suffix):
+	all_countries[country_name].synchronise(num_troops, num_reinforcements, players[color], statused, max_troops, suffix)
 
 remote func synchronise_player(player_info):
 	var curr_player = players[player_info["color"]]
