@@ -211,16 +211,20 @@ func on_click(event, is_long_press):
 					# Updating variables
 					# If the attacker has more troops
 					if attacker.num_troops > num_troops:
-						num_troops = attacker.num_troops - num_troops
-						attacker.num_troops = 1
+						var survivors = float(attacker.num_troops - num_troops)
+						if "diffusion" in Game_Manager.game_modes:
+							num_troops = int(ceil(survivors/2))
+							attacker.num_troops = 1+int(floor(survivors/2))
+						else:
+							num_troops = survivors
+							attacker.num_troops = 1
 						change_ownership_to(attacker.belongs_to)
+						if "fatigue" in Game_Manager.game_modes:
+							attacker.is_fatigued = true
 					# If it has less or equal and drain is one of the game modes
 					elif "drain" in Game_Manager.game_modes:
 						num_troops -= (attacker.num_troops - 1)
 						attacker.num_troops = 1
-					if "fatigue" in Game_Manager.game_modes:
-						attacker.is_fatigued = true
-						is_fatigued = true
 					
 					# Common component between modes
 					update_labels()
