@@ -97,6 +97,8 @@ func spawn_and_allocate():
 		for country in all_countries.values():
 			country.suffix = "/" + str(country.num_troops*2)
 			country.max_troops = country.num_troops*2
+			country.get_node("ProgressBar").max_value = country.max_troops
+			country.get_node("ProgressBar").visible = true
 			country.update_labels()
 	
 #	print("The first player is " + curr_player.color)

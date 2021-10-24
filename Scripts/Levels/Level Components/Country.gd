@@ -94,7 +94,7 @@ func calc_pandemic_deaths():
 		return int(ceil(float(total-3)/3))
 
 func update_labels():
-	get_node("Units").text = str(num_troops) + suffix
+	get_node("Units").text = str(num_troops)# + suffix
 
 	get_node("Reinforcements").visible = num_reinforcements > 0
 	get_node("Reinforcements/Label").text = "+" + str(num_reinforcements)
@@ -109,6 +109,8 @@ func update_labels():
 			get_node("Status/Blitz").visible = statused["Blitz"]
 		if "fatigue" in Game_Manager.game_modes:
 			get_node("Status/Fatigue").visible = statused["Fatigue"]
+		if "congestion" in Game_Manager.game_modes:
+			get_node("ProgressBar").value = num_troops+num_reinforcements
 		Game_Manager.update_labels()
 
 # Flash all countries that can be attacked
@@ -286,8 +288,11 @@ func on_click(event, is_long_press):
 				if event.button_index == BUTTON_LEFT:
 					# Check that the player has reinforcements available to allocate
 					if Game_Manager.curr_player.num_reinforcements > 0:
-						if ("congestion" in Game_Manager.game_modes) and\
-							((num_reinforcements + num_troops) < max_troops):
+						if "congestion" in Game_Manager.game_modes:
+							if (num_reinforcements + num_troops) < max_troops:
+								Game_Manager.curr_player.num_reinforcements -= 1
+								num_reinforcements += 1
+						else:
 							Game_Manager.curr_player.num_reinforcements -= 1
 							num_reinforcements += 1
 				# Remove a reinforcement

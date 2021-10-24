@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Scripts/Levels/Level Components/Country.gd" type="Script" id=1]
 [ext_resource path="res://Assets/red-pentagon.svg" type="Texture" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://Assets/Icons/blitz.svg" type="Texture" id=5]
 [ext_resource path="res://Assets/Icons/pandemic.svg" type="Texture" id=6]
 [ext_resource path="res://Assets/Fonts/Font_50.tres" type="DynamicFont" id=7]
+[ext_resource path="res://Assets/Maps/Parallax Background.png" type="Texture" id=8]
 
 [sub_resource type="DynamicFont" id=1]
 size = 25
@@ -113,6 +114,21 @@ rect_scale = Vector2( 0.25, 0.25 )
 custom_fonts/font = ExtResource( 7 )
 text = "9"
 valign = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ProgressBar" type="TextureProgress" parent="."]
+visible = false
+margin_left = -8.0
+margin_bottom = 48.0
+value = 50.0
+texture_under = ExtResource( 8 )
+texture_progress = ExtResource( 8 )
+fill_mode = 3
+tint_under = Color( 0, 0, 0, 1 )
+tint_progress = Color( 0, 1, 0, 1 )
+nine_patch_stretch = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
