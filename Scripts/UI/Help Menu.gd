@@ -22,7 +22,8 @@ func show_item(item_name, container):
 		child.visible = (child.name == item_name)
 		if item_name == "Game Modes" and child.name == "Game Modes":
 			for game_mode in $"VBoxContainer/Menu Display/Game Modes/Game Modes".get_children():
-				if game_mode.name.to_lower() in _root.game_modes:
+				# "if _root" is for better unit testing
+				if _root and game_mode.name.to_lower() in _root.game_modes:
 					game_mode.text = "*" + game_mode.name
 
 func _load_scene():

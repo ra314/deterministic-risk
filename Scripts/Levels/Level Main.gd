@@ -155,7 +155,22 @@ func _ready():
 	get_node("CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/No").connect("button_down", self, "confirm", [false])
 	get_node("CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes").connect("button_down", self, "confirm", [true])
 	
+	# Button to toggle visibility of denominator in congestion mode
+	get_node("CanvasLayer/Show").connect("button_down", self, "toggle_denominator_visibility")
+	get_node("CanvasLayer/Show").visible = "congestion" in game_modes
+	
 	print(game_modes)
+
+func show_help_menu():
+	var scene = _root.scene_manager._load_scene("UI/Help Menu")
+	_root.scene_manager.save_and_hide_current_scene()
+	_root.add_child(scene)
+
+var show_denominator = true
+func toggle_denominator_visibility():
+	show_denominator = not show_denominator
+	for country in all_countries.values():
+		country.update_labels()
 
 # Confirmation System
 #######
@@ -173,11 +188,6 @@ func show_confirmation_menu(confirmation_text, callback, args):
 	confirmation_callback_args = args
 	get_node("CanvasLayer/Confirm").visible = true
 #######
-
-func show_help_menu():
-	var scene = _root.scene_manager._load_scene("UI/Help Menu")
-	_root.scene_manager.save_and_hide_current_scene()
-	_root.add_child(scene)
 
 # Button Removal and Hiding Functions
 #######

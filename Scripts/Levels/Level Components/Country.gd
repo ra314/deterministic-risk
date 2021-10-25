@@ -94,7 +94,7 @@ func calc_pandemic_deaths():
 		return int(ceil(float(total-3)/3))
 
 func update_labels():
-	get_node("Units").text = str(num_troops)# + suffix
+	get_node("Units").text = str(num_troops)
 
 	get_node("Reinforcements").visible = num_reinforcements > 0
 	get_node("Reinforcements/Label").text = "+" + str(num_reinforcements)
@@ -111,6 +111,8 @@ func update_labels():
 			get_node("Status/Fatigue").visible = statused["Fatigue"]
 		if "congestion" in Game_Manager.game_modes:
 			get_node("ProgressBar").value = num_troops+num_reinforcements
+			if Game_Manager.show_denominator:
+				get_node("Units").text += suffix
 		Game_Manager.update_labels()
 
 # Flash all countries that can be attacked

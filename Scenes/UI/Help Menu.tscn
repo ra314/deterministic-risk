@@ -56,12 +56,20 @@ margin_bottom = 68.0
 custom_fonts/font = ExtResource( 3 )
 text = "Objective"
 
+[node name="Settings" type="Button" parent="VBoxContainer/Menu Options"]
+margin_left = 827.0
+margin_right = 1045.0
+margin_bottom = 68.0
+custom_fonts/font = ExtResource( 3 )
+text = "Settings"
+
 [node name="Menu Display" type="Control" parent="VBoxContainer"]
 margin_top = 199.0
 margin_right = 1920.0
 margin_bottom = 199.0
 
 [node name="Controls" type="Label" parent="VBoxContainer/Menu Display"]
+visible = false
 margin_right = 40.0
 margin_bottom = 14.0
 custom_fonts/font = ExtResource( 3 )
@@ -340,6 +348,14 @@ custom_fonts/font = ExtResource( 3 )
 text = "Checkers:
 If you can make an attack/drain, you must perform the attack/drain."
 autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Settings" type="Control" parent="VBoxContainer/Menu Display"]
+visible = false
+margin_right = 40.0
+margin_bottom = 40.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
