@@ -76,7 +76,6 @@ __meta__ = {
 [node name="Tween" type="Tween" parent="."]
 
 [node name="Status" type="Control" parent="."]
-visible = false
 margin_right = 40.0
 margin_bottom = 40.0
 __meta__ = {

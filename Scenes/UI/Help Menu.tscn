@@ -234,7 +234,7 @@ size_flags_horizontal = 3
 custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
 text = "Drain:
-You can attack a country if you have at least 1 unit.
+You can drain a country if you have at least 2 units.
 
 If a 3 attacks a 7
     - 1 will remain in the attacking country

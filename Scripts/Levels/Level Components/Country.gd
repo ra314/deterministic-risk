@@ -349,6 +349,15 @@ func stop_flashing():
 	time_since_last_flash = 0
 	self.flashing = false
 
+func get_sync_data():
+	var sync_data = {}
+	sync_data[num_troops] = num_troops
+	sync_data[num_reinforcements] = num_reinforcements
+	sync_data[belongs_to] = belongs_to.color
+	sync_data[statused] = statused
+	sync_data[max_troops] = max_troops
+	sync_data[suffix] = suffix
+
 # Synchronise the country over network
 func synchronise(_num_troops, _num_reinforcements, _belongs_to, _statused, _max_troops, _suffix):
 	num_troops = _num_troops

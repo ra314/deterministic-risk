@@ -9,7 +9,8 @@ func _init(root: Node2D):
 
 func _load_scene(name: String):
 	var scene: String = 'res://Scenes/' + name + '.tscn' 
-	_root.loaded_scene_history.append(name)
+	if name != "UI/Help Menu":
+		_root.loaded_scene_history.append(name)
 	return load(scene).instance()
 
 func _replace_scene(scene):
