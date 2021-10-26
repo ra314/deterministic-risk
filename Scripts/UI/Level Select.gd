@@ -44,7 +44,7 @@ func _load_scene(scene_str, world_str):
 	
 	# Remote Procedure Call if the game is online
 	if _root.online_game:
-		_root.rpc("load_level", scene_str, world_str)
+		_root.rpc("load_level", scene_str, world_str,  _root.game_modes)
 	# Regular function call for offline game
 	else:
-		_root.load_level(scene_str, world_str)
+		_root.load_level(scene_str, world_str, _root.game_modes)

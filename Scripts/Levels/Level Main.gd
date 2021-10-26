@@ -159,6 +159,11 @@ func _ready():
 	get_node("CanvasLayer/Show").connect("button_down", self, "toggle_denominator_visibility")
 	get_node("CanvasLayer/Show").visible = "congestion" in game_modes
 	
+	# If you're the guest _root.game_modes is empty since the host picks them out
+	# However load_level() in main syncs up the game mdoe with the level main scene
+	# So we're just pushing these game modes back to the root
+	# This is necessary so that the asterisks show up next to the selected game modes on the help screen
+	_root.game_modes = game_modes
 	print(game_modes)
 
 func show_help_menu():
