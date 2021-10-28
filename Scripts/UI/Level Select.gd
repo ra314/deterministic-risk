@@ -6,7 +6,7 @@ onready var _root: Main = get_tree().get_root().get_node("Main")
 func _ready():
 	# Connections for level select
 	var container = $CenterContainer/VBoxContainer/CenterContainer/HBoxContainer/
-	container.get_node("Crucible").connect("button_down", self, "_load_scene", ["Levels/Level Main", "Crucible"])
+	container.get_node("Southern Seas").connect("button_down", self, "_load_scene", ["Levels/Level Main", "Southern Seas"])
 	container.get_node("No Mans Land").connect("button_down", self, "_load_scene",  ["Levels/Level Main", "No Mans Land"])
 	container.get_node("Our World").connect("button_down", self, "_load_scene", ["Levels/Level Main", "Our World"])
 	container = $CenterContainer/VBoxContainer/CenterContainer4/HBoxContainer/
@@ -36,7 +36,7 @@ func select_random(array):
 	return array[rng.randi() % len(array)]
 
 func _load_scene(scene_str, world_str):
-	var worlds = ["Crucible", "Our World", "No Mans Land", "Isle of the Fyre", "Novingrad"]
+	var worlds = ["Southern Seas", "Our World", "No Mans Land", "Isle of the Fyre", "Novingrad"]
 
 	# Pick the random world if the world_str is empty
 	if world_str == "":

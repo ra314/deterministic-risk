@@ -3,13 +3,14 @@ extends "res://Scripts/Level_Funcs.gd"
 var phase = "add countries"
 var selected_country = null
 var lines_drawn = false
+var game_modes = []
 
 var change_curr_troops_button = null
 var add_countries_button = null
 var export_level_button = null
 var connect_countries_button = null
 var information_label = null
-var _world_str = "Our World"
+var _world_str = "Southern Seas"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():	
@@ -74,7 +75,8 @@ func _ready():
 	var save_game = File.new()
 	
 	#Comment out the below lines to have a brand new world
-	.import_level(self, _world_str, true)
+	world_str = _world_str
+	.import_level(self, true)
 
 func toggle_lines():
 	if lines_drawn:
@@ -104,7 +106,7 @@ func change_phase(new_phase):
 	phase = new_phase
 	update_labels()
 
-func _input(event):	
+func _input(event):
 	if not((event is InputEventMouseButton) or (event is InputEventScreenTouch)):
 		return
 	if phase == "add countries":

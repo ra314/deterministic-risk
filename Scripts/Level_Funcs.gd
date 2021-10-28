@@ -68,7 +68,7 @@ func import_level(level_node, bool_load_countries):
 	var save_game = File.new()
 	
 	# Set up the save locations
-	var worlds = ["Crucible", "Our World", "No Mans Land", "Isle of the Fyre", "Novingrad"]
+	var worlds = ["Southern Seas", "Our World", "No Mans Land", "Isle of the Fyre", "Novingrad"]
 
 	# Check if all the save files exist
 	for world in worlds:

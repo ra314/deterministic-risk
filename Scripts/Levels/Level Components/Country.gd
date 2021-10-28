@@ -147,12 +147,10 @@ func get_attackable_countries(game_modes):
 	return attackable_countries
 
 func _input_event(viewport, event, shape_idx):
-	print(event.position)
 	if get_tree().get_current_scene().get_name() == "Level Creator":
-		if event.is_pressed():
+		print(event)
+		if event is InputEventMouseButton:
 			self.on_click(event, false)
-	else:
-		Game_Manager._unhandled_input(event)
 
 func move_to_location_with_duration(location, duration):
 	get_node("Tween").interpolate_property(self, "position", position, location, duration)
@@ -257,19 +255,22 @@ func on_click(event, is_long_press):
 						reset_status()
 					# If it has less or equal and drain is one of the game modes
 					elif "drain" in Game_Manager.game_modes:
+						# Blitz Drain
+						if statused["Blitz"]:
+							num_troops -= (attacker.num_troops)
+						# Normal Drain
+						else:
+							num_troops -= (attacker.num_troops - 1)
+						
+						attacker.num_troops = 1
+						
 						if "blitzkrieg" in Game_Manager.game_modes:
-							if statused["Blitz"]:
-								num_troops -= (attacker.num_troops)
-								attacker.num_troops = 1
-							else:
-								num_troops -= (attacker.num_troops - 1)
-								attacker.num_troops = 1
 							statused["Blitz"] = true
-							
-							# Change ownership if drained to 0
-							if num_troops == 0:
-								change_ownership_to(Game_Manager.player_neutral)
-								reset_status()
+						
+						# Change ownership if drained to 0
+						if num_troops == 0:
+							change_ownership_to(Game_Manager.player_neutral)
+							reset_status()
 						
 					# Common component between modes
 					update_labels()
