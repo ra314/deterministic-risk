@@ -147,9 +147,12 @@ func get_attackable_countries(game_modes):
 	return attackable_countries
 
 func _input_event(viewport, event, shape_idx):
+	print(event.position)
 	if get_tree().get_current_scene().get_name() == "Level Creator":
 		if event.is_pressed():
 			self.on_click(event, false)
+	else:
+		Game_Manager._unhandled_input(event)
 
 func move_to_location_with_duration(location, duration):
 	get_node("Tween").interpolate_property(self, "position", position, location, duration)

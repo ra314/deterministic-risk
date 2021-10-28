@@ -79,9 +79,8 @@ __meta__ = {
 }
 
 [node name="Game Info" type="HBoxContainer" parent="CanvasLayer"]
-margin_top = 960.0
 margin_right = 3840.0
-margin_bottom = 1196.0
+margin_bottom = 236.0
 rect_scale = Vector2( 0.5, 0.5 )
 alignment = 1
 __meta__ = {

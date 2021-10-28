@@ -5,10 +5,23 @@ onready var _root: Main = get_tree().get_root().get_node("Main")
 # Called when the node enters the scene tree for the first time.
 func _ready(): 
 	var container = $CenterContainer/VBoxContainer
-	container.get_node("Next/Button").connect("button_down", self, "_load_scene", ["UI/Level Select"])
+	container.get_node("HBoxContainer/Next/Button").connect("button_down", self, "_load_scene", ["UI/Level Select"])
 	$TextureButton.connect("button_down", self, "back")
 	# Button to go to help menu
 	get_node("Help").connect("button_down", self, "show_help_menu")
+	get_node("CenterContainer/VBoxContainer/HBoxContainer/Random").connect("button_down", self, "randomise_modes")
+
+func randomise_modes():
+	randomize()
+	var grid = get_node("CenterContainer/VBoxContainer/GridContainer")
+	for child in grid.get_children():
+		child.set_pressed(bool(randi()%2))
+	
+	# Edge cases
+	grid.get_node("Classic").pressed = true	
+	if not grid.get_node("Drain").pressed:
+		grid.get_node("Congestion").pressed = false
+		grid.get_node("Blitzkrieg").pressed = false
 
 func show_help_menu():
 	var scene = _root.scene_manager._load_scene("UI/Help Menu")

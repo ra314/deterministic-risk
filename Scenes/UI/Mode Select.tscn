@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Assets/Montserrat-Regular.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Scripts/UI/Mode Select.gd" type="Script" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://Assets/Icons/cross.svg" type="Texture" id=6]
 [ext_resource path="res://Scenes/UI/Menu Item.tscn" type="PackedScene" id=7]
 [ext_resource path="res://Assets/Fonts/Font_50.tres" type="DynamicFont" id=8]
+[ext_resource path="res://Assets/Icons/dice.svg" type="Texture" id=9]
 
 [sub_resource type="DynamicFont" id=1]
 size = 200
@@ -29,8 +30,9 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+margin_left = 48.0
 margin_top = 63.0
-margin_right = 1919.0
+margin_right = 1967.0
 margin_bottom = 975.0
 
 [node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
@@ -146,14 +148,38 @@ custom_fonts/font = ExtResource( 3 )
 text = "Congestion"
 align = 1
 
-[node name="Next" parent="CenterContainer/VBoxContainer" instance=ExtResource( 7 )]
-anchor_left = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
 margin_top = 781.0
 margin_right = 1919.0
 margin_bottom = 912.0
+alignment = 1
+
+[node name="Next" parent="CenterContainer/VBoxContainer/HBoxContainer" instance=ExtResource( 7 )]
+anchor_left = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 621.0
+margin_right = 971.0
+margin_bottom = 131.0
+rect_min_size = Vector2( 350, 0 )
 item_name = "Next"
+
+[node name="TextureRect" type="TextureRect" parent="CenterContainer/VBoxContainer/HBoxContainer"]
+margin_left = 975.0
+margin_right = 1175.0
+margin_bottom = 131.0
+rect_min_size = Vector2( 200, 100 )
+expand = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Random" type="TextureButton" parent="CenterContainer/VBoxContainer/HBoxContainer"]
+margin_left = 1179.0
+margin_right = 1297.0
+margin_bottom = 131.0
+texture_normal = ExtResource( 9 )
+texture_hover = ExtResource( 9 )
 
 [node name="TextureButton" type="TextureButton" parent="."]
 margin_right = 40.0

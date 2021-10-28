@@ -280,7 +280,7 @@ size_flags_horizontal = 3
 custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
 text = "Pandemic:
-If a country after reinforcement has 4 or more units, it loses 1 unit for every 3 units higher than the threshold (4).
+If a country after reinforcement has 4 or more units, it loses 1 unit for every 3 units higher than the threshold (4) every turn at the end of reinforcement.
 
 3 is safe
 4 loses 1 unit
