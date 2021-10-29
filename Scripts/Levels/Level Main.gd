@@ -101,7 +101,7 @@ func spawn_and_allocate():
 #	print("The first player is " + curr_player.color)
 #	print(curr_player.color)
 	update_labels()
-	update_player_status(curr_player.color, true)
+	$Phase.update_player_status(curr_player.color, true)
 	print("Found good spawn")
 	return true
 	
@@ -117,10 +117,10 @@ func _ready():
 	get_node("CanvasLayer/Zoom Out").connect("pressed", get_node("Camera2D"), "zoom_out")
 	
 	# Button to end attack
-	get_node("CanvasLayer/End Attack").connect("pressed", self, "change_to_reinforcement")
+	get_node("CanvasLayer/End Attack").connect("pressed", $Phase, "change_to_reinforcement")
 	
 	# Button to end reinforcement
-	get_node("CanvasLayer/End Reinforcement").connect("pressed", self, "change_to_attack")
+	get_node("CanvasLayer/End Reinforcement").connect("pressed", $Phase, "change_to_attack")
 	
 	# Buttons to select if host plays as red or blue
 	get_node("CanvasLayer/Init Buttons/Online/Play Red").connect("button_down", self, "set_host_color", ["red"])
@@ -149,8 +149,10 @@ func _ready():
 	get_node("CanvasLayer/Restart").connect("button_down", self, "restart")
 	
 	# Confirmation buttons
-	get_node("CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/No").connect("button_down", self, "confirm", [false])
-	get_node("CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes").connect("button_down", self, "confirm", [true])
+	get_node("CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/No").\
+		connect("button_down", get_node("CanvasLayer/Confirm"), "set_visible", [false])
+	get_node("CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes").\
+		connect("button_down", get_node("CanvasLayer/Confirm"), "set_visible", [false])
 	
 	# Button to toggle visibility of denominator in congestion mode
 	get_node("CanvasLayer/Show").connect("button_down", self, "toggle_denominator_visibility")
@@ -176,19 +178,10 @@ func toggle_denominator_visibility():
 
 # Confirmation System
 #######
-var confirmation_callback = ""
-var confirmation_callback_args = []
-
-func confirm(confirmation_bool):
-	if confirmation_bool:
-		callv(confirmation_callback, confirmation_callback_args)
-	get_node("CanvasLayer/Confirm").visible = false
-
-func show_confirmation_menu(confirmation_text, callback, args):
+func show_confirmation_menu(confirmation_text, callback, args, object):
 	get_node("CanvasLayer/Confirm/VBoxContainer/Label").text = confirmation_text
-	confirmation_callback = callback
-	confirmation_callback_args = args
 	get_node("CanvasLayer/Confirm").visible = true
+	$CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes.connect("button_down", object, callback, args)
 #######
 
 # Button Removal and Hiding Functions
@@ -328,98 +321,7 @@ func is_attack_over():
 
 # Changing phases of the game
 #######
-func change_to_next_player():
-	curr_player_index = (curr_player_index+1)%num_players
-	curr_player = players.values()[curr_player_index]
-	# We're synchronizing the current player because after the change 
-	# the current player is no longer the instance this function was called on
-	if _root.online_game:
-		$Sync.synchronize(curr_player.network_id)
-		rpc_id(curr_player.network_id, "update_player_status", curr_player.color, phase == "attack")
 
-# Update status to attack or defend
-remote func update_player_status(color, attacking):	
-	# Reset existing player statuses
-	get_node("CanvasLayer/Game Info/red/VBoxContainer/Status").visible = false
-	get_node("CanvasLayer/Game Info/blue/VBoxContainer/Status").visible = false
-	
-	# Selecting attack or defend for player status
-	var curr_player_status = get_node("CanvasLayer/Game Info/" + color + "/VBoxContainer/Status")
-	curr_player_status.visible = true
-	if attacking:
-		curr_player_status.texture = load("res://Assets/Icons/sword.svg")
-	else:
-		curr_player_status.texture = load("res://Assets/Icons/shield.svg")
-
-remote func change_to_reinforcement(surity_bool=false):
-	# When the surity bool is true, you get to skip the confirmation menu
-	if not surity_bool:
-		show_confirmation_menu("You have an attack left.\nAre you sure you want to end attacks?",\
-							 "change_to_reinforcement", [true])
-		return
-	
-	selected_country = null
-	curr_level.stop_flashing()
-	curr_player.give_reinforcements()
-	
-	# Disabling fatigue and blitz
-	for country in all_countries.values():
-		country.statused["Fatigue"] = false
-		country.statused["Blitz"] = false
-		country.get_node("Visual").update_labels()
-	
-	# Modifying the visibility of the end attack and end reinforcement buttons
-	end_attack_disable(true)
-	end_reinforcement_disable(false)
-	
-	# Updating player status
-	update_player_status(curr_player.color, false)
-	
-	phase = "reinforcement"
-
-func change_to_attack(surity_bool=false):
-	# When the surity bool is true, you get to skip the confirmation menu
-	if not surity_bool and curr_player.num_reinforcements > 0:
-		show_confirmation_menu("You have a reinforcement left to place on the map.\nAre you sure you want to end reinforcement?",\
-							 "change_to_attack", [true])
-		return
-	
-	# Modifying the visibility of the end attack and end reinforcement buttons	
-	if _root.online_game:
-		end_reinforcement_disable(true)
-		rpc_id(get_next_player().network_id, "end_attack_disable", false)
-		rpc_id(get_next_player().network_id, "notify")
-	else:
-		end_attack_disable(false)
-		end_reinforcement_disable(true)
-	
-	# Moving the troops from reinforcement into active duty for each country
-	# and subtracting pandemic deaths
-	for country in all_countries.values():
-		country.num_troops += country.num_reinforcements
-		country.num_reinforcements = 0
-		if "pandemic" in game_modes:
-			country.num_troops -= country.calc_pandemic_deaths()
-		country.get_node("Visual").update_labels()
-	
-	selected_country = null
-	round_number += 1
-	phase = "attack"
-	change_to_next_player()
-	update_labels()
-	
-	# Updating player status
-	update_player_status(curr_player.color, true)
-	
-	# Automatically end the attack phase if in checkers mode and no attacks are available
-	if "checkers" in game_modes and is_attack_over():
-		if _root.online_game:
-			rpc_id(curr_player.network_id, "change_to_reinforcement", true)
-		else:
-			change_to_reinforcement(true)
-
-remote func notify():
-	$Notification.play()
 #######
 
 # Ending the game
