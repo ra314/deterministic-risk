@@ -1,4 +1,4 @@
-extends Area2D
+extends Node2D
 
 var num_troops: int = 0
 var belongs_to = null
@@ -12,17 +12,6 @@ var statused = {"Fatigue": false, "Blitz": false, "Pandemic": false}
 # This is so during reinforcement the label can show up as
 # {num_troops} + {num_reinforcements}
 var num_reinforcements: int = 0
-
-func save():
-	var save_dict = {}
-	save_dict["name"] = country_name
-	save_dict["troops"] = num_troops
-	save_dict["x"] = position[0]
-	save_dict["y"] = position[1]
-	save_dict["connections"] = []
-	for country in connected_countries:
-		save_dict["connections"].append(country.country_name)
-	return save_dict
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -287,3 +276,14 @@ func synchronise(_num_troops, _num_reinforcements, _belongs_to, _statused, _max_
 	if belongs_to != _belongs_to:
 		change_ownership_to(_belongs_to)
 	$Visual.update_labels()
+
+func save():
+	var save_dict = {}
+	save_dict["name"] = country_name
+	save_dict["troops"] = num_troops
+	save_dict["x"] = position[0]
+	save_dict["y"] = position[1]
+	save_dict["connections"] = []
+	for country in connected_countries:
+		save_dict["connections"].append(country.country_name)
+	return save_dict

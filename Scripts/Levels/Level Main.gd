@@ -496,9 +496,11 @@ func update_labels():
 		curr_texture = colors[curr_player.color]
 	get_node("CanvasLayer/Game Info/Round Info/HBoxContainer/Curr Player").texture = curr_texture
 
-func _unhandled_input(event):
-	print(event.position)
+func _input(event):
 	if (event is InputEventMouseButton) or (event is InputEventScreenTouch):
+		
+		print(event.position)
+	
 		if event.pressed and input_allowed:
 			input_allowed = false
 			input_pressed = true
