@@ -1,6 +1,5 @@
 [gd_scene load_steps=13 format=2]
 
-[ext_resource path="res://Scripts/Levels/Level Components/Country.gd" type="Script" id=1]
 [ext_resource path="res://Assets/red-pentagon.svg" type="Texture" id=2]
 [ext_resource path="res://Assets/Icons/fatigue.svg" type="Texture" id=3]
 [ext_resource path="res://Assets/Montserrat-Regular.ttf" type="DynamicFontData" id=4]
@@ -10,31 +9,41 @@
 [ext_resource path="res://Assets/Maps/Parallax Background.png" type="Texture" id=8]
 [ext_resource path="res://Scripts/Levels/Country_Visual.gd" type="Script" id=9]
 
-[sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 24, 24 )
+[sub_resource type="GDScript" id=4]
+script/source = "extends Area2D
 
-[sub_resource type="DynamicFont" id=1]
-size = 25
-font_data = ExtResource( 4 )
+func _input_event(viewport, event, shape_idx):
+	if event is InputEventMouseButton:
+		print(event)
+"
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 3, 3 )
 
 [sub_resource type="DynamicFont" id=2]
 size = 25
 font_data = ExtResource( 4 )
 
+[sub_resource type="DynamicFont" id=3]
+size = 25
+font_data = ExtResource( 4 )
+
 [node name="Country" type="Area2D"]
+position = Vector2( 63.235, 48.2 )
+scale = Vector2( 8, 8 )
 z_index = 5
 z_as_relative = false
-script = ExtResource( 1 )
+script = SubResource( 4 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 24, 24 )
-z_index = 2
-shape = SubResource( 3 )
+position = Vector2( -4.90438, -3.025 )
+z_index = 4096
+shape = SubResource( 1 )
 
 [node name="Visual" type="Node2D" parent="."]
 script = ExtResource( 9 )
 
-[node name="Active Troops" type="Node2D" parent="Visual"]
+[node name="Active Troops" type="Node" parent="Visual"]
 
 [node name="Sprite" type="Sprite" parent="Visual/Active Troops"]
 scale = Vector2( 0.75, 0.75 )
@@ -45,7 +54,7 @@ centered = false
 margin_left = -16.0
 margin_right = 64.0
 margin_bottom = 48.0
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = SubResource( 2 )
 text = "12"
 align = 1
 valign = 1
@@ -54,7 +63,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Reinforcements" type="Node2D" parent="Visual"]
+[node name="Reinforcements" type="Node" parent="Visual"]
 
 [node name="Sprite" type="Sprite" parent="Visual/Reinforcements"]
 modulate = Color( 0, 0, 0, 1 )
@@ -68,7 +77,7 @@ flip_v = true
 margin_top = 48.0
 margin_right = 48.0
 margin_bottom = 96.0
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 3 )
 text = "1"
 align = 1
 valign = 1
@@ -76,7 +85,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Status" type="Node2D" parent="Visual"]
+[node name="Status" type="Node" parent="Visual"]
 
 [node name="Fatigue" type="Sprite" parent="Visual/Status"]
 visible = false

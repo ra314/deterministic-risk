@@ -106,7 +106,7 @@ func change_phase(new_phase):
 	phase = new_phase
 	update_labels()
 
-func _input(event):
+func _unhandled_input(event):
 	if not((event is InputEventMouseButton) or (event is InputEventScreenTouch)):
 		return
 	if phase == "add countries":

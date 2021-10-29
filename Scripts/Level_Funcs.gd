@@ -124,7 +124,7 @@ func draw_lines_between_countries():
 		if country:
 			if country.connected_countries:
 				for neighbour in country.connected_countries:
-					country.draw_line_to_country(neighbour)
+					country.get_node("Visual").draw_line_to_country(neighbour)
 
 func remove_lines_between_countries():
 	for country in all_countries.values():

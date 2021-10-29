@@ -15,9 +15,16 @@ var num_reinforcements: int = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if get_parent() is Viewport:
+		print("happened")
+		var Player = load("res://Scenes/Levels/Level Components/Player.tscn")
+		var player_neutral = Player.instance().init("gray")
+		belongs_to = player_neutral
+	
 	Game_Manager = get_parent()
 	$Visual.Game_Manager = Game_Manager
 	$Visual.change_color_to(belongs_to.color)
+
 
 func change_ownership_to(player):
 	# Transfer of Ownership
@@ -70,6 +77,8 @@ func _input_event(viewport, event, shape_idx):
 		print(event)
 		if event is InputEventMouseButton:
 			self.on_click(event, false)
+	if event is InputEventMouseButton:
+		print(event)
 
 func on_click(event, is_long_press):	
 	# Level Creator Behaviour
