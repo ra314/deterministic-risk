@@ -127,10 +127,10 @@ func _process(delta):
 		time_since_last_flash += delta
 		if time_since_last_flash > flashing_period:
 			#Flashing the country sprite
-			toggle_brightness()
 			if $"Active Troops/Sprite".modulate == Color(1,1,1):
 				change_mask_color("white")
 			else:
 				change_mask_color(get_parent().belongs_to.color)
+			toggle_brightness()
 			time_since_last_flash = 0
 
