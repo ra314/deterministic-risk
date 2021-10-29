@@ -74,11 +74,8 @@ func get_attackable_countries(game_modes):
 
 func _input_event(viewport, event, shape_idx):
 	if get_tree().get_current_scene().get_name() == "Level Creator":
-		print(event)
-		if event is InputEventMouseButton:
+		if event is InputEventMouseButton and not event.pressed:
 			self.on_click(event, false)
-	if event is InputEventMouseButton:
-		print(event)
 
 func on_click(event, is_long_press):	
 	# Level Creator Behaviour
@@ -101,14 +98,21 @@ func on_click(event, is_long_press):
 					queue_free()
 			
 			"connect countries":
+				print(Game_Manager.selected_country)
 				if Game_Manager.selected_country == null:
+					$Visual.toggle_brightness()
 					Game_Manager.selected_country = self
-				elif Game_Manager.selected_country != self:
+				elif Game_Manager.selected_country == self:
+					$Visual.toggle_brightness()
+					Game_Manager.selected_country = null
+				else:
 					connected_countries.append(Game_Manager.selected_country)
 					Game_Manager.selected_country.connected_countries.append(self)
 					if Game_Manager.lines_drawn:
 						$Visual.draw_line_to_country(Game_Manager.selected_country)
+					Game_Manager.selected_country.get_node("Visual").toggle_brightness()
 					Game_Manager.selected_country = null
+				print(Game_Manager.selected_country)
 			
 			"move countries":
 				Game_Manager.selected_country = self

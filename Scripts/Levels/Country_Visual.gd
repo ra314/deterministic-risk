@@ -115,17 +115,22 @@ func stop_flashing():
 	time_since_last_flash = 0
 	self.flashing = false
 
+func toggle_brightness():
+	if $"Active Troops/Sprite".modulate == Color(1,1,1):
+		$"Active Troops/Sprite".modulate = Color(0.5,0.5,0.5)
+	else:
+		$"Active Troops/Sprite".modulate = Color(1,1,1)
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if flashing:
 		time_since_last_flash += delta
 		if time_since_last_flash > flashing_period:
 			#Flashing the country sprite
+			toggle_brightness()
 			if $"Active Troops/Sprite".modulate == Color(1,1,1):
 				change_mask_color("white")
-				$"Active Troops/Sprite".modulate = Color(0.5,0.5,0.5)
 			else:
 				change_mask_color(get_parent().belongs_to.color)
-				$"Active Troops/Sprite".modulate = Color(1,1,1)
 			time_since_last_flash = 0
 

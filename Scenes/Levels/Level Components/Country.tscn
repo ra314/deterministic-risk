@@ -13,11 +13,11 @@
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 24, 24 )
 
-[sub_resource type="DynamicFont" id=1]
+[sub_resource type="DynamicFont" id=4]
 size = 25
 font_data = ExtResource( 4 )
 
-[sub_resource type="DynamicFont" id=2]
+[sub_resource type="DynamicFont" id=5]
 size = 25
 font_data = ExtResource( 4 )
 
@@ -45,7 +45,7 @@ centered = false
 margin_left = -16.0
 margin_right = 64.0
 margin_bottom = 48.0
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = SubResource( 4 )
 text = "12"
 align = 1
 valign = 1
@@ -68,7 +68,7 @@ flip_v = true
 margin_top = 48.0
 margin_right = 48.0
 margin_bottom = 96.0
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 5 )
 text = "1"
 align = 1
 valign = 1
