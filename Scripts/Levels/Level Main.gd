@@ -415,7 +415,10 @@ func change_to_attack(surity_bool=false):
 	
 	# Automatically end the attack phase if in checkers mode and no attacks are available
 	if "checkers" in game_modes and is_attack_over():
-		rpc_id(curr_player.network_id, "change_to_reinforcement", true)
+		if _root.online_game:
+			rpc_id(curr_player.network_id, "change_to_reinforcement", true)
+		else:
+			change_to_reinforcement(true)
 
 remote func notify():
 	$Notification.play()
