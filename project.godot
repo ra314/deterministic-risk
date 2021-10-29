@@ -23,17 +23,11 @@ _global_script_classes=[ {
 "class": "SceneManager",
 "language": "GDScript",
 "path": "res://Scripts/Scene_Manager.gd"
-}, {
-"base": "Camera2D",
-"class": "TouchCamera2D",
-"language": "GDScript",
-"path": "res://Scripts/TouchCamera2D.gd"
 } ]
 _global_script_class_icons={
 "Main": "",
 "MenuItem": "",
-"SceneManager": "",
-"TouchCamera2D": ""
+"SceneManager": ""
 }
 
 [application]

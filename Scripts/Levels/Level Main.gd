@@ -95,10 +95,7 @@ func spawn_and_allocate():
 	# Visual update for congestion mode
 	if "congestion" in game_modes:
 		for country in all_countries.values():
-			country.suffix = "/" + str(country.num_troops*2)
 			country.max_troops = country.num_troops*2
-			country.get_node("Visual/Status/ProgressBar").max_value = country.max_troops
-			country.get_node("Visual/Status/ProgressBar").visible = true
 			country.get_node("Visual").update_labels()
 	
 #	print("The first player is " + curr_player.color)
@@ -175,7 +172,7 @@ var show_denominator = true
 func toggle_denominator_visibility():
 	show_denominator = not show_denominator
 	for country in all_countries.values():
-		country.update_labels()
+		country.get_node("Visual").update_labels()
 
 # Confirmation System
 #######
@@ -534,7 +531,7 @@ func synchronize(network_id):
 	for country in all_countries.values():
 		rpc_id(network_id, "synchronise_country", country.country_name, \
 			country.num_troops, country.num_reinforcements, \
-			country.belongs_to.color, country.statused, country.max_troops, country.suffix)
+			country.belongs_to.color, country.statused, country.max_troops)
 	
 	# Synchrosing the game in terms of player information
 	for player in players.values():
@@ -547,8 +544,8 @@ func synchronize(network_id):
 	if phase != "game over":
 		rpc_id(network_id, "update_player_status", curr_player.color, phase == "attack")
 
-remote func synchronise_country(country_name, num_troops, num_reinforcements, color, statused, max_troops, suffix):
-	all_countries[country_name].synchronise(num_troops, num_reinforcements, players[color], statused, max_troops, suffix)
+remote func synchronise_country(country_name, num_troops, num_reinforcements, color, statused, max_troops):
+	all_countries[country_name].synchronise(num_troops, num_reinforcements, players[color], statused, max_troops)
 
 remote func synchronise_player(player_info):
 	var curr_player = players[player_info["color"]]

@@ -277,15 +277,13 @@ func get_sync_data():
 	sync_data[belongs_to] = belongs_to.color
 	sync_data[statused] = statused
 	sync_data[max_troops] = max_troops
-#	sync_data[suffix] = $Visual.suffix
 
 # Synchronise the country over network
-func synchronise(_num_troops, _num_reinforcements, _belongs_to, _statused, _max_troops, _suffix):
+func synchronise(_num_troops, _num_reinforcements, _belongs_to, _statused, _max_troops):
 	num_troops = _num_troops
 	num_reinforcements = _num_reinforcements
 	statused = _statused
 	max_troops = _max_troops
-	$Visual.suffix = _suffix
 	if belongs_to != _belongs_to:
 		change_ownership_to(_belongs_to)
 	$Visual.update_labels()

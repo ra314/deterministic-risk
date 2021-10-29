@@ -4,7 +4,6 @@ var mask_sprite = null
 var flashing = false
 var time_since_last_flash = 0
 const flashing_period = 0.5
-var suffix = ""
 var colors = {"blue": load("res://Assets/blue-square.svg"), 
 				"red": load("res://Assets/red-pentagon.svg"),
 				"gray": load("res://Assets/neutral-circle.svg")}
@@ -83,9 +82,11 @@ func update_labels():
 		if "fatigue" in Game_Manager.game_modes:
 			$"Status/Fatigue".visible = get_parent().statused["Fatigue"]
 		if "congestion" in Game_Manager.game_modes:
+			$"Status/ProgressBar".visible = true
+			$"Status/ProgressBar".max_value = get_parent().max_troops
 			$"Status/ProgressBar".value = get_parent().num_troops+get_parent().num_reinforcements
 			if Game_Manager.show_denominator:
-				$"Active Troops/Label".text += suffix
+				$"Active Troops/Label".text += "/" + str(get_parent().max_troops)
 		Game_Manager.update_labels()
 
 func draw_line_to_country(selected_country):
