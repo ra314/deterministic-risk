@@ -68,13 +68,13 @@ func spawn_and_allocate():
 	for country in curr_player.owned_countries:
 		country.num_troops = select_random(troops_to_assign)
 		troops_to_assign.erase(country.num_troops)
-		country.update_labels()
+		country.get_node("Visual").update_labels()
 	
 	troops_to_assign = [2,3,1,2]
 	for country in get_next_player().owned_countries:
 		country.num_troops = select_random(troops_to_assign)
 		troops_to_assign.erase(country.num_troops)
-		country.update_labels()
+		country.get_node("Visual").update_labels()
 	
 	# Checking if all player owned countries have a country they can attack
 	for player in players.values().slice(0,1):
@@ -97,9 +97,9 @@ func spawn_and_allocate():
 		for country in all_countries.values():
 			country.suffix = "/" + str(country.num_troops*2)
 			country.max_troops = country.num_troops*2
-			country.get_node("ProgressBar").max_value = country.max_troops
-			country.get_node("ProgressBar").visible = true
-			country.update_labels()
+			country.get_node("Visual/Status/ProgressBar").max_value = country.max_troops
+			country.get_node("Visual/Status/ProgressBar").visible = true
+			country.get_node("Visual").update_labels()
 	
 #	print("The first player is " + curr_player.color)
 #	print(curr_player.color)
@@ -368,7 +368,7 @@ remote func change_to_reinforcement(surity_bool=false):
 	for country in all_countries.values():
 		country.statused["Fatigue"] = false
 		country.statused["Blitz"] = false
-		country.update_labels()
+		country.get_node("Visual").update_labels()
 	
 	# Modifying the visibility of the end attack and end reinforcement buttons
 	end_attack_disable(true)
@@ -402,7 +402,7 @@ func change_to_attack(surity_bool=false):
 		country.num_reinforcements = 0
 		if "pandemic" in game_modes:
 			country.num_troops -= country.calc_pandemic_deaths()
-		country.update_labels()
+		country.get_node("Visual").update_labels()
 	
 	selected_country = null
 	round_number += 1
@@ -560,7 +560,7 @@ remote func synchronise_meta_info(_curr_player_index, _round_number, _game_start
 
 # Below functions are for the movement of countries during the attack phase to propagate across network
 remote func move_country_across_network(origin_country_name, destination_country_name):
-	all_countries[origin_country_name].move_to_country(all_countries[destination_country_name])
+	all_countries[origin_country_name].get_node("Visual").move_to_country(all_countries[destination_country_name])
 	# If the game is online and the the function wasn't called via RPC
 	if _root.online_game and (get_tree().get_rpc_sender_id() == 0):
 		rpc_id(get_next_player().network_id, "move_country_across_network", origin_country_name, destination_country_name)
@@ -568,7 +568,7 @@ remote func move_country_across_network(origin_country_name, destination_country
 
 # Below functions are for the flashing of countries during the attack phase to propagate across network
 remote func flash_across_network(country_name):
-	all_countries[country_name].flash_attackable_neighbours()
+	all_countries[country_name].get_node("Visual").flash_attackable_neighbours()
 	# If the game is online and the the function wasn't called via RPC
 	if _root.online_game and (get_tree().get_rpc_sender_id() == 0):
 		rpc_id(get_next_player().network_id, "flash_across_network", country_name)
@@ -576,7 +576,7 @@ remote func flash_across_network(country_name):
 # Below functions to stop the flashing of countries to propagate across network
 remote func stop_flashing():
 	for country in all_countries.values():
-		country.stop_flashing()
+		country.get_node("Visual").stop_flashing()
 	# If the game is online and the the function wasn't called via RPC
 	if _root.online_game and (get_tree().get_rpc_sender_id() == 0):
 		rpc_id(get_next_player().network_id, "stop_flashing")

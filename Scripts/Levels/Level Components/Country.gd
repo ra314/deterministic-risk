@@ -5,22 +5,13 @@ var belongs_to = null
 var connected_countries = []
 var country_name = null
 var Game_Manager = null
-var suffix = ""
+
 var max_troops = 0
 var statused = {"Fatigue": false, "Blitz": false, "Pandemic": false}
 
 # This is so during reinforcement the label can show up as
 # {num_troops} + {num_reinforcements}
 var num_reinforcements: int = 0
-
-var flashing = false
-var time_since_last_flash = 0
-const flashing_period = 0.5
-var mask_sprite = null
-
-# List of locations to move to to complete the attack animation.
-const destination_movement_duration = 0.2
-const origin_movement_duration = 0.4
 
 func save():
 	var save_dict = {}
@@ -33,38 +24,11 @@ func save():
 		save_dict["connections"].append(country.country_name)
 	return save_dict
 
-var colors = {"blue": load("res://Assets/blue-square.svg"), 
-				"red": load("res://Assets/red-pentagon.svg"),
-				"gray": load("res://Assets/neutral-circle.svg")}
-
-const mask_colors = {"white": Color8(255,255,255,255),
-					"blue": Color8(70,70,185,255),
-					"red": Color8(195,60,60,255),
-					"gray": Color8(165,165,165,255)}
-
-func change_mask_color(color):
-	# Performance hack
-	# Don't bother creating mask sprite if one hasn't been created and the color of the country is grey
-	# This is true for the majority of countries when the game is spawned
-	if mask_sprite == null:
-		if color == "gray":
-			return
-		else:
-			print(str(create_mask_sprite()) + "ms")
-
-	var shader = mask_sprite.get_material()
-	shader.set_shader_param("u_highlight_color", mask_colors[color])
-	mask_sprite.set_material(shader)
-
-func change_color_to(color):
-	get_node("Sprite").texture = colors[color]
-	get_node("Reinforcements/Sprite").texture = colors[color]
-	change_mask_color(color)
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Game_Manager = get_parent()
-	change_color_to(belongs_to.color)
+	$Visual.Game_Manager = Game_Manager
+	$Visual.change_color_to(belongs_to.color)
 
 func change_ownership_to(player):
 	# Transfer of Ownership
@@ -76,8 +40,8 @@ func change_ownership_to(player):
 	# If statement is present in case the country scene is run without a game manager
 	if Game_Manager:
 		Game_Manager.update_labels()
-	change_color_to(player.color)
-	update_labels()
+	$Visual.change_color_to(player.color)
+	$Visual.update_labels()
 
 func reset_status():
 	# Enable fatigue and remove blitz
@@ -92,40 +56,6 @@ func calc_pandemic_deaths():
 		return 0
 	else:
 		return int(ceil(float(total-3)/3))
-
-func update_labels():
-	get_node("Units").text = str(num_troops)
-
-	get_node("Reinforcements").visible = num_reinforcements > 0
-	get_node("Reinforcements/Label").text = "+" + str(num_reinforcements)
-	
-	if Game_Manager:
-		if "pandemic" in Game_Manager.game_modes:
-			var num_deaths = calc_pandemic_deaths()
-			get_node("Status/Num Pandemic").visible = num_deaths > 0
-			get_node("Status/Pandemic").visible = num_deaths > 0
-			get_node("Status/Num Pandemic").text = str(num_deaths)
-		if "blitzkrieg" in Game_Manager.game_modes:
-			get_node("Status/Blitz").visible = statused["Blitz"]
-		if "fatigue" in Game_Manager.game_modes:
-			get_node("Status/Fatigue").visible = statused["Fatigue"]
-		if "congestion" in Game_Manager.game_modes:
-			get_node("ProgressBar").value = num_troops+num_reinforcements
-			if Game_Manager.show_denominator:
-				get_node("Units").text += suffix
-		Game_Manager.update_labels()
-
-# Flash all countries that can be attacked
-func flash_attackable_neighbours():
-	for country in get_attackable_countries(Game_Manager.game_modes):
-		# Creation of a mask sprite to do the flashing
-		country.flashing = true
-
-func draw_line_to_country(selected_country):
-	var new_line = Line2D.new()
-	add_child(new_line)
-	new_line.add_point(Vector2(20,20))
-	new_line.add_point(selected_country.position - position + Vector2(20,20))
 
 static func can_attack(attacker, defender, game_modes):
 	# Attack not possible if currently fatigued
@@ -151,15 +81,6 @@ func _input_event(viewport, event, shape_idx):
 		print(event)
 		if event is InputEventMouseButton:
 			self.on_click(event, false)
-
-func move_to_location_with_duration(location, duration):
-	get_node("Tween").interpolate_property(self, "position", position, location, duration)
-
-# Moving to a country and back
-func move_to_country(destination_country):
-	move_to_location_with_duration(destination_country.position, destination_movement_duration)
-	get_node("Tween").interpolate_callback(self, destination_movement_duration, "move_to_location_with_duration", position, origin_movement_duration)
-	get_node("Tween").start()
 
 func on_click(event, is_long_press):	
 	# Level Creator Behaviour
@@ -188,7 +109,7 @@ func on_click(event, is_long_press):
 					connected_countries.append(Game_Manager.selected_country)
 					Game_Manager.selected_country.connected_countries.append(self)
 					if Game_Manager.lines_drawn:
-						draw_line_to_country(Game_Manager.selected_country)
+						$Visual.draw_line_to_country(Game_Manager.selected_country)
 					Game_Manager.selected_country = null
 			
 			"move countries":
@@ -202,7 +123,7 @@ func on_click(event, is_long_press):
 							country.connected_countries[i].country_name = color
 				country_name = color
 		
-		update_labels()
+		$Visual.update_labels()
 		return
 	
 	# In Game Behaviour
@@ -273,8 +194,8 @@ func on_click(event, is_long_press):
 							reset_status()
 						
 					# Common component between modes
-					update_labels()
-					attacker.update_labels()
+					$Visual.update_labels()
+					attacker.get_node("Visual").update_labels()
 					Game_Manager.selected_country = null
 					
 					# Movement animation
@@ -313,7 +234,7 @@ func on_click(event, is_long_press):
 						Game_Manager.curr_player.num_reinforcements += num_reinforcements
 						num_reinforcements = 0
 				
-				update_labels()
+				$Visual.update_labels()
 				Game_Manager.update_labels()
 			pass
 		
@@ -337,21 +258,15 @@ func randomise_troops():
 		num_troops = 3
 	elif rand_num < 10:
 		num_troops = 4
-	update_labels()
+	$Visual.update_labels()
 
 func init(_x, _y, _country_name, player):
 	self.belongs_to = player
 	position = Vector2(_x, _y)
 	self.country_name = _country_name
 	randomise_troops()
-	update_labels()
+	$Visual.update_labels()
 	return self
-
-func stop_flashing():
-	change_mask_color(belongs_to.color)
-	get_node("Sprite").modulate = Color(1,1,1)
-	time_since_last_flash = 0
-	self.flashing = false
 
 func get_sync_data():
 	var sync_data = {}
@@ -360,7 +275,7 @@ func get_sync_data():
 	sync_data[belongs_to] = belongs_to.color
 	sync_data[statused] = statused
 	sync_data[max_troops] = max_troops
-	sync_data[suffix] = suffix
+#	sync_data[suffix] = $Visual.suffix
 
 # Synchronise the country over network
 func synchronise(_num_troops, _num_reinforcements, _belongs_to, _statused, _max_troops, _suffix):
@@ -368,50 +283,7 @@ func synchronise(_num_troops, _num_reinforcements, _belongs_to, _statused, _max_
 	num_reinforcements = _num_reinforcements
 	statused = _statused
 	max_troops = _max_troops
-	suffix = _suffix
+	$Visual.suffix = _suffix
 	if belongs_to != _belongs_to:
 		change_ownership_to(_belongs_to)
-	update_labels()
-
-func create_mask_sprite():
-	# Measuring performance
-	var time_start = OS.get_ticks_msec()
-	
-	# Changing the select country to white and everything else to transparent
-	var mask_shader = load("res://Assets/mask_shader.tres").duplicate()
-	mask_shader.set_shader_param("u_color_key", Color(country_name))
-	mask_shader.set_shader_param("u_highlight_color", Color8(255,255,255,255))
-	mask_shader.set_shader_param("u_background_color", Color8(0,0,0,0))
-	
-	# Creating a sprite that contains the world's mask texture and add it to level
-	var tex = ImageTexture.new()
-	tex.create_from_image(Game_Manager.world_mask)
-	
-	mask_sprite = Sprite.new()
-	mask_sprite.centered = false
-	mask_sprite.texture = tex
-	mask_sprite.visible = true
-	mask_sprite.z_index = 4
-	mask_sprite.set_material(mask_shader)
-	# Scale after the shader has run to avoid AA issues
-	mask_sprite.set_scale(Vector2(1/Game_Manager.scale_ratio,1/Game_Manager.scale_ratio))
-	
-	Game_Manager.add_child(mask_sprite)
-	
-	# Measuring performance
-	var time_taken = OS.get_ticks_msec() - time_start
-	return time_taken
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	if flashing:
-		time_since_last_flash += delta
-		if time_since_last_flash > flashing_period:
-			#Flashing the country sprite
-			if get_node("Sprite").modulate == Color(1,1,1):
-				change_mask_color("white")
-				get_node("Sprite").modulate = Color(0.5,0.5,0.5)
-			else:
-				change_mask_color(belongs_to.color)
-				get_node("Sprite").modulate = Color(1,1,1)
-			time_since_last_flash = 0
+	$Visual.update_labels()
