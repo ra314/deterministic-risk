@@ -25,6 +25,12 @@ func show_item(item_name, container):
 				# "if _root" is for better unit testing
 				if _root and game_mode.name.to_lower() in _root.game_modes:
 					game_mode.text = "*" + game_mode.name
+	
+	# Toggle the other menu option buttons off
+	if container.name == "Menu Display":
+		for child in $"VBoxContainer/Menu Options".get_children():
+			if child.name != item_name:
+				child.set_pressed(false)
 
 func _load_scene():
 	_root.scene_manager.load_saved_scene()
