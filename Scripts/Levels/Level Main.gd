@@ -250,7 +250,7 @@ func reroll_spawn():
 	while not spawn_and_allocate():
 		pass
 	if _root.online_game:
-		synchronize(_root.players["guest"])
+		$Sync.synchronize(_root.players["guest"])
 
 # Because we mod by the number of players, it doesn't matter that there' an extra player_neutral
 func get_next_player():
@@ -279,7 +279,7 @@ func set_host_color(color):
 	players[other_color].network_id = _root.players["guest"]
 	
 	game_start_event()
-	synchronize(_root.players["guest"])
+	$Sync.synchronize(_root.players["guest"])
 	
 	# Changing the visibility of relevant buttons
 	rpc("show_resign_button")
@@ -334,7 +334,8 @@ func change_to_next_player():
 	# We're synchronizing the current player because after the change 
 	# the current player is no longer the instance this function was called on
 	if _root.online_game:
-		synchronize(curr_player.network_id)
+		$Sync.synchronize(curr_player.network_id)
+		rpc_id(curr_player.network_id, "update_player_status", curr_player.color, phase == "attack")
 
 # Update status to attack or defend
 remote func update_player_status(color, attacking):	
@@ -524,49 +525,13 @@ func click_country(event, is_long_press):
 
 # Network synchronisation
 #######
-func synchronize(network_id):
-	print("syncing")
-	
-	# Synchronising the countries in terms of colors and troops
-	for country in all_countries.values():
-		rpc_id(network_id, "synchronise_country", country.country_name, \
-			country.num_troops, country.num_reinforcements, \
-			country.belongs_to.color, country.statused, country.max_troops)
-	
-	# Synchrosing the game in terms of player information
-	for player in players.values():
-		rpc_id(network_id, "synchronise_player", player.save())
-	
-	# Synchronising meta information
-	rpc_id(network_id, "synchronise_meta_info", curr_player_index, round_number, game_started, game_modes)
-	
-	# Updating player status
-	if phase != "game over":
-		rpc_id(network_id, "update_player_status", curr_player.color, phase == "attack")
-
-remote func synchronise_country(country_name, num_troops, num_reinforcements, color, statused, max_troops):
-	all_countries[country_name].synchronise(num_troops, num_reinforcements, players[color], statused, max_troops)
-
-remote func synchronise_player(player_info):
-	var curr_player = players[player_info["color"]]
-	curr_player.network_id = player_info["network_id"]
-	curr_player.num_reinforcements = player_info["num_reinforcements"]
-
-remote func synchronise_meta_info(_curr_player_index, _round_number, _game_started, _game_modes):
-	game_modes = _game_modes
-	game_started = _game_started
-	round_number = _round_number
-	curr_player_index = _curr_player_index
-	curr_player = players.values()[curr_player_index]
-	update_labels()
-
 # Below functions are for the movement of countries during the attack phase to propagate across network
 remote func move_country_across_network(origin_country_name, destination_country_name):
 	all_countries[origin_country_name].get_node("Visual").move_to_country(all_countries[destination_country_name])
 	# If the game is online and the the function wasn't called via RPC
 	if _root.online_game and (get_tree().get_rpc_sender_id() == 0):
 		rpc_id(get_next_player().network_id, "move_country_across_network", origin_country_name, destination_country_name)
-		synchronize(get_next_player().network_id)
+		$Sync.synchronize(get_next_player().network_id)
 
 # Below functions are for the flashing of countries during the attack phase to propagate across network
 remote func flash_across_network(country_name):
@@ -616,7 +581,7 @@ func _process(delta):
 	time_since_sync += delta
 	if time_since_sync > sync_period:
 		if game_started:
-			synchronize(get_next_player().network_id)
+			$Sync.synchronize(get_next_player().network_id)
 		else:
-			synchronize(_root.players["guest"])
+			$Sync.synchronize(_root.players["guest"])
 		time_since_sync = 0
