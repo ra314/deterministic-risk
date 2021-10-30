@@ -14,7 +14,7 @@
 [ext_resource path="res://Assets/Icons/restart.svg" type="Texture" id=12]
 [ext_resource path="res://Assets/label_background.tres" type="StyleBox" id=13]
 [ext_resource path="res://Assets/Maps/Parallax Background.png" type="Texture" id=14]
-[ext_resource path="res://Scenes/Levels/Level Main Phase.gd" type="Script" id=15]
+[ext_resource path="res://Scripts/Levels/Level Main Phase.gd" type="Script" id=15]
 [ext_resource path="res://Assets/Icons/black-flag.svg" type="Texture" id=17]
 [ext_resource path="res://Assets/Icons/reinforcements.svg" type="Texture" id=18]
 [ext_resource path="res://Assets/Icons/soldier-army.svg" type="Texture" id=19]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Scripts/Levels/Level Components/Country.gd" type="Script" id=1]
 [ext_resource path="res://Assets/red-pentagon.svg" type="Texture" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://Assets/Fonts/Font_50.tres" type="DynamicFont" id=7]
 [ext_resource path="res://Assets/Maps/Parallax Background.png" type="Texture" id=8]
 [ext_resource path="res://Scripts/Levels/Level Components/Country_Visual.gd" type="Script" id=9]
+[ext_resource path="res://Assets/Icons/resistance.svg" type="Texture" id=10]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 24, 24 )
@@ -82,7 +83,7 @@ __meta__ = {
 [node name="fatigue" type="Sprite" parent="Visual/Status"]
 visible = false
 position = Vector2( 0, -16 )
-scale = Vector2( 0.132231, 0.126984 )
+scale = Vector2( 0.0661157, 0.126984 )
 texture = ExtResource( 3 )
 centered = false
 
@@ -98,6 +99,13 @@ visible = false
 position = Vector2( 32, -16 )
 scale = Vector2( 0.131148, 0.137931 )
 texture = ExtResource( 6 )
+centered = false
+
+[node name="resistance" type="Sprite" parent="Visual/Status"]
+visible = false
+position = Vector2( 8, -16 )
+scale = Vector2( 0.097561, 0.131148 )
+texture = ExtResource( 10 )
 centered = false
 
 [node name="Num Pandemic" type="Label" parent="Visual/Status"]

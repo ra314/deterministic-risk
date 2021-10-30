@@ -38,7 +38,7 @@ remote func change_to_reinforcement(surity_bool=false):
 	P.curr_level.stop_flashing()
 	P.curr_player.give_reinforcements()
 	
-	# Disabling fatigue and blitz
+	# Disabling resistance and blitz
 	for country in P.all_countries.values():
 		country.reset_status()
 	

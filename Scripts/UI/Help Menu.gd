@@ -14,14 +14,14 @@ func _ready():
 		child.connect("button_down", self, "show_item", [child.name, $"VBoxContainer/Menu Display"])
 	
 	# Connect the game mode buttons to display rules about the selected game mode
-	for child in $"VBoxContainer/Menu Display/Game Modes/Game Modes".get_children():
+	for child in $"VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes".get_children():
 		child.connect("button_down", self, "show_item", [child.name, $"VBoxContainer/Menu Display/Game Modes/Control"])
 
 func show_item(item_name, container):
 	for child in container.get_children():
 		child.visible = (child.name == item_name)
 		if item_name == "Game Modes" and child.name == "Game Modes":
-			for game_mode in $"VBoxContainer/Menu Display/Game Modes/Game Modes".get_children():
+			for game_mode in $"VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes".get_children():
 				# "if _root" is for better unit testing
 				if _root and game_mode.name.to_lower() in _root.game_modes:
 					game_mode.text = "*" + game_mode.name

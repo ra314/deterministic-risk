@@ -113,15 +113,21 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Game Modes" type="GridContainer" parent="VBoxContainer/Menu Display/Game Modes"]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/Menu Display/Game Modes"]
 margin_right = 1920.0
-margin_bottom = 395.0
+margin_bottom = 400.0
+rect_min_size = Vector2( 1920, 400 )
+
+[node name="Game Modes" type="GridContainer" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer"]
+margin_right = 1920.0
+margin_bottom = 528.0
+rect_min_size = Vector2( 1920, 0 )
 columns = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Classic" type="Button" parent="VBoxContainer/Menu Display/Game Modes/Game Modes"]
+[node name="Classic" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
 margin_right = 637.0
 margin_bottom = 129.0
 size_flags_horizontal = 3
@@ -129,25 +135,25 @@ custom_fonts/font = ExtResource( 1 )
 text = "Classic"
 flat = true
 
-[node name="Fatigue" type="Button" parent="VBoxContainer/Menu Display/Game Modes/Game Modes"]
+[node name="Movement" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
 margin_left = 641.0
 margin_right = 1278.0
-margin_bottom = 129.0
-size_flags_horizontal = 3
-custom_fonts/font = ExtResource( 1 )
-text = "Fatigue"
-flat = true
-
-[node name="Movement" type="Button" parent="VBoxContainer/Menu Display/Game Modes/Game Modes"]
-margin_left = 1282.0
-margin_right = 1919.0
 margin_bottom = 129.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 1 )
 text = "Movement"
 flat = true
 
-[node name="Drain" type="Button" parent="VBoxContainer/Menu Display/Game Modes/Game Modes"]
+[node name="Resistance" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
+margin_left = 1282.0
+margin_right = 1919.0
+margin_bottom = 129.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "Resistance"
+flat = true
+
+[node name="Drain" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
 margin_top = 133.0
 margin_right = 637.0
 margin_bottom = 262.0
@@ -156,7 +162,7 @@ custom_fonts/font = ExtResource( 1 )
 text = "Drain"
 flat = true
 
-[node name="Blitzkrieg" type="Button" parent="VBoxContainer/Menu Display/Game Modes/Game Modes"]
+[node name="Blitzkrieg" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
 margin_left = 641.0
 margin_top = 133.0
 margin_right = 1278.0
@@ -166,7 +172,7 @@ custom_fonts/font = ExtResource( 1 )
 text = "Blitzkrieg"
 flat = true
 
-[node name="Pandemic" type="Button" parent="VBoxContainer/Menu Display/Game Modes/Game Modes"]
+[node name="Pandemic" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
 margin_left = 1282.0
 margin_top = 133.0
 margin_right = 1919.0
@@ -176,39 +182,58 @@ custom_fonts/font = ExtResource( 1 )
 text = "Pandemic"
 flat = true
 
-[node name="Diffusion" type="Button" parent="VBoxContainer/Menu Display/Game Modes/Game Modes"]
+[node name="Raze" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
 margin_top = 266.0
 margin_right = 637.0
 margin_bottom = 395.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 1 )
-text = "Diffusion"
+text = "Raze"
 flat = true
 
-[node name="Checkers" type="Button" parent="VBoxContainer/Menu Display/Game Modes/Game Modes"]
+[node name="Diffusion" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
 margin_left = 641.0
 margin_top = 266.0
 margin_right = 1278.0
 margin_bottom = 395.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 1 )
-text = "Checkers"
+text = "Diffusion"
 flat = true
 
-[node name="Congestion" type="Button" parent="VBoxContainer/Menu Display/Game Modes/Game Modes"]
+[node name="Checkers" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
 margin_left = 1282.0
 margin_top = 266.0
 margin_right = 1919.0
 margin_bottom = 395.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 1 )
+text = "Checkers"
+flat = true
+
+[node name="Fatigue" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
+margin_top = 399.0
+margin_right = 637.0
+margin_bottom = 528.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "Fatigue"
+flat = true
+
+[node name="Congestion" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
+margin_left = 641.0
+margin_top = 399.0
+margin_right = 1278.0
+margin_bottom = 528.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
 text = "Congestion"
 flat = true
 
 [node name="Control" type="Control" parent="VBoxContainer/Menu Display/Game Modes"]
-margin_top = 399.0
+margin_top = 404.0
 margin_right = 1920.0
-margin_bottom = 399.0
+margin_bottom = 404.0
 size_flags_horizontal = 3
 
 [node name="Classic" type="Label" parent="VBoxContainer/Menu Display/Game Modes/Control"]
@@ -230,15 +255,43 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Drain" type="Label" parent="VBoxContainer/Menu Display/Game Modes/Control"]
+[node name="Movement" type="Label" parent="VBoxContainer/Menu Display/Game Modes/Control"]
 visible = false
 margin_right = 1920.0
 margin_bottom = 482.0
 size_flags_horizontal = 3
 custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
+text = "Movement:
+You can move units from one country to another."
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Resistance" type="Label" parent="VBoxContainer/Menu Display/Game Modes/Control"]
+visible = false
+margin_right = 1920.0
+margin_bottom = 482.0
+size_flags_horizontal = 3
+custom_styles/normal = ExtResource( 4 )
+custom_fonts/font = ExtResource( 3 )
+text = "Resistance:
+When you conquer a new country, it cannot attack on the same turn unless razed."
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Drain" type="Label" parent="VBoxContainer/Menu Display/Game Modes/Control"]
+visible = false
+margin_right = 1920.0
+margin_bottom = 477.0
+size_flags_horizontal = 3
+custom_styles/normal = ExtResource( 4 )
+custom_fonts/font = ExtResource( 3 )
 text = "Drain:
-You can drain a country if you have at least 2 units.
+You can drain a country if you have at least 2 units. This counts as an attack.
 
 If a 3 attacks a 7
     - 1 will remain in the attacking country
@@ -256,7 +309,7 @@ size_flags_horizontal = 3
 custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
 text = "Fatigue:
-When you conquer a new country, it cannot attack on the same turn."
+Only a single attack is allowed per turn per country."
 autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false
@@ -328,20 +381,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Movement" type="Label" parent="VBoxContainer/Menu Display/Game Modes/Control"]
-visible = false
-margin_right = 1920.0
-margin_bottom = 482.0
-size_flags_horizontal = 3
-custom_styles/normal = ExtResource( 4 )
-custom_fonts/font = ExtResource( 3 )
-text = "Movement:
-You can move units from one country to another."
-autowrap = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="Checkers" type="Label" parent="VBoxContainer/Menu Display/Game Modes/Control"]
 visible = false
 margin_right = 1920.0
@@ -350,7 +389,21 @@ size_flags_horizontal = 3
 custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
 text = "Checkers:
-If you can make an attack/drain, you must perform the attack/drain."
+If you can make an attack, you must perform the attack."
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Raze" type="Label" parent="VBoxContainer/Menu Display/Game Modes/Control"]
+visible = false
+margin_right = 1920.0
+margin_bottom = 482.0
+size_flags_horizontal = 3
+custom_styles/normal = ExtResource( 4 )
+custom_fonts/font = ExtResource( 3 )
+text = "Raze:
+Deplete half a countries troops to remove all status conditions."
 autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false

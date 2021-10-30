@@ -17,7 +17,7 @@ func set_max_troops(_max_troops):
 	max_troops = _max_troops
 	emit_signal("set_max_troops", num_troops, num_reinforcements, max_troops)
 
-var statused = {"fatigue": false, "blitz": false}
+var statused = {"resistance": false, "blitz": false, "fatigue": false}
 signal set_statused(status_name, boolean)
 func set_statused(status_name, boolean):
 	# Emit signal only if the boolean changes to save on performance
@@ -50,11 +50,19 @@ func _ready():
 	$Visual.init_connections()
 	$Visual.change_color_to(belongs_to.color)
 	
-	# Turn on fatigue when a country is conquered
+	# Turn on resistance when a country is conquered
+	if "resistance" in Game_Manager.game_modes:
+		connect("conquered", self, "set_statused", ["resistance", true])
+	
+	# Turn on fatigue when a country is attacking
 	if "fatigue" in Game_Manager.game_modes:
-		connect("conquered", self, "set_statused", ["fatigue", true])
+		connect("attacking", self, "set_statused", ["fatigue", true])
+	
+	# Turn off blitz when is a country is conquered
+	# Turn on blitz when a country is attacked
 	if "blitz" in Game_Manager.game_modes:
 		connect("conquered", self, "set_statused", ["blitz", false])
+		connect("attacked", self, "set_statused", ["blitz", true])
 	
 	# Resetting statuses
 	for game_mode in statused:
@@ -81,8 +89,8 @@ func calc_pandemic_deaths():
 		return int(ceil(float(total-3)/3))
 
 static func can_attack(attacker, defender, game_modes):
-	# Attack not possible if currently fatigued
-	if "fatigue" in game_modes and attacker.statused['fatigue'] == true:
+	# Attack not possible if currently in resistance
+	if "resistance" in game_modes and attacker.statused['resistance'] == true:
 		return false
 	# Check if the defender and attacker are connected
 	if defender in attacker.connected_countries:
@@ -105,6 +113,9 @@ func _input_event(viewport, event, shape_idx):
 			self.on_click(event, false)
 
 signal attacked()
+signal attacking()
+func attacking():
+	emit_signal("attacking")
 signal conquered()
 func on_click(event, is_long_press):	
 	# Level Creator Behaviour
@@ -187,7 +198,11 @@ func on_click(event, is_long_press):
 				var attacker = Game_Manager.selected_country
 				# Check if this country is attackable by the attacker
 				if can_attack(attacker, self, Game_Manager.game_modes):
-					# Updating variables
+					# Common component between modes
+					emit_signal("attacked")
+					attacker.attacking()
+					Game_Manager.selected_country = null
+					
 					# If the attacker has more troops
 					if attacker.num_troops > num_troops:
 						var survivors = float(attacker.num_troops - num_troops)
@@ -204,6 +219,7 @@ func on_click(event, is_long_press):
 							
 						change_ownership_to(attacker.belongs_to)
 						emit_signal("conquered")
+					
 					# If it has less or equal and drain is one of the game modes
 					elif "drain" in Game_Manager.game_modes:
 						# Blitz Drain
@@ -212,20 +228,12 @@ func on_click(event, is_long_press):
 						# Normal Drain
 						else:
 							num_troops -= (attacker.num_troops - 1)
-						
 						attacker.set_num_troops(1)
-						
-						if "blitzkrieg" in Game_Manager.game_modes:
-							set_statused("blitz", true)
 						
 						# Change ownership if drained to 0
 						if num_troops == 0:
 							change_ownership_to(Game_Manager.player_neutral)
 							emit_signal("conquered")
-						
-					# Common component between modes
-					emit_signal("attacked")
-					Game_Manager.selected_country = null
 					
 					# Movement animation
 					Game_Manager.move_country_across_network(attacker.country_name, country_name)

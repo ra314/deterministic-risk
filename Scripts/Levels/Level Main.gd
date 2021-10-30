@@ -137,10 +137,12 @@ func _ready():
 	get_node("CanvasLayer/Help").connect("button_down", self, "show_help_menu")
 	
 	# Button to resign game
-	get_node("CanvasLayer/Resign").connect("button_down", self, "show_confirmation_menu", ["Are you sure you want to resign?", "resign", []])
+#	get_node("CanvasLayer/Resign").connect("button_down", self, "show_confirmation_menu2")
+	get_node("CanvasLayer/Resign").connect("button_down", self, "show_confirmation_menu", ["Are you sure you want to resign?", "resign", [], self])
 	get_node("CanvasLayer/Restart").connect("button_down", self, "restart")
 	
 	# Confirmation buttons
+	# Hiden the confirmation menu when either yes or no is clicked
 	get_node("CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/No").\
 		connect("button_down", get_node("CanvasLayer/Confirm"), "set_visible", [false])
 	get_node("CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes").\
@@ -175,7 +177,8 @@ func toggle_denominator_visibility():
 func show_confirmation_menu(confirmation_text, callback, args, object):
 	get_node("CanvasLayer/Confirm/VBoxContainer/Label").text = confirmation_text
 	get_node("CanvasLayer/Confirm").visible = true
-	$CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes.connect("button_down", object, callback, args)
+	if object:
+		$CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes.connect("button_down", object, callback, args)
 #######
 
 # Button Removal and Hiding Functions

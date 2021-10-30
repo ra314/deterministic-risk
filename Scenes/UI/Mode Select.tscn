@@ -23,38 +23,39 @@ __meta__ = {
 }
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
-margin_right = 1920.0
-margin_bottom = 1038.0
+margin_right = 1927.0
+margin_bottom = 1080.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
-margin_top = 63.0
-margin_right = 1919.0
-margin_bottom = 975.0
+margin_left = 5.0
+margin_top = 16.0
+margin_right = 1922.0
+margin_bottom = 1063.0
 
 [node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
-margin_right = 1919.0
+margin_right = 1917.0
 margin_bottom = 245.0
 custom_fonts/font = SubResource( 1 )
 text = "Deterministic Risk"
 
 [node name="Label2" type="Label" parent="CenterContainer/VBoxContainer"]
 margin_top = 249.0
-margin_right = 1919.0
+margin_right = 1917.0
 margin_bottom = 372.0
 custom_fonts/font = ExtResource( 3 )
 text = "Select any number of game modes: "
 
 [node name="GridContainer" type="GridContainer" parent="CenterContainer/VBoxContainer"]
 margin_top = 376.0
-margin_right = 1919.0
-margin_bottom = 777.0
+margin_right = 1917.0
+margin_bottom = 912.0
 columns = 3
 
 [node name="Classic" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
-margin_right = 586.0
+margin_right = 520.0
 margin_bottom = 131.0
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
@@ -63,19 +64,9 @@ pressed = true
 text = "Classic"
 align = 1
 
-[node name="Fatigue" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
-margin_left = 590.0
-margin_right = 1201.0
-margin_bottom = 131.0
-custom_icons/checked = ExtResource( 5 )
-custom_icons/unchecked = ExtResource( 6 )
-custom_fonts/font = ExtResource( 3 )
-text = "Fatigue"
-align = 1
-
 [node name="Movement" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
-margin_left = 1205.0
-margin_right = 1919.0
+margin_left = 524.0
+margin_right = 1238.0
 margin_bottom = 131.0
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
@@ -83,9 +74,19 @@ custom_fonts/font = ExtResource( 3 )
 text = "Movement"
 align = 1
 
+[node name="Resistance" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
+margin_left = 1242.0
+margin_right = 1917.0
+margin_bottom = 131.0
+custom_icons/checked = ExtResource( 5 )
+custom_icons/unchecked = ExtResource( 6 )
+custom_fonts/font = ExtResource( 3 )
+text = "Resistance"
+align = 1
+
 [node name="Drain" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
 margin_top = 135.0
-margin_right = 586.0
+margin_right = 520.0
 margin_bottom = 266.0
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
@@ -94,9 +95,9 @@ text = "Drain"
 align = 1
 
 [node name="Blitzkrieg" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
-margin_left = 590.0
+margin_left = 524.0
 margin_top = 135.0
-margin_right = 1201.0
+margin_right = 1238.0
 margin_bottom = 266.0
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
@@ -105,9 +106,9 @@ text = "Blitzkrieg"
 align = 1
 
 [node name="Pandemic" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
-margin_left = 1205.0
+margin_left = 1242.0
 margin_top = 135.0
-margin_right = 1919.0
+margin_right = 1917.0
 margin_bottom = 266.0
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
@@ -115,9 +116,20 @@ custom_fonts/font = ExtResource( 3 )
 text = "Pandemic"
 align = 1
 
-[node name="Diffusion" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
+[node name="Raze" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
 margin_top = 270.0
-margin_right = 586.0
+margin_right = 520.0
+margin_bottom = 401.0
+custom_icons/checked = ExtResource( 5 )
+custom_icons/unchecked = ExtResource( 6 )
+custom_fonts/font = ExtResource( 3 )
+text = "Raze"
+align = 1
+
+[node name="Diffusion" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
+margin_left = 524.0
+margin_top = 270.0
+margin_right = 1238.0
 margin_bottom = 401.0
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
@@ -126,9 +138,9 @@ text = "Diffusion"
 align = 1
 
 [node name="Checkers" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
-margin_left = 590.0
+margin_left = 1242.0
 margin_top = 270.0
-margin_right = 1201.0
+margin_right = 1917.0
 margin_bottom = 401.0
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
@@ -136,11 +148,21 @@ custom_fonts/font = ExtResource( 3 )
 text = "Checkers"
 align = 1
 
+[node name="Fatigue" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
+margin_top = 405.0
+margin_right = 520.0
+margin_bottom = 536.0
+custom_icons/checked = ExtResource( 5 )
+custom_icons/unchecked = ExtResource( 6 )
+custom_fonts/font = ExtResource( 3 )
+text = "Fatigue"
+align = 1
+
 [node name="Congestion" type="CheckBox" parent="CenterContainer/VBoxContainer/GridContainer"]
-margin_left = 1205.0
-margin_top = 270.0
-margin_right = 1919.0
-margin_bottom = 401.0
+margin_left = 524.0
+margin_top = 405.0
+margin_right = 1238.0
+margin_bottom = 536.0
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
 custom_fonts/font = ExtResource( 3 )
@@ -148,24 +170,24 @@ text = "Congestion"
 align = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
-margin_top = 781.0
-margin_right = 1919.0
-margin_bottom = 912.0
+margin_top = 916.0
+margin_right = 1917.0
+margin_bottom = 1047.0
 alignment = 1
 
 [node name="Next" parent="CenterContainer/VBoxContainer/HBoxContainer" instance=ExtResource( 7 )]
 anchor_left = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 621.0
-margin_right = 971.0
+margin_left = 620.0
+margin_right = 970.0
 margin_bottom = 131.0
 rect_min_size = Vector2( 350, 0 )
 item_name = "Next"
 
 [node name="TextureRect" type="TextureRect" parent="CenterContainer/VBoxContainer/HBoxContainer"]
-margin_left = 975.0
-margin_right = 1175.0
+margin_left = 974.0
+margin_right = 1174.0
 margin_bottom = 131.0
 rect_min_size = Vector2( 200, 100 )
 expand = true
@@ -174,8 +196,8 @@ __meta__ = {
 }
 
 [node name="Random" type="TextureButton" parent="CenterContainer/VBoxContainer/HBoxContainer"]
-margin_left = 1179.0
-margin_right = 1297.0
+margin_left = 1178.0
+margin_right = 1296.0
 margin_bottom = 131.0
 texture_normal = ExtResource( 9 )
 texture_hover = ExtResource( 9 )
