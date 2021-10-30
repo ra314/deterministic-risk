@@ -8,7 +8,7 @@
 [ext_resource path="res://Assets/Icons/pandemic.svg" type="Texture" id=6]
 [ext_resource path="res://Assets/Fonts/Font_50.tres" type="DynamicFont" id=7]
 [ext_resource path="res://Assets/Maps/Parallax Background.png" type="Texture" id=8]
-[ext_resource path="res://Scripts/Levels/Country_Visual.gd" type="Script" id=9]
+[ext_resource path="res://Scripts/Levels/Level Components/Country_Visual.gd" type="Script" id=9]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 24, 24 )
@@ -55,6 +55,7 @@ __meta__ = {
 }
 
 [node name="Reinforcements" type="Node2D" parent="Visual"]
+visible = false
 
 [node name="Sprite" type="Sprite" parent="Visual/Reinforcements"]
 modulate = Color( 0, 0, 0, 1 )
@@ -78,21 +79,21 @@ __meta__ = {
 
 [node name="Status" type="Node2D" parent="Visual"]
 
-[node name="Fatigue" type="Sprite" parent="Visual/Status"]
+[node name="fatigue" type="Sprite" parent="Visual/Status"]
 visible = false
 position = Vector2( 0, -16 )
 scale = Vector2( 0.132231, 0.126984 )
 texture = ExtResource( 3 )
 centered = false
 
-[node name="Blitz" type="Sprite" parent="Visual/Status"]
+[node name="blitz" type="Sprite" parent="Visual/Status"]
 visible = false
 position = Vector2( 16, -16 )
 scale = Vector2( 0.0987654, 0.131148 )
 texture = ExtResource( 5 )
 centered = false
 
-[node name="Pandemic" type="Sprite" parent="Visual/Status"]
+[node name="pandemic" type="Sprite" parent="Visual/Status"]
 visible = false
 position = Vector2( 32, -16 )
 scale = Vector2( 0.131148, 0.137931 )

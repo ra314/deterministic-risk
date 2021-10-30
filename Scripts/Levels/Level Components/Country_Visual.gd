@@ -17,6 +17,19 @@ const origin_movement_duration = 0.4
 
 var Game_Manager = null
 
+func init_connections():
+	Game_Manager = get_parent().Game_Manager
+	get_parent().connect("set_num_troops", self, "show_num_troops")
+	get_parent().connect("set_num_reinforcements", self, "show_num_reinforcements")
+	if "pandemic" in Game_Manager.game_modes:
+		get_parent().connect("set_num_troops", self, "show_pandemic_status")
+	for status in get_parent().statused:
+		if status in Game_Manager.game_modes:
+			get_parent().connect("set_statused", self, "show_statused")
+			break
+	if "congestion" in Game_Manager.game_modes:
+		get_parent().connect("set_max_troops", self, "show_congestion")
+
 func change_mask_color(color):
 	# Performance hack
 	# Don't bother creating mask sprite if one hasn't been created and the color of the country is grey
@@ -65,29 +78,37 @@ func create_mask_sprite():
 	var time_taken = OS.get_ticks_msec() - time_start
 	return time_taken
 
-func update_labels():
-	$"Active Troops/Label".text = str(get_parent().num_troops)
+####################
+# Signals
 
-	$"Reinforcements".visible = get_parent().num_reinforcements > 0
-	$"Reinforcements/Label".text = "+" + str(get_parent().num_reinforcements)
-	
-	if Game_Manager:
-		if "pandemic" in Game_Manager.game_modes:
-			var num_deaths = get_parent().calc_pandemic_deaths()
-			$"Status/Num Pandemic".visible = num_deaths > 0
-			$"Status/Pandemic".visible = num_deaths > 0
-			$"Status/Num Pandemic".text = str(num_deaths)
-		if "blitzkrieg" in Game_Manager.game_modes:
-			$"Status/Blitz".visible = get_parent().statused["Blitz"]
-		if "fatigue" in Game_Manager.game_modes:
-			$"Status/Fatigue".visible = get_parent().statused["Fatigue"]
-		if "congestion" in Game_Manager.game_modes:
-			$"Status/ProgressBar".visible = true
-			$"Status/ProgressBar".max_value = get_parent().max_troops
-			$"Status/ProgressBar".value = get_parent().num_troops+get_parent().num_reinforcements
-			if Game_Manager.show_denominator:
-				$"Active Troops/Label".text += "/" + str(get_parent().max_troops)
-		Game_Manager.update_labels()
+func show_num_troops(num_troops):
+	$"Active Troops/Label".text = str(num_troops)
+
+func show_pandemic_status(num_troops):
+	var num_deaths = get_parent().calc_pandemic_deaths()
+	$"Status/Num Pandemic".visible = num_deaths > 0
+	$"Status/Pandemic".visible = num_deaths > 0
+	$"Status/Num Pandemic".text = str(num_deaths)
+
+func show_statused(status_name, boolean):
+	get_node("Status/" + status_name).visible = boolean
+
+func show_congestion(num_troops, num_reinforcements, max_troops):
+	$"Status/ProgressBar".max_value = max_troops
+	$"Status/ProgressBar".value = num_troops+num_reinforcements
+
+func show_num_reinforcements(num_reinforcements):
+	$"Reinforcements".visible = num_reinforcements > 0
+	$"Reinforcements/Label".text = "+" + str(num_reinforcements)
+
+# Signals
+####################
+
+func show_congestion_denominator(show_denominator_boolean):
+	if show_denominator_boolean:
+		$"Active Troops/Label".text = str(get_parent().num_troops) + "/" + str(get_parent().max_troops)
+	else:
+		$"Active Troops/Label".text = str(get_parent().num_troops)
 
 func draw_line_to_country(selected_country):
 	var new_line = Line2D.new()

@@ -1,20 +1,45 @@
 extends Node2D
 
 var num_troops: int = 0
+signal set_num_troops(num_troops)
+func set_num_troops(_num_troops):
+	num_troops = _num_troops
+	emit_signal("set_num_troops", num_troops)
+
 var belongs_to = null
 var connected_countries = []
 var country_name = null
 var Game_Manager = null
 
 var max_troops = 0
-var statused = {"Fatigue": false, "Blitz": false, "Pandemic": false}
+signal set_max_troops(num_troops, num_reinforcements, max_troops)
+func set_max_troops(_max_troops):
+	max_troops = _max_troops
+	emit_signal("set_max_troops", num_troops, num_reinforcements, max_troops)
+
+var statused = {"fatigue": false, "blitz": false}
+signal set_statused(status_name, boolean)
+func set_statused(status_name, boolean):
+	# Emit signal only if the boolean changes to save on performance
+	if statused[status_name] != boolean:
+		statused[status_name] = boolean
+		emit_signal("set_statused", status_name, boolean)
+
+signal reset_status()
+func reset_status():
+	emit_signal("reset_status")
 
 # This is so during reinforcement the label can show up as
 # {num_troops} + {num_reinforcements}
 var num_reinforcements: int = 0
+signal set_num_reinforcements(_num_reinforcements)
+func set_num_reinforcements(_num_reinforcements):
+	num_reinforcements = _num_reinforcements
+	emit_signal("set_num_reinforcements", num_reinforcements)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	# The chunk below is for when the Country scene is called in isolation
 	if get_parent() is Viewport:
 		print("happened")
 		var Player = load("res://Scenes/Levels/Level Components/Player.tscn")
@@ -22,9 +47,22 @@ func _ready():
 		belongs_to = player_neutral
 	
 	Game_Manager = get_parent()
-	$Visual.Game_Manager = Game_Manager
+	$Visual.init_connections()
 	$Visual.change_color_to(belongs_to.color)
-
+	
+	# Turn on fatigue when a country is conquered
+	if "fatigue" in Game_Manager.game_modes:
+		connect("conquered", self, "set_statused", ["fatigue", true])
+	if "blitz" in Game_Manager.game_modes:
+		connect("conquered", self, "set_statused", ["blitz", false])
+	
+	# Resetting statuses
+	for game_mode in statused:
+		if game_mode in Game_Manager.game_modes:
+			connect("reset_status", self, "set_statused", [game_mode, false])
+	
+	if "congestion" in Game_Manager.game_modes:
+		$"Visual/Status/ProgressBar".visible = true
 
 func change_ownership_to(player):
 	# Transfer of Ownership
@@ -33,18 +71,7 @@ func change_ownership_to(player):
 	player.owned_countries.append(self)
 	
 	# Visual Update
-	# If statement is present in case the country scene is run without a game manager
-	if Game_Manager:
-		Game_Manager.update_labels()
 	$Visual.change_color_to(player.color)
-	$Visual.update_labels()
-
-func reset_status():
-	# Enable fatigue and remove blitz
-	if "fatigue" in Game_Manager.game_modes:
-		statused["Fatigue"] = true
-	if "blitzkrieg" in Game_Manager.game_modes:
-		statused["Blitz"] = false
 
 func calc_pandemic_deaths():
 	var total = num_troops + num_reinforcements
@@ -55,7 +82,7 @@ func calc_pandemic_deaths():
 
 static func can_attack(attacker, defender, game_modes):
 	# Attack not possible if currently fatigued
-	if "fatigue" in game_modes and attacker.statused['Fatigue'] == true:
+	if "fatigue" in game_modes and attacker.statused['fatigue'] == true:
 		return false
 	# Check if the defender and attacker are connected
 	if defender in attacker.connected_countries:
@@ -77,6 +104,8 @@ func _input_event(viewport, event, shape_idx):
 		if event is InputEventMouseButton and not event.pressed:
 			self.on_click(event, false)
 
+signal attacked()
+signal conquered()
 func on_click(event, is_long_press):	
 	# Level Creator Behaviour
 	if get_tree().get_current_scene().get_name() == "Level Creator":
@@ -84,9 +113,9 @@ func on_click(event, is_long_press):
 			"change curr troops":
 				match event.button_index:
 					BUTTON_LEFT:
-						num_troops += 1
+						set_num_troops(num_troops+1)
 					BUTTON_RIGHT:
-						num_troops -=1
+						set_num_troops(num_troops-1)
 			
 			"add countries":
 				# Country deletion
@@ -125,7 +154,6 @@ func on_click(event, is_long_press):
 							country.connected_countries[i].country_name = color
 				country_name = color
 		
-		$Visual.update_labels()
 		return
 	
 	# In Game Behaviour
@@ -164,40 +192,39 @@ func on_click(event, is_long_press):
 					if attacker.num_troops > num_troops:
 						var survivors = float(attacker.num_troops - num_troops)
 						if "diffusion" in Game_Manager.game_modes:
-							num_troops = int(ceil(survivors/2))
-							attacker.num_troops = 1+int(floor(survivors/2))
+							set_num_troops(int(ceil(survivors/2)))
+							attacker.set_num_troops(1+int(floor(survivors/2)))
 						else:
-							num_troops = survivors
-							attacker.num_troops = 1
+							set_num_troops(survivors)
+							attacker.set_num_troops(1)
 						
 						if "congestion" in Game_Manager.game_modes:
-							num_troops = min(num_troops, max_troops)
-							attacker.num_troops = min(attacker.num_troops, attacker.max_troops)
+							set_num_troops(min(num_troops, max_troops))
+							attacker.set_num_troops(min(attacker.num_troops, attacker.max_troops))
 							
 						change_ownership_to(attacker.belongs_to)
-						reset_status()
+						emit_signal("conquered")
 					# If it has less or equal and drain is one of the game modes
 					elif "drain" in Game_Manager.game_modes:
 						# Blitz Drain
-						if statused["Blitz"]:
+						if statused["blitz"]:
 							num_troops -= (attacker.num_troops)
 						# Normal Drain
 						else:
 							num_troops -= (attacker.num_troops - 1)
 						
-						attacker.num_troops = 1
+						attacker.set_num_troops(1)
 						
 						if "blitzkrieg" in Game_Manager.game_modes:
-							statused["Blitz"] = true
+							set_statused("blitz", true)
 						
 						# Change ownership if drained to 0
 						if num_troops == 0:
 							change_ownership_to(Game_Manager.player_neutral)
-							reset_status()
+							emit_signal("conquered")
 						
 					# Common component between modes
-					$Visual.update_labels()
-					attacker.get_node("Visual").update_labels()
+					emit_signal("attacked")
 					Game_Manager.selected_country = null
 					
 					# Movement animation
@@ -210,7 +237,6 @@ func on_click(event, is_long_press):
 					if Game_Manager.get_next_player().get_num_troops() == 0:
 						Game_Manager.end_game(belongs_to.color)
 
-
 		"reinforcement":
 			if belongs_to == Game_Manager.curr_player:
 				# Add a reinforcement
@@ -220,23 +246,22 @@ func on_click(event, is_long_press):
 						if "congestion" in Game_Manager.game_modes:
 							if (num_reinforcements + num_troops) < max_troops:
 								Game_Manager.curr_player.num_reinforcements -= 1
-								num_reinforcements += 1
+								set_num_reinforcements(num_reinforcements+1)
 						else:
 							Game_Manager.curr_player.num_reinforcements -= 1
-							num_reinforcements += 1
+							set_num_reinforcements(num_reinforcements+1)
 				# Remove a reinforcement
 				elif event.button_index == BUTTON_RIGHT:
 					# Check that a reinforcement has been previously added to this country
 					if num_reinforcements > 0:
-						num_reinforcements -= 1
+						set_num_reinforcements(num_reinforcements-1)
 						Game_Manager.curr_player.num_reinforcements += 1
 				elif is_long_press:
 					# Remove all reinforcements
 					if num_reinforcements > 0:
 						Game_Manager.curr_player.num_reinforcements += num_reinforcements
-						num_reinforcements = 0
+						set_num_reinforcements(0)
 				
-				$Visual.update_labels()
 				Game_Manager.update_labels()
 			pass
 		
@@ -252,41 +277,34 @@ func randomise_troops():
 	var rng = RandomNumberGenerator.new()
 	rng.randomize()
 	var rand_num = rng.randf_range(0,10)
+	var new_num_troops = 0
 	if rand_num < 5:
-		num_troops = 1
+		new_num_troops = 1
 	elif rand_num < 8:
-		num_troops = 2
+		new_num_troops = 2
 	elif rand_num < 9:
-		num_troops = 3
+		new_num_troops = 3
 	elif rand_num < 10:
-		num_troops = 4
-	$Visual.update_labels()
+		new_num_troops = 4
+	set_num_troops(new_num_troops)
+	set_max_troops(new_num_troops*2)
 
 func init(_x, _y, _country_name, player):
 	self.belongs_to = player
 	position = Vector2(_x, _y)
 	self.country_name = _country_name
 	randomise_troops()
-	$Visual.update_labels()
 	return self
-
-func get_sync_data():
-	var sync_data = {}
-	sync_data[num_troops] = num_troops
-	sync_data[num_reinforcements] = num_reinforcements
-	sync_data[belongs_to] = belongs_to.color
-	sync_data[statused] = statused
-	sync_data[max_troops] = max_troops
 
 # Synchronise the country over network
 func synchronise(_num_troops, _num_reinforcements, _belongs_to, _statused, _max_troops):
-	num_troops = _num_troops
-	num_reinforcements = _num_reinforcements
-	statused = _statused
-	max_troops = _max_troops
+	set_num_troops(_num_troops)
+	set_num_reinforcements(_num_reinforcements)
+	for key in _statused:
+		set_statused(key, _statused[key])
+	set_max_troops(_max_troops)
 	if belongs_to != _belongs_to:
 		change_ownership_to(_belongs_to)
-	$Visual.update_labels()
 
 func save():
 	var save_dict = {}

@@ -7,7 +7,7 @@
 [ext_resource path="res://Assets/Icons/pandemic.svg" type="Texture" id=6]
 [ext_resource path="res://Assets/Fonts/Font_50.tres" type="DynamicFont" id=7]
 [ext_resource path="res://Assets/Maps/Parallax Background.png" type="Texture" id=8]
-[ext_resource path="res://Scripts/Levels/Country_Visual.gd" type="Script" id=9]
+[ext_resource path="res://Scripts/Levels/Level Components/Country_Visual.gd" type="Script" id=9]
 
 [sub_resource type="GDScript" id=4]
 script/source = "extends Area2D

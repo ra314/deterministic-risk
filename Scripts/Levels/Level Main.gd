@@ -66,15 +66,13 @@ func spawn_and_allocate():
 	# Assigning the owned countries with a predetermined spread:
 	var troops_to_assign = [2,2,3]
 	for country in curr_player.owned_countries:
-		country.num_troops = select_random(troops_to_assign)
+		country.set_num_troops(select_random(troops_to_assign))
 		troops_to_assign.erase(country.num_troops)
-		country.get_node("Visual").update_labels()
 	
 	troops_to_assign = [2,3,1,2]
 	for country in get_next_player().owned_countries:
-		country.num_troops = select_random(troops_to_assign)
+		country.set_num_troops(select_random(troops_to_assign))
 		troops_to_assign.erase(country.num_troops)
-		country.get_node("Visual").update_labels()
 	
 	# Checking if all player owned countries have a country they can attack
 	for player in players.values().slice(0,1):
@@ -91,12 +89,6 @@ func spawn_and_allocate():
 				if defender.belongs_to.color != "gray":
 					print("BAD spawn, I have " + str(defender.num_troops) + " units and am " + defender.belongs_to.color + " and can be attacked")
 					return false
-	
-	# Visual update for congestion mode
-	if "congestion" in game_modes:
-		for country in all_countries.values():
-			country.max_troops = country.num_troops*2
-			country.get_node("Visual").update_labels()
 	
 #	print("The first player is " + curr_player.color)
 #	print(curr_player.color)
@@ -155,8 +147,10 @@ func _ready():
 		connect("button_down", get_node("CanvasLayer/Confirm"), "set_visible", [false])
 	
 	# Button to toggle visibility of denominator in congestion mode
-	get_node("CanvasLayer/Show").connect("button_down", self, "toggle_denominator_visibility")
-	get_node("CanvasLayer/Show").visible = "congestion" in game_modes
+	if "congestion" in game_modes:
+		get_node("CanvasLayer/Show").connect("button_down", self, "toggle_denominator_visibility")
+		get_node("CanvasLayer/Show").visible = true
+		toggle_denominator_visibility()
 	
 	# If you're the guest _root.game_modes is empty since the host picks them out
 	# However load_level() in main syncs up the game mdoe with the level main scene
@@ -174,7 +168,7 @@ var show_denominator = true
 func toggle_denominator_visibility():
 	show_denominator = not show_denominator
 	for country in all_countries.values():
-		country.get_node("Visual").update_labels()
+		country.get_node("Visual").show_congestion_denominator(show_denominator)
 
 # Confirmation System
 #######
@@ -217,7 +211,7 @@ func end_reinforcement_disable(hide_boolean):
 # We duplicate the existing countries so that modifications here do not propogate outside
 func clone_country(country):
 	var new_country = Country.init(country.x, country.y, country.country_name, country.player)
-	new_country.num_troops = country.num_troops
+	new_country.set_num_troops(country.num_troops)
 	return new_country
 
 func extract_game_state():
@@ -319,11 +313,6 @@ func is_attack_over():
 			return false
 	return true
 
-# Changing phases of the game
-#######
-
-#######
-
 # Ending the game
 #######
 func resign():
@@ -376,7 +365,6 @@ func back():
 	# Loading the previous scene
 	var scene = _root.scene_manager._load_scene(prev_scene_str)
 	_root.scene_manager._replace_scene(scene)
-
 #######
 
 func update_labels():

@@ -219,7 +219,7 @@ size_flags_horizontal = 3
 custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
 text = "Classic:
-You can attack a country if it has less units than you and conquer it.
+You can conquer a country if it has less units than you.
 
 If a 7 attacks a 3
     - 1 will remain in the attacking country
