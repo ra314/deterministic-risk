@@ -388,6 +388,8 @@ func update_labels():
 func _input(event):
 	if (event is InputEventMouseButton) or (event is InputEventScreenTouch):
 		if (not _root.online_game) or is_current_player():
+			print(time_pressed, event.pressed)
+			
 			if event.pressed and input_allowed:
 				input_allowed = false
 				input_pressed = true
@@ -409,6 +411,7 @@ remotesync func click_country(map_click_position, event_index, is_long_press):
 	var country_name = str(get_color_in_mask(map_click_position))
 	if country_name in all_countries:
 		all_countries[country_name].on_click(event_index, is_long_press)
+		print(is_long_press)
 
 func stop_flashing():
 	for country in all_countries.values():

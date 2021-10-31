@@ -1,5 +1,7 @@
 extends Node
 var P = null
+signal ending_reinforcement()
+signal ending_attack()
 
 func _ready():
 	P = get_parent()
@@ -28,7 +30,6 @@ remote func update_player_status(color, attacking):
 		curr_player_status.texture = load("res://Assets/Icons/shield.svg")
 
 func change_to_attack1(surity_bool=false):
-	print(get_stack())
 	# When the surity bool is true, you get to skip the confirmation menu
 	if not surity_bool and P.curr_player.num_reinforcements > 0:
 		P.show_confirmation_menu("You have a reinforcement left to place on the map.\nAre you sure you want to end reinforcement?",\
@@ -49,15 +50,8 @@ remotesync func change_to_attack2():
 	else:
 		P.show_end_reinforcement(false)
 		P.show_end_attack(true)
-	
-	# Moving the troops from reinforcement into active duty for each country
-	# and subtracting pandemic deaths
-	for country in P.all_countries.values():
-		country.set_num_troops(country.num_troops + country.num_reinforcements)
-		country.set_num_reinforcements(0)
-		if "pandemic" in P.game_modes:
-			country.set_num_troops(country.num_troops - country.calc_pandemic_deaths())
-	
+
+	emit_signal("ending_reinforcement")
 	P.selected_country = null
 	P.round_number += 1
 	P.phase = "attack"
@@ -86,10 +80,7 @@ remotesync func change_to_reinforcement2():
 	P.selected_country = null
 	P.curr_level.stop_flashing()
 	P.curr_player.give_reinforcements()
-	
-	# Disabling resistance and blitz
-	for country in P.all_countries.values():
-		country.reset_status()
+	emit_signal("ending_attack")
 	
 	# Modifying the visibility of the end attack and end reinforcement buttons
 	if P.is_current_player() or not P._root.online_game:

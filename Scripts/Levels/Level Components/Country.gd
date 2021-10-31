@@ -53,31 +53,36 @@ func _ready():
 	# Turn on resistance when a country is conquered
 	if "resistance" in Game_Manager.game_modes:
 		connect("conquered", self, "set_statused", ["resistance", true])
-	
 	# Turn on fatigue when a country is attacking
 	if "fatigue" in Game_Manager.game_modes:
 		connect("attacking", self, "set_statused", ["fatigue", true])
-	
 	# Turn off blitz when is a country is conquered
 	# Turn on blitz when a country is attacked
 	if "blitz" in Game_Manager.game_modes:
 		connect("conquered", self, "set_statused", ["blitz", false])
 		connect("attacked", self, "set_statused", ["blitz", true])
-	
-	# Resetting statuses
+	# Apply pandemic deaths when a turn is ended
+	if "pandemic" in Game_Manager.game_modes:
+		Game_Manager.get_node("Phase").connect("ending_reinforcement", self, "apply_pandemic_deaths")
+	# Disabling resistance, blitz and similar volatile conditions
 	for game_mode in statused:
 		if game_mode in Game_Manager.game_modes:
-			connect("reset_status", self, "set_statused", [game_mode, false])
-	
+			Game_Manager.get_node("Phase").connect("ending_attack", self, "set_statused", [game_mode, false])
+	# Reset reinforcements and move troops from reinforcement into active duty
+	Game_Manager.get_node("Phase").connect("ending_reinforcement", self, "move_troops_to_active_duty")
+	# Show a progressbar in congestion mode indiciating the max number of troops
 	if "congestion" in Game_Manager.game_modes:
 		$"Visual/Status/ProgressBar".visible = true
+
+func move_troops_to_active_duty():
+	set_num_troops(num_troops + num_reinforcements)
+	set_num_reinforcements(0)
 
 func change_ownership_to(player):
 	# Transfer of Ownership
 	belongs_to.owned_countries.erase(self)
 	belongs_to = player
 	player.owned_countries.append(self)
-	
 	# Visual Update
 	$Visual.change_color_to(player.color)
 
@@ -87,6 +92,9 @@ func calc_pandemic_deaths():
 		return 0
 	else:
 		return int(ceil(float(total-3)/3))
+
+func apply_pandemic_deaths():
+	set_num_troops(num_troops - calc_pandemic_deaths())
 
 static func can_attack(attacker, defender, game_modes):
 	# Attack not possible if currently in resistance
@@ -240,8 +248,13 @@ func on_click(event_index, is_long_press):
 
 		"reinforcement":
 			if belongs_to == Game_Manager.curr_player:
+				if is_long_press:
+					# Remove all reinforcements
+					if num_reinforcements > 0:
+						Game_Manager.curr_player.num_reinforcements += num_reinforcements
+						set_num_reinforcements(0)
 				# Add a reinforcement
-				if event_index == BUTTON_LEFT:
+				elif event_index == BUTTON_LEFT:
 					# Check that the player has reinforcements available to allocate
 					if Game_Manager.curr_player.num_reinforcements > 0:
 						if "congestion" in Game_Manager.game_modes:
@@ -257,11 +270,6 @@ func on_click(event_index, is_long_press):
 					if num_reinforcements > 0:
 						set_num_reinforcements(num_reinforcements-1)
 						Game_Manager.curr_player.num_reinforcements += 1
-				elif is_long_press:
-					# Remove all reinforcements
-					if num_reinforcements > 0:
-						Game_Manager.curr_player.num_reinforcements += num_reinforcements
-						set_num_reinforcements(0)
 				
 				Game_Manager.update_labels()
 			pass
