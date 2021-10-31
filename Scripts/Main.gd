@@ -56,8 +56,9 @@ func host():
 	peer.create_server(SERVER_PORT, MAX_PLAYERS)
 	get_tree().network_peer = peer
 	
-	# Adding yourself to the list of players 
-	register_player(player_name, get_tree().get_network_unique_id())
+	# Adding yourself to the list of players
+	if online_game:
+		register_player(player_name, get_tree().get_network_unique_id())
 
 func guest(server_IP):
 	# Default of 127.0.0.1

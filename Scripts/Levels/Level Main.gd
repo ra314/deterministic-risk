@@ -108,10 +108,8 @@ func _ready():
 	get_node("CanvasLayer/Zoom In").connect("pressed", get_node("Camera2D"), "zoom_in")
 	get_node("CanvasLayer/Zoom Out").connect("pressed", get_node("Camera2D"), "zoom_out")
 	
-	# Button to end attack
+	# Button to end attack and reinforcement phases
 	get_node("CanvasLayer/End Attack").connect("pressed", $Phase, "change_to_reinforcement")
-	
-	# Button to end reinforcement
 	get_node("CanvasLayer/End Reinforcement").connect("pressed", $Phase, "change_to_attack")
 	
 	# Buttons to select if host plays as red or blue
@@ -137,7 +135,6 @@ func _ready():
 	get_node("CanvasLayer/Help").connect("button_down", self, "show_help_menu")
 	
 	# Button to resign game
-#	get_node("CanvasLayer/Resign").connect("button_down", self, "show_confirmation_menu2")
 	get_node("CanvasLayer/Resign").connect("button_down", self, "show_confirmation_menu", ["Are you sure you want to resign?", "resign", [], self])
 	get_node("CanvasLayer/Restart").connect("button_down", self, "restart")
 	
@@ -174,39 +171,39 @@ func toggle_denominator_visibility():
 
 # Confirmation System
 #######
+var prev_signal = {"object":null, "method":null}
 func show_confirmation_menu(confirmation_text, callback, args, object):
 	get_node("CanvasLayer/Confirm/VBoxContainer/Label").text = confirmation_text
 	get_node("CanvasLayer/Confirm").visible = true
+	# Disablign previously connected signal if ther was a previous signal connection
+	if prev_signal["object"]:
+		$CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes.\
+			disconnect("button_down", prev_signal["object"], prev_signal["method"])
+		prev_signal = {"object":null, "method":null}
 	if object:
-		$CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes.connect("button_down", object, callback, args)
+		$CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes.\
+			connect("button_down", object, callback, args)
+		prev_signal = {"object":object, "method":callback}
 #######
 
 # Button Removal and Hiding Functions
 #######
 # This relies on an assumption that this funciton is only called in offline games
 func remove_reroll_and_start_butttons():
-	end_attack_disable(false)
+	show_end_attack(true)
 	show_resign_button()
 	game_start_event()
 
 remotesync func show_resign_button():
 	get_node("CanvasLayer/Resign").visible = true
 
-remote func end_attack_disable(hide_boolean):
+remote func show_end_attack(show_boolean):
 	# Do nothing if checkers is one of the game modes since the end attack button is hidden by default
-	if "checkers" in game_modes:
-		return
-	if hide_boolean:
-		get_node("CanvasLayer/End Attack").hide()
-	else:
-		get_node("CanvasLayer/End Attack").show()
+	if not ("checkers" in game_modes):
+		get_node("CanvasLayer/End Attack").visible = show_boolean
 
-func end_reinforcement_disable(hide_boolean):
-	print("End reinforcement buttons is being " + str(hide_boolean))
-	if hide_boolean:
-		get_node("CanvasLayer/End Reinforcement").hide()
-	else:
-		get_node("CanvasLayer/End Reinforcement").show()
+func show_end_reinforcement(show_boolean):
+	get_node("CanvasLayer/End Reinforcement").visible = show_boolean
 #######
 
 # AI
@@ -276,10 +273,10 @@ func set_host_color(color):
 	
 	if curr_player.network_id == _root.players[_root.player_name]:
 		print("changing local button")
-		end_attack_disable(false)
+		show_end_attack(true)
 	else:
 		print("changing other guyss button")
-		rpc_id(curr_player.network_id, "end_attack_disable", false)
+		rpc_id(curr_player.network_id, "show_end_attack", true)
 
 # Checks if a country is non adjacent to a player
 func is_country_neighbour_of_player(test_country, player):
@@ -320,11 +317,12 @@ func is_attack_over():
 #######
 func resign():
 	if _root.online_game:
-		end_game(get_player_by_network_id(_root.players[_root.player_name]).color)
+		var loser_color = get_player_by_network_id(_root.players[_root.player_name]).color
+		rpc("end_game", loser_color)
 	else:
-		end_game(curr_player.color)
+		rpc("end_game", curr_player.color)
 
-remote func end_game(loser_color):
+remotesync func end_game(loser_color):
 	# Hiding buttons to prevent further gameplay and allowing game restart
 	get_node("CanvasLayer/End Attack").visible = false
 	get_node("CanvasLayer/End Reinforcement").visible = false
@@ -350,10 +348,6 @@ remote func end_game(loser_color):
 	var loser_icon = game_info.get_node(loser_color + "/VBoxContainer/Status")
 	loser_icon.visible = true
 	loser_icon.texture = load("res://Assets/Icons/Lose.svg")
-	
-	# Online component
-	if _root.online_game:
-		rpc_id(players[winner_color].network_id , "end_game", loser_color)
 
 func restart():
 	back()
@@ -390,57 +384,41 @@ func update_labels():
 		curr_texture = colors[curr_player.color]
 	get_node("CanvasLayer/Game Info/Round Info/HBoxContainer/Curr Player").texture = curr_texture
 
+# Used to translate a random click on the map, to translate to a click on a country
 func _input(event):
 	if (event is InputEventMouseButton) or (event is InputEventScreenTouch):
-		
-		print(event.position)
-	
-		if event.pressed and input_allowed:
-			input_allowed = false
-			input_pressed = true
-		
-		if not event.pressed:
-			var is_long_press = time_pressed > 0.5
-			input_pressed = false
-			time_pressed = 0
-			click_country(event, is_long_press)
+		if (not _root.online_game) or is_current_player():
+			if event.pressed and input_allowed:
+				input_allowed = false
+				input_pressed = true
+			
+			if not event.pressed:
+				var is_long_press = time_pressed > 0.5
+				input_pressed = false
+				time_pressed = 0
+				var map_click_position = (event.position*$Camera2D.zoom) + $Camera2D.position
+				rpc("click_country", map_click_position, event.button_index, is_long_press)
 
-func click_country(event, is_long_press):
+remotesync func click_country(map_click_position, event_index, is_long_press):
 	# Check if the click is actually inside the map
-	if not (Rect2(Vector2(0,0), world_mask.get_size()).has_point(get_local_mouse_position())):
+	if not (Rect2(Vector2(0,0), world_mask.get_size()).has_point(map_click_position)):
 		return
 	
 	# Since it's possible for the click to be in something like the ocean,
 	# We verify that the color returned is actually assigned to a country
-	var country_name = str(get_color_in_mask())
+	var country_name = str(get_color_in_mask(map_click_position))
 	if country_name in all_countries:
-		all_countries[country_name].on_click(event, is_long_press)
+		all_countries[country_name].on_click(event_index, is_long_press)
 
-# Network synchronisation
-#######
-# Below functions are for the movement of countries during the attack phase to propagate across network
-remote func move_country_across_network(origin_country_name, destination_country_name):
-	all_countries[origin_country_name].get_node("Visual").move_to_country(all_countries[destination_country_name])
-	# If the game is online and the the function wasn't called via RPC
-	if _root.online_game and (get_tree().get_rpc_sender_id() == 0):
-		rpc_id(get_next_player().network_id, "move_country_across_network", origin_country_name, destination_country_name)
-		$Sync.synchronize(get_next_player().network_id)
-
-# Below functions are for the flashing of countries during the attack phase to propagate across network
-remote func flash_across_network(country_name):
-	all_countries[country_name].get_node("Visual").flash_attackable_neighbours()
-	# If the game is online and the the function wasn't called via RPC
-	if _root.online_game and (get_tree().get_rpc_sender_id() == 0):
-		rpc_id(get_next_player().network_id, "flash_across_network", country_name)
-
-# Below functions to stop the flashing of countries to propagate across network
-remote func stop_flashing():
+func stop_flashing():
 	for country in all_countries.values():
 		country.get_node("Visual").stop_flashing()
-	# If the game is online and the the function wasn't called via RPC
-	if _root.online_game and (get_tree().get_rpc_sender_id() == 0):
-		rpc_id(get_next_player().network_id, "stop_flashing")
-#######
+
+func is_current_player():
+	if len(_root.players) == 0:
+		return true
+	else:
+		return _root.players[_root.player_name] == curr_player.network_id
 
 const sync_period = 2
 var time_since_sync = 0
@@ -457,24 +435,3 @@ func _process(delta):
 	if time_since_last_input > input_frequency:
 		input_allowed = true
 		time_since_last_input = 0
-	
-	# Skip synchronisation if not online
-	if not _root.online_game:
-		return
-	
-	if game_started:
-		# Skip synchronisation if this instance of the game isn't the current player and the host color has been set
-		if _root.players[_root.player_name] != curr_player.network_id:
-			return
-	else:
-		# Skip synchronisation if this instance of the game is not the host and the host color hasn't been set
-		if _root.player_name != "host":
-			return
-	
-	time_since_sync += delta
-	if time_since_sync > sync_period:
-		if game_started:
-			$Sync.synchronize(get_next_player().network_id)
-		else:
-			$Sync.synchronize(_root.players["guest"])
-		time_since_sync = 0

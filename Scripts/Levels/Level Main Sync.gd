@@ -21,6 +21,9 @@ func synchronize(network_id):
 	rpc_id(network_id, "synchronise_meta_info", P.curr_player_index, \
 		P.round_number, P.game_started, P.game_modes)
 
+remote func synchronize_country_click(country_name, event, is_long_press):
+	P.all_countries[country_name].on_click(event, is_long_press)
+
 remote func synchronise_country(country_name, num_troops, num_reinforcements, color, statused, max_troops):
 	P.all_countries[country_name].synchronise(num_troops, num_reinforcements, \
 		P.players[color], statused, max_troops)

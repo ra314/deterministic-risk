@@ -107,22 +107,23 @@ func get_attackable_countries(game_modes):
 			attackable_countries.append(country)
 	return attackable_countries
 
+# The funciton below is triiggered when the collision shape is hit
 func _input_event(viewport, event, shape_idx):
 	if get_tree().get_current_scene().get_name() == "Level Creator":
 		if event is InputEventMouseButton and not event.pressed:
-			self.on_click(event, false)
+			self.on_click(event.button_index, false)
 
 signal attacked()
 signal attacking()
 func attacking():
 	emit_signal("attacking")
 signal conquered()
-func on_click(event, is_long_press):	
+func on_click(event_index, is_long_press):	
 	# Level Creator Behaviour
 	if get_tree().get_current_scene().get_name() == "Level Creator":
 		match Game_Manager.phase:
 			"change curr troops":
-				match event.button_index:
+				match event_index:
 					BUTTON_LEFT:
 						set_num_troops(num_troops+1)
 					BUTTON_RIGHT:
@@ -130,7 +131,7 @@ func on_click(event, is_long_press):
 			
 			"add countries":
 				# Country deletion
-				if event.button_index == BUTTON_RIGHT:
+				if event_index == BUTTON_RIGHT:
 					Game_Manager.all_countries.erase(country_name)
 					for country in connected_countries:
 						print(country.name)
@@ -168,14 +169,6 @@ func on_click(event, is_long_press):
 		return
 	
 	# In Game Behaviour
-	
-	# Don't do anything in multiplayer mode if the player of this game instance isn't the curr player
-	if Game_Manager._root.online_game:
-		print(Game_Manager.curr_player.network_id)
-		print(Game_Manager._root.players[Game_Manager._root.player_name])
-		if Game_Manager.curr_player.network_id != Game_Manager._root.players[Game_Manager._root.player_name]:
-			return
-	
 	Game_Manager.stop_flashing()
 	
 	# Do nothing if the game hasn't started
@@ -192,7 +185,7 @@ func on_click(event, is_long_press):
 			# If this country belongs to the current player, start flashing
 			if belongs_to == Game_Manager.curr_player:
 				Game_Manager.selected_country = self
-				Game_Manager.flash_across_network(country_name)
+				$Visual.flash_attackable_neighbours()
 			# Checking if there was a previous country selection
 			elif Game_Manager.selected_country != null:
 				var attacker = Game_Manager.selected_country
@@ -236,7 +229,7 @@ func on_click(event, is_long_press):
 							emit_signal("conquered")
 					
 					# Movement animation
-					Game_Manager.move_country_across_network(attacker.country_name, country_name)
+					attacker.get_node("Visual").move_to_country(self)
 					
 					# Phase change
 					if Game_Manager.is_attack_over():
@@ -248,7 +241,7 @@ func on_click(event, is_long_press):
 		"reinforcement":
 			if belongs_to == Game_Manager.curr_player:
 				# Add a reinforcement
-				if event.button_index == BUTTON_LEFT:
+				if event_index == BUTTON_LEFT:
 					# Check that the player has reinforcements available to allocate
 					if Game_Manager.curr_player.num_reinforcements > 0:
 						if "congestion" in Game_Manager.game_modes:
@@ -259,7 +252,7 @@ func on_click(event, is_long_press):
 							Game_Manager.curr_player.num_reinforcements -= 1
 							set_num_reinforcements(num_reinforcements+1)
 				# Remove a reinforcement
-				elif event.button_index == BUTTON_RIGHT:
+				elif event_index == BUTTON_RIGHT:
 					# Check that a reinforcement has been previously added to this country
 					if num_reinforcements > 0:
 						set_num_reinforcements(num_reinforcements-1)

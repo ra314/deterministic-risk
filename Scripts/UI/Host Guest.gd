@@ -9,6 +9,14 @@ func _ready():
 	container.get_node("Guest/Button").connect("button_down", self, "_load_scene",  ["UI/IP Select"])
 	
 	$TextureButton.connect("button_down", self, "back")
+	
+	container.get_node("Host/Button").connect("button_down", self, "set_player_name", ["host"])
+	container.get_node("Guest/Button").connect("button_down", self, "set_player_name", ["guest"])
+
+func set_player_name(player_name):
+	_root.player_name = player_name
+	if player_name == "host":
+		_root.host()
 
 func back():
 	# Removing the current scene from history
@@ -22,13 +30,5 @@ func back():
 	_root.scene_manager._replace_scene(scene)
 
 func _load_scene(scene_str):
-	# Dirty workaround to check if the pressed button was host
-	if scene_str == "UI/Mode Select":
-		_root.player_name = "host"
-		_root.host()
-	# Dirty workaround to check if the pressed button was guest
-	if scene_str == "UI/IP Select":
-		_root.player_name = "guest"
-	
 	var scene = _root.scene_manager._load_scene(scene_str)
 	_root.scene_manager._replace_scene(scene)

@@ -139,6 +139,7 @@ func add_connections(source_country_name, destination_country_names):
 	for destination_country_name in destination_country_names:
 		all_countries[source_country_name].add_connection(all_countries[destination_country_name])
 
-func get_color_in_mask():
-	return world_mask.get_pixel(get_local_mouse_position()[0]*scale_ratio, get_local_mouse_position()[1]*scale_ratio).to_html()
+func get_color_in_mask(map_click_position):
+	map_click_position *= scale_ratio
+	return world_mask.get_pixel(map_click_position[0], map_click_position[1]).to_html()
 

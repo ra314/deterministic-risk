@@ -41,6 +41,10 @@ config/windows_native_icon="res://icon.ico"
 
 GShader="*res://Scenes/Levels/Level Components/Shader.tscn"
 
+[debug]
+
+settings/fps/force_fps=60
+
 [display]
 
 window/size/width=1920
