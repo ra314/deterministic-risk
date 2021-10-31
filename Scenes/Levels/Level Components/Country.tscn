@@ -87,7 +87,7 @@ scale = Vector2( 0.0661157, 0.126984 )
 texture = ExtResource( 3 )
 centered = false
 
-[node name="blitz" type="Sprite" parent="Visual/Status"]
+[node name="blitzkrieg" type="Sprite" parent="Visual/Status"]
 visible = false
 position = Vector2( 16, -16 )
 scale = Vector2( 0.0987654, 0.131148 )

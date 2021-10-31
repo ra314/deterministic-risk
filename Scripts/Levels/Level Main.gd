@@ -13,7 +13,6 @@ var colors = {"blue": load("res://Assets/blue-square.svg"),
 				"gray": load("res://Assets/neutral-circle.svg")}
 
 var game_over = false
-var selected_country = null
 var phase = "attack"
 var curr_level = self
 
@@ -29,6 +28,16 @@ const num_players = 2
 var players = null
 var game_started = false
 
+var selected_country = null
+signal country_selected()
+func set_selected_country(country):
+	if selected_country:
+		selected_country.get_node("Visual").toggle_brightness()
+	if country:
+		country.get_node("Visual").toggle_brightness()
+	selected_country = country
+	emit_signal("country_selected")
+
 func load_world():
 	# Loading existing level
 	if .import_level(self, true):
@@ -37,73 +46,14 @@ func load_world():
 	else:
 		.create_default_level(self)
 
-# Clear the player dictionary, rerandomise troop allocation and redo player turn order and country allocation
-func reset_spawn():
-	for player in players.values():
-		if player.color == "gray": continue
-		player.reset()
-	curr_player = null
-	for country in all_countries.values():
-		country.change_ownership_to(players["gray"])
-		country.randomise_troops()
-
-func spawn_and_allocate():
-	# Creating players
-	players = {"red": get_node("CanvasLayer/Player Red").init("red"), "blue": get_node("CanvasLayer/Player Blue").init("blue")}
-	# Adding the neutral player
-	players["gray"] = player_neutral
-	
-	reset_spawn()
-
-	# Randomizing players
-	randomize()
-	curr_player_index = randi() % num_players
-	curr_player = players.values()[curr_player_index]
-	
-	# Randomly allocating countries
-	add_random_countries(get_next_player(), 4)
-	add_random_countries(curr_player, 3)
-	
-	# Assigning the owned countries with a predetermined spread:
-	var troops_to_assign = [2,2,3]
-	for country in curr_player.owned_countries:
-		country.set_num_troops(select_random(troops_to_assign))
-		troops_to_assign.erase(country.num_troops)
-	
-	troops_to_assign = [2,3,1,2]
-	for country in get_next_player().owned_countries:
-		country.set_num_troops(select_random(troops_to_assign))
-		troops_to_assign.erase(country.num_troops)
-	
-	# Checking if all player owned countries have a country they can attack
-	for player in players.values().slice(0,1):
-		for country in player.owned_countries:
-			if country.num_troops > 1:
-				if len(country.get_attackable_countries(["classic"])) == 0:
-					print("BAD spawn, I have " + str(country.num_troops) + " units and am " + country.belongs_to.color)
-					return false
-	
-	# Check that all player owned countries cannot immediately attack another player owned country
-	for player in players.values().slice(0,1):
-		for attacker in player.owned_countries:
-			for defender in attacker.get_attackable_countries(["classic"]):
-				if defender.belongs_to.color != "gray":
-					print("BAD spawn, I have " + str(defender.num_troops) + " units and am " + defender.belongs_to.color + " and can be attacked")
-					return false
-	
-#	print("The first player is " + curr_player.color)
-#	print(curr_player.color)
-	update_labels()
-	$Phase.update_player_status(curr_player.color, true)
-	print("Found good spawn")
-	return true
-	
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	load_world()
 	
-	while not spawn_and_allocate():
+	while not $Spawn.spawn_and_allocate():
 		pass
+	if _root.online_game and _root.player_name == "host":
+		$Sync.synchronize(_root.players["guest"])
 	
 	# Buttons to zoom in and out
 	get_node("CanvasLayer/Zoom In").connect("pressed", get_node("Camera2D"), "zoom_in")
@@ -152,6 +102,10 @@ func _ready():
 		get_node("CanvasLayer/Show").visible = true
 		toggle_denominator_visibility()
 	
+	# Button to raze a country in raze mode
+	if "raze" in game_modes:
+		connect("country_selected", self, "show_raze")
+	
 	# If you're the guest _root.game_modes is empty since the host picks them out
 	# However load_level() in main syncs up the game mdoe with the level main scene
 	# So we're just pushing these game modes back to the root
@@ -164,6 +118,20 @@ func show_help_menu():
 	_root.scene_manager.save_and_hide_current_scene()
 	_root.add_child(scene)
 
+func show_raze():
+	if not selected_country: return
+	disconnect_all("button_down", $CanvasLayer/Raze)
+	if selected_country.is_statused():
+		$CanvasLayer/Raze.visible = true
+		$CanvasLayer/Raze.connect("button_down", selected_country, "raze")
+		$CanvasLayer/Raze.connect("button_down", $CanvasLayer/Raze, "set_visible", [false])
+	else:
+		$CanvasLayer/Raze.visible = false
+	# Show the raze button if the selected country can be razed
+	# Disconnect all previous connections of the raze button
+	# Connect the raze button with the razing of the country
+	# Connect the raze button with determining it's visibility if the country can be razed
+
 var show_denominator = true
 func toggle_denominator_visibility():
 	show_denominator = not show_denominator
@@ -172,19 +140,20 @@ func toggle_denominator_visibility():
 
 # Confirmation System
 #######
-var prev_signal = {"object":null, "method":null}
+func disconnect_all(signal_name, object):
+	for connection in object.get_signal_connection_list(signal_name):
+		object.disconnect(connection.signal, connection.target, connection.method)
+
 func show_confirmation_menu(confirmation_text, callback, args, object):
 	get_node("CanvasLayer/Confirm/VBoxContainer/Label").text = confirmation_text
 	get_node("CanvasLayer/Confirm").visible = true
-	# Disablign previously connected signal if ther was a previous signal connection
-	if prev_signal["object"]:
-		$CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes.\
-			disconnect("button_down", prev_signal["object"], prev_signal["method"])
-		prev_signal = {"object":null, "method":null}
+	# Disablign previously connected signals 
+	disconnect_all("button_down", $CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes)
 	if object:
 		$CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes.\
 			connect("button_down", object, callback, args)
-		prev_signal = {"object":object, "method":callback}
+		$CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes.\
+			connect("button_down", get_node("CanvasLayer/Confirm"), "set_visible", [false])
 #######
 
 # Button Removal and Hiding Functions
@@ -207,35 +176,9 @@ func show_end_reinforcement(show_boolean):
 	get_node("CanvasLayer/End Reinforcement").visible = show_boolean
 #######
 
-# AI
-#######
-# We duplicate the existing countries so that modifications here do not propogate outside
-func clone_country(country):
-	var new_country = Country.init(country.x, country.y, country.country_name, country.player)
-	new_country.set_num_troops(country.num_troops)
-	return new_country
-
-func extract_game_state():
-	var game_state = {}
-	for player in players.values():
-		game_state[player.color] = {}
-		for country in player.owner_countries:
-			game_state[player.color][country.country_name] = clone_country(country)
-	return game_state
-
-func get_child_states(game_state, curr_player_color):
-	for country in game_state[curr_player_color]:
-		for attackable_country in country.get_attackable_countries():
-			pass
-
-# The depth parameter is not how deep the function is currently, 
-# but how much deeper it should go
-# minimax(extract_game_state(), 3, -INF, INF, true) 
-func minimax(game_state, depth, alpha, beta, maximizing_player):
-	pass
 ######
 func reroll_spawn():
-	while not spawn_and_allocate():
+	while not $Spawn.spawn_and_allocate():
 		pass
 	if _root.online_game:
 		$Sync.synchronize(_root.players["guest"])
@@ -278,39 +221,12 @@ func set_host_color(color):
 	else:
 		print("changing other guyss button")
 		rpc_id(curr_player.network_id, "show_end_attack", true)
-
-# Checks if a country is non adjacent to a player
-func is_country_neighbour_of_player(test_country, player):
-	for country in player.owned_countries:
-		if test_country in country.connected_countries:
-			return true
-	return false
-
-func add_random_countries(player, num_countries):
-	# Checking that sufficient number of countries are available	
-	if curr_level.get_num_neutral_countries() < num_countries:
-		print("not enough countries")
-		get_tree().quit()
-	
-	# Adding random countries to the player
-	var num_added_countries = 0
-	var loop_counter = 0
-	while num_added_countries < num_countries:
-		loop_counter += 1
-		var country = select_random(curr_level.all_countries.values())
-		if loop_counter > 1000:
-			print("Not enough countries for all starting countries to be non adjacent.\n1000 iterations completed.")
-			get_tree().quit()
-		
-		# Ensuring that the country is not adjacent to the opponent and is unowned
-		if country.belongs_to.color == "gray" and not is_country_neighbour_of_player(country, get_next_player()):
-			country.change_ownership_to(player)
-			num_added_countries += 1
-	update_labels()
 	
 func is_attack_over():
 	for country in curr_player.owned_countries:
 		if country.get_attackable_countries(game_modes):
+			return false
+		if country.get_raze_and_attackable_countries(game_modes):
 			return false
 	return true
 

@@ -17,17 +17,31 @@ func set_max_troops(_max_troops):
 	max_troops = _max_troops
 	emit_signal("set_max_troops", num_troops, num_reinforcements, max_troops)
 
-var statused = {"resistance": false, "blitz": false, "fatigue": false}
+var statused = {"resistance": false, "blitzkrieg": false, "fatigue": false}
 signal set_statused(status_name, boolean)
 func set_statused(status_name, boolean):
 	# Emit signal only if the boolean changes to save on performance
 	if statused[status_name] != boolean:
 		statused[status_name] = boolean
 		emit_signal("set_statused", status_name, boolean)
+# Does the country have at least one status
+func is_statused():
+	for status in statused:
+		if statused[status]:
+			return true
+	return false
 
-signal reset_status()
+func get_raze_deaths():
+	return floor(num_troops/2)
+
+func raze():
+	set_num_troops(num_troops - get_raze_deaths())
+	reset_status()
+	Game_Manager.set_selected_country(null)
+
 func reset_status():
-	emit_signal("reset_status")
+	for status in statused:
+		set_statused(status, false)
 
 # This is so during reinforcement the label can show up as
 # {num_troops} + {num_reinforcements}
@@ -57,16 +71,14 @@ func _ready():
 		connect("attacking", self, "set_statused", ["fatigue", true])
 	# Turn off blitz when is a country is conquered
 	# Turn on blitz when a country is attacked
-	if "blitz" in Game_Manager.game_modes:
-		connect("conquered", self, "set_statused", ["blitz", false])
-		connect("attacked", self, "set_statused", ["blitz", true])
+	if "blitzkrieg" in Game_Manager.game_modes:
+		connect("conquered", self, "set_statused", ["blitzkrieg", false])
+		connect("attacked", self, "set_statused", ["blitzkrieg", true])
 	# Apply pandemic deaths when a turn is ended
 	if "pandemic" in Game_Manager.game_modes:
 		Game_Manager.get_node("Phase").connect("ending_reinforcement", self, "apply_pandemic_deaths")
 	# Disabling resistance, blitz and similar volatile conditions
-	for game_mode in statused:
-		if game_mode in Game_Manager.game_modes:
-			Game_Manager.get_node("Phase").connect("ending_attack", self, "set_statused", [game_mode, false])
+	Game_Manager.get_node("Phase").connect("ending_attack", self, "reset_status")
 	# Reset reinforcements and move troops from reinforcement into active duty
 	Game_Manager.get_node("Phase").connect("ending_reinforcement", self, "move_troops_to_active_duty")
 	# Show a progressbar in congestion mode indiciating the max number of troops
@@ -95,9 +107,9 @@ func calc_pandemic_deaths():
 func apply_pandemic_deaths():
 	set_num_troops(num_troops - calc_pandemic_deaths())
 
-static func can_attack(attacker, defender, game_modes):
-	# Attack not possible if currently in resistance
-	if "resistance" in game_modes and attacker.statused['resistance'] == true:
+static func can_attack(attacker, defender, game_modes, check_tiredness):
+	# Attack not possible if currently in resistance or fatigued
+	if check_tiredness and (attacker.statused['resistance'] or attacker.statused['fatigue']):
 		return false
 	# Check if the defender and attacker are connected
 	if defender in attacker.connected_countries:
@@ -110,9 +122,21 @@ static func can_attack(attacker, defender, game_modes):
 func get_attackable_countries(game_modes):
 	var attackable_countries = []
 	for country in connected_countries:
-		if can_attack(self, country, game_modes):
+		if can_attack(self, country, game_modes, true):
 			attackable_countries.append(country)
 	return attackable_countries
+
+# Countries that can be attacked after performing a raze
+func get_raze_and_attackable_countries(game_modes):
+	var raze_and_attackable_countries = []
+	for country in connected_countries:
+		if statused['resistance'] or statused['fatigue']:
+			var prev_num_troops = num_troops
+			num_troops -= get_raze_deaths()
+			if can_attack(self, country, game_modes, false):
+				raze_and_attackable_countries.append(country)
+			num_troops = prev_num_troops
+	return raze_and_attackable_countries
 
 # The funciton below is triiggered when the collision shape is hit
 func _input_event(viewport, event, shape_idx):
@@ -147,20 +171,20 @@ func on_click(event_index, is_long_press):
 			"connect countries":
 				if Game_Manager.selected_country == null:
 					$Visual.toggle_brightness()
-					Game_Manager.selected_country = self
+					Game_Manager.set_selected_country(self) 
 				elif Game_Manager.selected_country == self:
 					$Visual.toggle_brightness()
-					Game_Manager.selected_country = null
+					Game_Manager.set_selected_country(null) 
 				else:
 					connected_countries.append(Game_Manager.selected_country)
 					Game_Manager.selected_country.connected_countries.append(self)
 					if Game_Manager.lines_drawn:
 						$Visual.draw_line_to_country(Game_Manager.selected_country)
 					Game_Manager.selected_country.get_node("Visual").toggle_brightness()
-					Game_Manager.selected_country = null
+					Game_Manager.set_selected_country(null) 
 			
 			"move countries":
-				Game_Manager.selected_country = self
+				Game_Manager.set_selected_country(self) 
 			
 			"add color to country":
 				var color = str(Game_Manager.get_color_in_mask())
@@ -181,26 +205,22 @@ func on_click(event_index, is_long_press):
 	
 	# Deselecting behaviour
 	if Game_Manager.selected_country == self:
-		Game_Manager.selected_country = null
+		Game_Manager.set_selected_country(null) 
 		return
 	
 	match Game_Manager.phase:
 		"attack":
 			# If this country belongs to the current player, start flashing
 			if belongs_to == Game_Manager.curr_player:
-				Game_Manager.selected_country = self
+				Game_Manager.set_selected_country(self) 
 				$Visual.flash_attackable_neighbours()
 			# Checking if there was a previous country selection
 			elif Game_Manager.selected_country != null:
 				var attacker = Game_Manager.selected_country
 				# Check if this country is attackable by the attacker
-				if can_attack(attacker, self, Game_Manager.game_modes):
-					# Common component between modes
-					emit_signal("attacked")
-					attacker.attacking()
-					Game_Manager.selected_country = null
-					
+				if can_attack(attacker, self, Game_Manager.game_modes, true):
 					# If the attacker has more troops
+					var delayed_conquer = false
 					if attacker.num_troops > num_troops:
 						var survivors = float(attacker.num_troops - num_troops)
 						if "diffusion" in Game_Manager.game_modes:
@@ -215,22 +235,29 @@ func on_click(event_index, is_long_press):
 							attacker.set_num_troops(min(attacker.num_troops, attacker.max_troops))
 							
 						change_ownership_to(attacker.belongs_to)
-						emit_signal("conquered")
+						delayed_conquer = true
 					
 					# If it has less or equal and drain is one of the game modes
 					elif "drain" in Game_Manager.game_modes:
 						# Blitz Drain
-						if statused["blitz"]:
-							num_troops -= (attacker.num_troops)
+						if statused["blitzkrieg"]:
+							set_num_troops(num_troops - attacker.num_troops)
 						# Normal Drain
 						else:
-							num_troops -= (attacker.num_troops - 1)
+							set_num_troops(num_troops - (attacker.num_troops - 1))
 						attacker.set_num_troops(1)
 						
 						# Change ownership if drained to 0
 						if num_troops == 0:
 							change_ownership_to(Game_Manager.player_neutral)
-							emit_signal("conquered")
+							delayed_conquer = true
+					
+					# Common component between modes
+					emit_signal("attacked")
+					attacker.attacking()
+					if delayed_conquer:
+						emit_signal("conquered")
+					Game_Manager.set_selected_country(null)
 					
 					# Movement animation
 					attacker.get_node("Visual").move_to_country(self)

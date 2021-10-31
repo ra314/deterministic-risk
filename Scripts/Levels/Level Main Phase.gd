@@ -52,7 +52,7 @@ remotesync func change_to_attack2():
 		P.show_end_attack(true)
 
 	emit_signal("ending_reinforcement")
-	P.selected_country = null
+	P.set_selected_country(null) 
 	P.round_number += 1
 	P.phase = "attack"
 	change_to_next_player()
@@ -77,7 +77,7 @@ func change_to_reinforcement1(surity_bool=false):
 # change_to_reinforcement1. There's no way to buttons to trigger a remote sync function all,
 # Hence the need of a separate change_to_reinforcement2
 remotesync func change_to_reinforcement2():
-	P.selected_country = null
+	P.set_selected_country(null) 
 	P.curr_level.stop_flashing()
 	P.curr_player.give_reinforcements()
 	emit_signal("ending_attack")

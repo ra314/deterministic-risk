@@ -14,12 +14,6 @@ var player_neutral = Player.instance().init("gray")
 # For example the ratio between 4k and 1080p should be 2
 const scale_ratio: float = 2.0
 
-func get_num_neutral_countries():
-	var count = 0
-	for country in all_countries.values():
-		count += int(country.belongs_to.color == "gray")
-	return count
-
 func create_default_level(level_node):	
 	# Instantiating countries
 	add_country_to_level(Country.instance().new(50, 50, "Alaska", player_neutral))

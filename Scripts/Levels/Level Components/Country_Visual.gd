@@ -133,10 +133,11 @@ func flash_attackable_neighbours():
 		country.get_node("Visual").flashing = true
 
 func stop_flashing():
-	change_mask_color(get_parent().belongs_to.color)
-	$"Active Troops/Sprite".modulate = Color(1,1,1)
-	time_since_last_flash = 0
-	self.flashing = false
+	if flashing:
+		change_mask_color(get_parent().belongs_to.color)
+		$"Active Troops/Sprite".modulate = Color(1,1,1)
+		time_since_last_flash = 0
+		flashing = false
 
 func toggle_brightness():
 	if $"Active Troops/Sprite".modulate == Color(1,1,1):

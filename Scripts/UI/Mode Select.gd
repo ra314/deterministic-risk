@@ -22,6 +22,8 @@ func randomise_modes():
 	if not grid.get_node("Drain").pressed:
 		grid.get_node("Congestion").pressed = false
 		grid.get_node("Blitzkrieg").pressed = false
+	if not grid.get_node("Fatigue") and not grid.get_node("Resistance"):
+		grid.get_node("Raze").pressed = false
 
 func show_help_menu():
 	var scene = _root.scene_manager._load_scene("UI/Help Menu")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://Assets/notification.wav" type="AudioStream" id=1]
 [ext_resource path="res://Scripts/Levels/Level Main.gd" type="Script" id=2]
@@ -15,9 +15,11 @@
 [ext_resource path="res://Assets/label_background.tres" type="StyleBox" id=13]
 [ext_resource path="res://Assets/Maps/Parallax Background.png" type="Texture" id=14]
 [ext_resource path="res://Scripts/Levels/Level Main Phase.gd" type="Script" id=15]
+[ext_resource path="res://Scripts/Levels/Level Main Spawn.gd" type="Script" id=16]
 [ext_resource path="res://Assets/Icons/black-flag.svg" type="Texture" id=17]
 [ext_resource path="res://Assets/Icons/reinforcements.svg" type="Texture" id=18]
 [ext_resource path="res://Assets/Icons/soldier-army.svg" type="Texture" id=19]
+[ext_resource path="res://Assets/Icons/resistance.svg" type="Texture" id=20]
 [ext_resource path="res://Assets/blue-square.svg" type="Texture" id=21]
 [ext_resource path="res://Assets/Fonts/Font_100.tres" type="DynamicFont" id=22]
 
@@ -273,8 +275,9 @@ anchor_top = 0.000925926
 anchor_right = 0.0861193
 anchor_bottom = 0.0361111
 margin_left = -0.348328
+margin_top = 63.0
 margin_right = 124.652
-margin_bottom = 30.0
+margin_bottom = 93.0
 custom_fonts/font = ExtResource( 8 )
 text = "End Attack"
 __meta__ = {
@@ -287,9 +290,10 @@ anchor_left = 0.000181421
 anchor_top = 0.000925926
 anchor_right = 0.000181452
 anchor_bottom = 0.000925926
-margin_left = 289.652
-margin_right = 791.652
-margin_bottom = 68.0
+margin_left = -0.348328
+margin_top = 126.0
+margin_right = 501.652
+margin_bottom = 194.0
 custom_fonts/font = SubResource( 1 )
 text = "End Reinforcement"
 __meta__ = {
@@ -325,6 +329,7 @@ __meta__ = {
 }
 
 [node name="Show" type="TextureButton" parent="CanvasLayer"]
+visible = false
 anchor_left = -5.46773e-05
 anchor_top = -9.73172e-05
 anchor_right = -5.46773e-05
@@ -334,6 +339,22 @@ margin_top = 1016.11
 margin_right = 1680.1
 margin_bottom = 1080.11
 texture_normal = ExtResource( 4 )
+expand = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Raze" type="TextureButton" parent="CanvasLayer"]
+visible = false
+anchor_left = -5.46773e-05
+anchor_top = -9.73172e-05
+anchor_right = -5.46773e-05
+anchor_bottom = -9.73172e-05
+margin_left = 1464.1
+margin_top = 960.105
+margin_right = 1552.1
+margin_bottom = 1079.11
+texture_normal = ExtResource( 20 )
 expand = true
 __meta__ = {
 "_edit_use_anchors_": false
@@ -486,6 +507,9 @@ centered = false
 
 [node name="Sync" type="Node" parent="."]
 script = ExtResource( 5 )
+
+[node name="Spawn" type="Node" parent="."]
+script = ExtResource( 16 )
 
 [node name="Phase" type="Node" parent="."]
 script = ExtResource( 15 )
