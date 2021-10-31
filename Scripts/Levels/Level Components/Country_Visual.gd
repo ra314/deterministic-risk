@@ -38,7 +38,8 @@ func change_mask_color(color):
 		if color == "gray":
 			return
 		else:
-			print(str(create_mask_sprite()) + "ms")
+			create_mask_sprite()
+			#print(str(create_mask_sprite()) + "ms")
 
 	var shader = mask_sprite.get_material()
 	shader.set_shader_param("u_highlight_color", mask_colors[color])

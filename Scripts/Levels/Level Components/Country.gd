@@ -41,7 +41,6 @@ func set_num_reinforcements(_num_reinforcements):
 func _ready():
 	# The chunk below is for when the Country scene is called in isolation
 	if get_parent() is Viewport:
-		print("happened")
 		var Player = load("res://Scenes/Levels/Level Components/Player.tscn")
 		var player_neutral = Player.instance().init("gray")
 		belongs_to = player_neutral
@@ -142,12 +141,10 @@ func on_click(event_index, is_long_press):
 				if event_index == BUTTON_RIGHT:
 					Game_Manager.all_countries.erase(country_name)
 					for country in connected_countries:
-						print(country.name)
 						country.connected_countries.erase(self)
 					queue_free()
 			
 			"connect countries":
-				print(Game_Manager.selected_country)
 				if Game_Manager.selected_country == null:
 					$Visual.toggle_brightness()
 					Game_Manager.selected_country = self
@@ -161,7 +158,6 @@ func on_click(event_index, is_long_press):
 						$Visual.draw_line_to_country(Game_Manager.selected_country)
 					Game_Manager.selected_country.get_node("Visual").toggle_brightness()
 					Game_Manager.selected_country = null
-				print(Game_Manager.selected_country)
 			
 			"move countries":
 				Game_Manager.selected_country = self

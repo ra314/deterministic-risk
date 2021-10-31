@@ -17,7 +17,7 @@ func _replace_scene(scene):
 	var container = _root.get_children()[0]
 	_remove_children(container)
 	container.replace_by(scene)
-	print(_root.loaded_scene_history)
+#	print(_root.loaded_scene_history)
 
 func _remove_children(node: Node):
 	for child in node.get_children():

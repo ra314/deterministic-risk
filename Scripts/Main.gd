@@ -20,6 +20,7 @@ var players = {}
 
 remotesync func load_level(scene_str, world_str, game_modes):
 	var scene = scene_manager._load_scene(scene_str)
+	scene._root = self
 	scene.game_modes = game_modes
 	scene.world_str = world_str
 	scene_manager._replace_scene(scene)
@@ -54,6 +55,7 @@ func notify_player_connection(connecting_player_name):
 func host():
 	peer = NetworkedMultiplayerENet.new()
 	peer.create_server(SERVER_PORT, MAX_PLAYERS)
+	print(get_tree())
 	get_tree().network_peer = peer
 	
 	# Adding yourself to the list of players
