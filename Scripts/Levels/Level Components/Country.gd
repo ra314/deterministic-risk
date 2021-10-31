@@ -233,7 +233,7 @@ func on_click(event_index, is_long_press):
 					
 					# Phase change
 					if Game_Manager.is_attack_over():
-						Game_Manager.get_node("Phase").change_to_reinforcement(true)
+						Game_Manager.get_node("Phase").change_to_reinforcement1(true)
 					# Check if the opponent has any troops left
 					if Game_Manager.get_next_player().get_num_troops() == 0:
 						Game_Manager.end_game(belongs_to.color)

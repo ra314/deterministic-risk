@@ -109,8 +109,8 @@ func _ready():
 	get_node("CanvasLayer/Zoom Out").connect("pressed", get_node("Camera2D"), "zoom_out")
 	
 	# Button to end attack and reinforcement phases
-	get_node("CanvasLayer/End Attack").connect("pressed", $Phase, "change_to_reinforcement")
-	get_node("CanvasLayer/End Reinforcement").connect("pressed", $Phase, "change_to_attack")
+	get_node("CanvasLayer/End Attack").connect("pressed", $Phase, "change_to_reinforcement1")
+	get_node("CanvasLayer/End Reinforcement").connect("pressed", $Phase, "change_to_attack1")
 	
 	# Buttons to select if host plays as red or blue
 	get_node("CanvasLayer/Init Buttons/Online/Play Red").connect("button_down", self, "set_host_color", ["red"])

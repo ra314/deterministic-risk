@@ -27,14 +27,19 @@ remote func update_player_status(color, attacking):
 	else:
 		curr_player_status.texture = load("res://Assets/Icons/shield.svg")
 
-remotesync func change_to_attack(surity_bool=false):
+func change_to_attack1(surity_bool=false):
 	print(get_stack())
 	# When the surity bool is true, you get to skip the confirmation menu
 	if not surity_bool and P.curr_player.num_reinforcements > 0:
 		P.show_confirmation_menu("You have a reinforcement left to place on the map.\nAre you sure you want to end reinforcement?",\
-							 "change_to_attack", [true], self)
+							 "change_to_attack1", [true], self)
 		return
-	
+	rpc("change_to_attack2")
+
+# The reason this wrapper function exists is because the buttons are connected to
+# change_to_attack1. There's no way to buttons to trigger a remote sync function all,
+# Hence the need of a separate change_to_attack2
+remotesync func change_to_attack2():
 	# Modifying the visibility of the end attack and end reinforcement buttons	
 	if P._root.online_game:
 		if P.is_current_player():
@@ -64,18 +69,20 @@ remotesync func change_to_attack(surity_bool=false):
 	
 	# Automatically end the attack phase if in checkers mode and no attacks are available
 	if "checkers" in P.game_modes and P.is_attack_over():
-		if P._root.online_game:
-			rpc_id(P.curr_player.network_id, "change_to_reinforcement", true)
-		else:
-			change_to_reinforcement(true)
+		change_to_reinforcement1(true)
 
-remote func change_to_reinforcement(surity_bool=false):
+func change_to_reinforcement1(surity_bool=false):
 	# When the surity bool is true, you get to skip the confirmation menu
 	if not surity_bool:
 		P.show_confirmation_menu("You have an attack left.\nAre you sure you want to end attacks?",\
-							 "change_to_reinforcement", [true], self)
+							 "change_to_reinforcement1", [true], self)
 		return
-	
+	rpc("change_to_reinforcement2")
+
+# The reason this wrapper function exists is because the buttons are connected to
+# change_to_reinforcement1. There's no way to buttons to trigger a remote sync function all,
+# Hence the need of a separate change_to_reinforcement2
+remotesync func change_to_reinforcement2():
 	P.selected_country = null
 	P.curr_level.stop_flashing()
 	P.curr_player.give_reinforcements()
