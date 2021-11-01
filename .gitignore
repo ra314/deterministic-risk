@@ -11,3 +11,4 @@ android/
 .gut*
 
 !.github
+!.gutconfig.json
