@@ -111,7 +111,7 @@ func _ready():
 	# So we're just pushing these game modes back to the root
 	# This is necessary so that the asterisks show up next to the selected game modes on the help screen
 	_root.game_modes = game_modes
-	print(game_modes)
+#	print(game_modes)
 
 func show_help_menu():
 	var scene = _root.scene_manager._load_scene("UI/Help Menu")
@@ -326,6 +326,8 @@ remotesync func click_country(map_click_position, event_index, is_long_press):
 	var country_name = str(get_color_in_mask(map_click_position))
 	if country_name in all_countries:
 		all_countries[country_name].on_click(event_index, is_long_press)
+	
+	print(country_name)
 
 func stop_flashing():
 	for country in all_countries.values():

@@ -16,3 +16,13 @@ text = "Test long press to remove reinforcements"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Test2" type="Button" parent="C"]
+margin_top = 64.0
+margin_right = 616.0
+margin_bottom = 132.0
+custom_fonts/font = ExtResource( 2 )
+text = "Test blitzkrieg and drain"
+__meta__ = {
+"_edit_use_anchors_": false
+}
