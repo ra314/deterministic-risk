@@ -8,3 +8,5 @@ Releases/
 android/
 .*/
 *.import
+addons/
+.gut*

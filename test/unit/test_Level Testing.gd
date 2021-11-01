@@ -1,13 +1,28 @@
-extends Node2D
+extends "res://addons/gut/test.gd"
 var _root = load("res://Scenes/Main.tscn").instance()
+var main = null
+var func_retval = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	add_child(_root)
 	_root.visible = false
-	$C/Test1.connect("button_down", self, "test_long_press")
-	$C/Test2.connect("button_down", self, "test_blitz_and_drain")
+#	$C/Test1.connect("button_down", self, "test_long_press")
+#	$C/Test2.connect("button_down", self, "test_blitz_and_drain")
 	pass # Replace with function body.
+
+func before_each():
+#	$C.visible = false
+	func_retval = false
+	init(["classic", "drain", "blitzkrieg"])
+	main = _root.get_children()[0]
+
+func after_each():
+#	$C.visible = true
+	clean()
+
+func after_all():
+	main.free()
 
 func init(game_modes = ["classic"]):
 	_root.visible = true
@@ -19,10 +34,10 @@ func clean():
 	_root.scene_manager._replace_scene(Node2D.new())
 
 func test_blitz_and_drain():
-	$C.visible = false
-	init(["classic", "drain", "blitzkrieg"])
-	var main = _root.get_children()[0]
-	
+	yield(t_blitz_and_drain(), "completed")
+	assert_true(func_retval)
+
+func t_blitz_and_drain():	
 	print()
 	print("Testing if the blitz icon shows up upon drain and that the icon goes away upon being conquered")
 	
@@ -50,6 +65,7 @@ func test_blitz_and_drain():
 		print("Successfully drained the middle east")
 	else:
 		print("Failed to drain")
+		func_retval = false
 		return false
 	
 	yield(get_tree().create_timer(1), "timeout")
@@ -61,21 +77,19 @@ func test_blitz_and_drain():
 		print("Successfully blitz conquered the middle east")
 	else:
 		print("Failed to blitz conquer")
+		func_retval = false
 		return false
 	
 	print()
 	yield(get_tree().create_timer(1), "timeout")
-	
-	clean()
-	$C.visible = true
+	func_retval = true
 	return true
 
-
 func test_long_press():
-	$C.visible = false
-	init()
-	var main = _root.get_children()[0]
-	
+	yield(t_long_press(), "completed")
+	assert_true(func_retval)
+
+func t_long_press():
 	print()
 	print("Testing if a long press removes all reinforcements")
 	
@@ -97,6 +111,7 @@ func test_long_press():
 		print("Successfully added all available reinforcement")
 	else:
 		print("Failed to add all available reinforcement")
+		func_retval = false
 		return false
 	
 	yield(get_tree().create_timer(1), "timeout")
@@ -105,13 +120,12 @@ func test_long_press():
 		print("Successfully removed all reinforcements")
 	else:
 		print("Failed to remove all reinforcements")
+		func_retval = false
 		return false
 	
 	print()
 	yield(get_tree().create_timer(1), "timeout")
-	
-	clean()
-	$C.visible = true
+	func_retval = true
 	return true
 
 
