@@ -7,8 +7,8 @@
 Releases/
 android/
 .*/
-*.import
 .gut*
 
 !.github
 !.gutconfig.json
+!*.import
