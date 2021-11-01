@@ -10,3 +10,5 @@ android/
 *.import
 addons/
 .gut*
+
+!.github
