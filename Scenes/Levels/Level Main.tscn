@@ -284,6 +284,22 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="End Movement" type="Button" parent="CanvasLayer"]
+visible = false
+anchor_left = 0.000181421
+anchor_top = 0.000925926
+anchor_right = 0.0861193
+anchor_bottom = 0.0361111
+margin_left = -0.348328
+margin_top = 191.0
+margin_right = 124.652
+margin_bottom = 221.0
+custom_fonts/font = ExtResource( 8 )
+text = "End Movement"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="End Reinforcement" type="Button" parent="CanvasLayer"]
 visible = false
 anchor_left = 0.000181421

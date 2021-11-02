@@ -15,20 +15,22 @@ const mask_colors = {"white": Color8(255,255,255,255),
 const destination_movement_duration = 0.2
 const origin_movement_duration = 0.4
 
+var P = null
 var Game_Manager = null
 
-func init_connections():
-	Game_Manager = get_parent().Game_Manager
-	get_parent().connect("set_num_troops", self, "show_num_troops")
-	get_parent().connect("set_num_reinforcements", self, "show_num_reinforcements")
+func init():
+	P = get_parent()
+	Game_Manager = P.Game_Manager
+	P.connect("set_num_troops", self, "show_num_troops")
+	P.connect("set_num_reinforcements", self, "show_num_reinforcements")
 	if "pandemic" in Game_Manager.game_modes:
-		get_parent().connect("set_num_troops", self, "show_pandemic_status")
-	for status in get_parent().statused:
+		P.connect("set_num_troops", self, "show_pandemic_status")
+	for status in P.statused:
 		if status in Game_Manager.game_modes:
-			get_parent().connect("set_statused", self, "show_statused")
+			P.connect("set_statused", self, "show_statused")
 			break
 	if "congestion" in Game_Manager.game_modes:
-		get_parent().connect("set_max_troops", self, "show_congestion")
+		P.connect("set_max_troops", self, "show_congestion")
 
 func change_mask_color(color):
 	# Performance hack
@@ -56,13 +58,13 @@ func create_mask_sprite():
 	
 	# Changing the select country to white and everything else to transparent
 	var mask_shader = load("res://Assets/mask_shader.tres").duplicate()
-	mask_shader.set_shader_param("u_color_key", Color(get_parent().country_name))
+	mask_shader.set_shader_param("u_color_key", Color(P.country_name))
 	mask_shader.set_shader_param("u_highlight_color", Color8(255,255,255,255))
 	mask_shader.set_shader_param("u_background_color", Color8(0,0,0,0))
 	
 	# Creating a sprite that contains the world's mask texture and add it to level
 	var tex = ImageTexture.new()
-	tex.create_from_image(get_parent().Game_Manager.world_mask)
+	tex.create_from_image(P.Game_Manager.world_mask)
 	
 	mask_sprite = Sprite.new()
 	mask_sprite.centered = false
@@ -71,9 +73,9 @@ func create_mask_sprite():
 	mask_sprite.z_index = 4
 	mask_sprite.set_material(mask_shader)
 	# Scale after the shader has run to avoid AA issues
-	mask_sprite.set_scale(Vector2(1/get_parent().Game_Manager.scale_ratio,1/get_parent().Game_Manager.scale_ratio))
+	mask_sprite.set_scale(Vector2(1/P.Game_Manager.scale_ratio,1/P.Game_Manager.scale_ratio))
 	
-	get_parent().Game_Manager.add_child(mask_sprite)
+	P.Game_Manager.add_child(mask_sprite)
 	
 	# Measuring performance
 	var time_taken = OS.get_ticks_msec() - time_start
@@ -86,7 +88,7 @@ func show_num_troops(num_troops):
 	$"Active Troops/Label".text = str(num_troops)
 
 func show_pandemic_status(num_troops):
-	var num_deaths = get_parent().calc_pandemic_deaths()
+	var num_deaths = P.calc_pandemic_deaths()
 	$"Status/Num Pandemic".visible = num_deaths > 0
 	$"Status/Pandemic".visible = num_deaths > 0
 	$"Status/Num Pandemic".text = str(num_deaths)
@@ -107,34 +109,61 @@ func show_num_reinforcements(num_reinforcements):
 
 func show_congestion_denominator(show_denominator_boolean):
 	if show_denominator_boolean:
-		$"Active Troops/Label".text = str(get_parent().num_troops) + "/" + str(get_parent().max_troops)
+		$"Active Troops/Label".text = str(P.num_troops) + "/" + str(P.max_troops)
 	else:
-		$"Active Troops/Label".text = str(get_parent().num_troops)
+		$"Active Troops/Label".text = str(P.num_troops)
 
+# The key is the other country that this line is connected to
+# The value is an array of the country which is the parent of the line and the line itself
+var lines = {}
 func draw_line_to_country(selected_country):
+	# Adding the line to the scene
 	var new_line = Line2D.new()
+	new_line.width = 2
 	add_child(new_line)
+	new_line.z_index = 10
+	
+	# Storing the drawn line
+	lines[selected_country] = [P, new_line]
+	selected_country.Visual.lines[P] = [P, new_line]
+	
+	# Connecting the points of the line
 	new_line.add_point(Vector2(20,20))
-	new_line.add_point(selected_country.position - get_parent().position + Vector2(20,20))
+	new_line.add_point(selected_country.position - P.position + Vector2(20,20))
+func remove_line_to_country(selected_country):
+	if not selected_country in lines:
+		return false
+	lines[selected_country][0].remove_child(lines[selected_country][1])
+	lines[selected_country][1].queue_free()
+	print(lines[selected_country][0].get_children())
+	
+	# Removing the line node from storage
+	lines.erase(selected_country)
+	selected_country.Visual.lines.erase(P)
+	
+	return true
+func remove_all_lines():
+	for country in lines:
+		remove_line_to_country(country)
 
 func move_to_location_with_duration(location, duration):
-	$Tween.interpolate_property(get_parent(), "position", get_parent().position, location, duration)
+	$Tween.interpolate_property(P, "position", P.position, location, duration)
 
 # Moving to a country and back
 func move_to_country(destination_country):
 	move_to_location_with_duration(destination_country.position, destination_movement_duration)
-	$Tween.interpolate_callback(self, destination_movement_duration, "move_to_location_with_duration", get_parent().position, origin_movement_duration)
+	$Tween.interpolate_callback(self, destination_movement_duration, "move_to_location_with_duration", P.position, origin_movement_duration)
 	$Tween.start()
 
 # Flash all countries that can be attacked
 func flash_attackable_neighbours():
-	for country in get_parent().get_attackable_countries(Game_Manager.game_modes):
+	for country in P.get_attackable_countries(Game_Manager.game_modes):
 		# Creation of a mask sprite to do the flashing
-		country.get_node("Visual").flashing = true
+		country.Visual.flashing = true
 
 func stop_flashing():
 	if flashing:
-		change_mask_color(get_parent().belongs_to.color)
+		change_mask_color(P.belongs_to.color)
 		$"Active Troops/Sprite".modulate = Color(1,1,1)
 		time_since_last_flash = 0
 		flashing = false
@@ -154,7 +183,7 @@ func _process(delta):
 			if $"Active Troops/Sprite".modulate == Color(1,1,1):
 				change_mask_color("white")
 			else:
-				change_mask_color(get_parent().belongs_to.color)
+				change_mask_color(P.belongs_to.color)
 			toggle_brightness()
 			time_since_last_flash = 0
 

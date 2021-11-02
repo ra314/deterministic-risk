@@ -98,7 +98,7 @@ func t_long_press():
 	print("Starting game")
 	
 	yield(get_tree().create_timer(1), "timeout")
-	main.get_node("Phase").change_to_reinforcement1(true)
+	main.Phase.end_attack1(true)
 	print("Ending attack")
 	
 	yield(get_tree().create_timer(1), "timeout")

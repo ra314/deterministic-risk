@@ -10,6 +10,7 @@ var belongs_to = null
 var connected_countries = []
 var country_name = null
 var Game_Manager = null
+var Visual = null
 
 var max_troops = 0
 signal set_max_troops(num_troops, num_reinforcements, max_troops)
@@ -48,12 +49,20 @@ func reset_status():
 var num_reinforcements: int = 0
 signal set_num_reinforcements(_num_reinforcements)
 func set_num_reinforcements(_num_reinforcements):
+	if "congestion" in Game_Manager.game_modes:
+		if num_troops + _num_reinforcements > max_troops:
+			return false
 	num_reinforcements = _num_reinforcements
 	emit_signal("set_num_reinforcements", num_reinforcements)
+	print(get_stack())
+	return true
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Game_Manager = get_parent()
+	Visual = $Visual
+	Visual.init()
+	Visual.change_color_to(belongs_to.color)
 	
 	# The chunk below is for when the Country scene is called in isolation
 	if Game_Manager.name == "Level Creator":
@@ -61,9 +70,6 @@ func _ready():
 		var player_neutral = Player.instance().init("gray")
 		belongs_to = player_neutral
 		return
-	
-	$Visual.init_connections()
-	$Visual.change_color_to(belongs_to.color)
 	
 	# Turn on resistance when a country is conquered
 	if "resistance" in Game_Manager.game_modes:
@@ -78,11 +84,14 @@ func _ready():
 		connect("attacked", self, "set_statused", ["blitzkrieg", true])
 	# Apply pandemic deaths when a turn is ended
 	if "pandemic" in Game_Manager.game_modes:
-		Game_Manager.get_node("Phase").connect("ending_reinforcement", self, "apply_pandemic_deaths")
+		Game_Manager.Phase.connect("ending_reinforcement", self, "apply_pandemic_deaths")
 	# Disabling resistance, blitz and similar volatile conditions
-	Game_Manager.get_node("Phase").connect("ending_attack", self, "reset_status")
+	Game_Manager.Phase.connect("ending_attack", self, "reset_status")
 	# Reset reinforcements and move troops from reinforcement into active duty
-	Game_Manager.get_node("Phase").connect("ending_reinforcement", self, "move_troops_to_active_duty")
+	Game_Manager.Phase.connect("ending_reinforcement", self, "move_troops_to_active_duty")
+	if "movement" in Game_Manager.game_modes:
+		Game_Manager.Phase.connect("ending_movement", self, "move_troops_to_active_duty")
+		Game_Manager.Phase.connect("ending_movement", Visual, "remove_all_lines")
 	# Show a progressbar in congestion mode indiciating the max number of troops
 	if "congestion" in Game_Manager.game_modes:
 		$"Visual/Status/ProgressBar".visible = true
@@ -90,6 +99,7 @@ func _ready():
 func move_troops_to_active_duty():
 	set_num_troops(num_troops + num_reinforcements)
 	set_num_reinforcements(0)
+	donations = {}
 
 func change_ownership_to(player):
 	# Transfer of Ownership
@@ -97,7 +107,8 @@ func change_ownership_to(player):
 	belongs_to = player
 	player.owned_countries.append(self)
 	# Visual Update
-	$Visual.change_color_to(player.color)
+	Visual.change_color_to(player.color)
+	Game_Manager.update_labels()
 
 func calc_pandemic_deaths():
 	var total = num_troops + num_reinforcements
@@ -172,17 +183,17 @@ func on_click(event_index, is_long_press):
 			
 			"connect countries":
 				if Game_Manager.selected_country == null:
-					$Visual.toggle_brightness()
+					Visual.toggle_brightness()
 					Game_Manager.set_selected_country(self) 
 				elif Game_Manager.selected_country == self:
-					$Visual.toggle_brightness()
+					Visual.toggle_brightness()
 					Game_Manager.set_selected_country(null) 
 				else:
 					connected_countries.append(Game_Manager.selected_country)
 					Game_Manager.selected_country.connected_countries.append(self)
 					if Game_Manager.lines_drawn:
-						$Visual.draw_line_to_country(Game_Manager.selected_country)
-					Game_Manager.selected_country.get_node("Visual").toggle_brightness()
+						Visual.draw_line_to_country(Game_Manager.selected_country)
+					Game_Manager.selected_country.Visual.toggle_brightness()
 					Game_Manager.set_selected_country(null) 
 			
 			"move countries":
@@ -215,7 +226,7 @@ func on_click(event_index, is_long_press):
 			# If this country belongs to the current player, start flashing
 			if belongs_to == Game_Manager.curr_player:
 				Game_Manager.set_selected_country(self) 
-				$Visual.flash_attackable_neighbours()
+				Visual.flash_attackable_neighbours()
 			# Checking if there was a previous country selection
 			elif Game_Manager.selected_country != null:
 				var attacker = Game_Manager.selected_country
@@ -262,45 +273,75 @@ func on_click(event_index, is_long_press):
 					Game_Manager.set_selected_country(null)
 					
 					# Movement animation
-					attacker.get_node("Visual").move_to_country(self)
+					attacker.Visual.move_to_country(self)
 					
 					# Phase change
 					if Game_Manager.is_attack_over():
-						Game_Manager.get_node("Phase").change_to_reinforcement1(true)
+						Game_Manager.Phase.end_attack1(true)
 					# Check if the opponent has any troops left
 					if Game_Manager.get_next_player().get_num_troops() == 0:
 						Game_Manager.end_game(belongs_to.color)
 
+		"movement":
+			if belongs_to != Game_Manager.curr_player:
+				return
+			if is_long_press and Game_Manager.selected_country == null:
+				reset_donations()
+			else:
+				if Game_Manager.selected_country == null:
+					Game_Manager.set_selected_country(self)
+				elif Game_Manager.selected_country in connected_countries:
+					Game_Manager.selected_country.donate_to(self)
+
 		"reinforcement":
-			if belongs_to == Game_Manager.curr_player:
-				if is_long_press:
-					# Remove all reinforcements
-					if num_reinforcements > 0:
-						Game_Manager.curr_player.num_reinforcements += num_reinforcements
-						set_num_reinforcements(0)
-				# Add a reinforcement
-				elif event_index == BUTTON_LEFT:
-					# Check that the player has reinforcements available to allocate
-					if Game_Manager.curr_player.num_reinforcements > 0:
-						if "congestion" in Game_Manager.game_modes:
-							if (num_reinforcements + num_troops) < max_troops:
-								Game_Manager.curr_player.num_reinforcements -= 1
-								set_num_reinforcements(num_reinforcements+1)
-						else:
-							Game_Manager.curr_player.num_reinforcements -= 1
-							set_num_reinforcements(num_reinforcements+1)
-				# Remove a reinforcement
-				elif event_index == BUTTON_RIGHT:
-					# Check that a reinforcement has been previously added to this country
-					if num_reinforcements > 0:
-						set_num_reinforcements(num_reinforcements-1)
-						Game_Manager.curr_player.num_reinforcements += 1
-				
-				Game_Manager.update_labels()
-			pass
+			if belongs_to != Game_Manager.curr_player:
+				return
+			if is_long_press:
+				# Remove all reinforcements
+				if num_reinforcements > 0:
+					Game_Manager.curr_player.num_reinforcements += num_reinforcements
+					set_num_reinforcements(0)
+			# Add a reinforcement
+			elif event_index == BUTTON_LEFT:
+				# Check that the player has reinforcements available to allocate
+				if Game_Manager.curr_player.num_reinforcements > 0:
+					if set_num_reinforcements(num_reinforcements+1):
+						Game_Manager.curr_player.num_reinforcements -= 1
+			# Remove a reinforcement
+			elif event_index == BUTTON_RIGHT:
+				# Check that a reinforcement has been previously added to this country
+				if num_reinforcements > 0:
+					set_num_reinforcements(num_reinforcements-1)
+					Game_Manager.curr_player.num_reinforcements += 1
+			
+			Game_Manager.update_labels()
 		
 		"game over":
 			pass
+
+var donations = {}
+func donate_to(country):
+	# You can only donate if you have mroe than 1 troops
+	if num_troops <= 1:
+		return false
+	# Drawing the line and providing donations
+	if not country in donations:
+		donations[country] = 1
+		Visual.draw_line_to_country(country)
+	else:
+		donations[country] += 1
+	# Moving the troops
+	country.set_num_reinforcements(country.num_reinforcements+1)
+	set_num_troops(num_troops - 1)
+	return true
+func reset_donations():
+	var troop_total = 0
+	for country in donations:
+		country.set_num_reinforcements(country.num_reinforcements - donations[country])
+		troop_total += donations[country]
+		Visual.remove_line_to_country(country)
+	set_num_troops(num_troops + troop_total)
+	donations = {}
 
 func add_connection(country):
 	connected_countries.append(country)
