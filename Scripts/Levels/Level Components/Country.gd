@@ -65,7 +65,7 @@ func _ready():
 	Visual.change_color_to(belongs_to.color)
 	
 	# The chunk below is for when the Country scene is called in isolation
-	if get_tree().get_current_scene().get_name() == "Level Creator":
+	if Game_Manager.name == "Level Creator":
 		var Player = load("res://Scenes/Levels/Level Components/Player.tscn")
 		var player_neutral = Player.instance().init("gray")
 		belongs_to = player_neutral
@@ -153,7 +153,7 @@ func get_raze_and_attackable_countries(game_modes):
 
 # The funciton below is triiggered when the collision shape is hit
 func _input_event(viewport, event, shape_idx):
-	if get_tree().get_current_scene().get_name() == "Level Creator":
+	if Game_Manager.name == "Level Creator":
 		if event is InputEventMouseButton and not event.pressed:
 			self.on_click(event.button_index, false)
 
@@ -164,7 +164,7 @@ func attacking():
 signal conquered()
 func on_click(event_index, is_long_press):	
 	# Level Creator Behaviour
-	if get_tree().get_current_scene().get_name() == "Level Creator":
+	if Game_Manager.name == "Level Creator":
 		match Game_Manager.phase:
 			"change curr troops":
 				match event_index:
