@@ -36,7 +36,8 @@ func set_selected_country(country):
 	if country:
 		country.get_node("Visual").toggle_brightness()
 	selected_country = country
-	emit_signal("country_selected")
+	if phase == "attack":
+		emit_signal("country_selected")
 
 func load_world():
 	# Loading existing level
@@ -46,8 +47,16 @@ func load_world():
 	else:
 		.create_default_level(self)
 
+var Spawn = null
+var Sync = null
+var Phase = null
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	Spawn = $Spawn
+	Sync = $Sync
+	Phase = $Phase
+	
 	load_world()
 	
 	while not $Spawn.spawn_and_allocate():
@@ -60,8 +69,11 @@ func _ready():
 	get_node("CanvasLayer/Zoom Out").connect("pressed", get_node("Camera2D"), "zoom_out")
 	
 	# Button to end attack and reinforcement phases
-	get_node("CanvasLayer/End Attack").connect("pressed", $Phase, "change_to_reinforcement1")
-	get_node("CanvasLayer/End Reinforcement").connect("pressed", $Phase, "change_to_attack1")
+	get_node("CanvasLayer/End Attack").connect("pressed", $Phase, "end_attack1")
+	get_node("CanvasLayer/End Reinforcement").connect("pressed", $Phase, "end_reinforcement1")
+	# Button to end movement phase
+	if "movement" in game_modes:
+		$"CanvasLayer/End Movement".connect("button_down", Phase, "end_movement1")
 	
 	# Buttons to select if host plays as red or blue
 	get_node("CanvasLayer/Init Buttons/Online/Play Red").connect("button_down", self, "set_host_color", ["red"])
@@ -174,6 +186,9 @@ remote func show_end_attack(show_boolean):
 
 func show_end_reinforcement(show_boolean):
 	get_node("CanvasLayer/End Reinforcement").visible = show_boolean
+
+func show_end_movement(show_boolean):
+	get_node("CanvasLayer/End Movement").visible = show_boolean
 #######
 
 ######

@@ -51,7 +51,7 @@ func spawn_and_allocate():
 #	print("The first player is " + curr_player.color)
 #	print(curr_player.color)
 	P.update_labels()
-	P.get_node("Phase").update_player_status(P.curr_player.color, true)
+	P.Phase.update_player_status()
 	print("Found good spawn")
 	return true
 

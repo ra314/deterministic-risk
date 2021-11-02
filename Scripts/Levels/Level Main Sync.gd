@@ -40,3 +40,4 @@ remote func synchronise_meta_info(_curr_player_index, _round_number, _game_start
 	P.curr_player_index = _curr_player_index
 	P.curr_player = P.players.values()[P.curr_player_index]
 	P.update_labels()
+	P.Phase.update_player_status()
