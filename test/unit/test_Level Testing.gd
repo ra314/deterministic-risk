@@ -100,7 +100,7 @@ func test_long_press():
 	print("Checking is all reinforcements were remvoed after a long press")
 	assert_true(main.curr_player.owned_countries[0].num_reinforcements == 0)
 
-func test_movement():
+func test_movement1():
 	init(["classic", "movement"])
 	
 	print()
@@ -177,6 +177,43 @@ func test_movement():
 		no_lines_in(c_IND.get_children()) and\
 		no_lines_in(c_NA.get_children()))
 
+func test_movement2():
+	init(["classic", "movement", "congestion"])
+	
+	print()
+	print("Testing if the movement of troops work.")
+
+	yield(get_tree().create_timer(1), "timeout")
+	main.remove_reroll_and_start_butttons()
+	print("Starting game")
+
+	yield(get_tree().create_timer(1), "timeout")
+	c_ME.change_ownership_to(main.curr_player)
+	c_IND.change_ownership_to(main.curr_player)
+	c_ME.set_initial_troops(5)
+	c_IND.set_initial_troops(0)
+	
+	print("Checking that troops can't be moved from a country with 0 troops.")
+	main.Phase.end_attack1(true)
+	c_IND.on_click(BUTTON_LEFT, false)
+	c_ME.on_click(BUTTON_LEFT, false)
+	yield(get_tree().create_timer(1), "timeout")
+	assert_true(c_ME.num_reinforcements==0 and\
+		no_lines_in(c_ME.get_children()) and\
+		no_lines_in(c_IND.get_children()))
+	
+	print("Checking that troops can't be moved to a country that is already full")
+	# Deselecting India
+	c_IND.on_click(BUTTON_LEFT, false)
+	c_IND.set_initial_troops(2)
+	c_IND.set_num_troops(4)
+	c_ME.on_click(BUTTON_LEFT, false)
+	c_IND.on_click(BUTTON_LEFT, false)
+	yield(get_tree().create_timer(1), "timeout")
+	assert_true(c_IND.num_reinforcements==0 and\
+		no_lines_in(c_ME.get_children()) and\
+		no_lines_in(c_IND.get_children()))
+
 func no_lines_in(arr):
 	for node in arr:
 		if node is Line2D:
@@ -243,7 +280,10 @@ func test_congestion():
 	c_NA.on_click(BUTTON_LEFT, false)
 	c_ME.on_click(BUTTON_LEFT, false)
 	yield(get_tree().create_timer(1), "timeout")
-	assert_true(c_NA.num_troops==5 and c_ME.num_reinforcements==0 and no_lines_in(c_NA.get_children()))
+	assert_true(c_NA.num_troops==5 and\
+		c_ME.num_reinforcements==0 and\
+		no_lines_in(c_NA.get_children()) and\
+		no_lines_in(c_ME.get_children()))
 	
 	print("Checking the extra reinforcements can't directly be provided that result in going beyond max")
 	main.Phase.end_movement1()
