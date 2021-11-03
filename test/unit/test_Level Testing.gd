@@ -250,3 +250,42 @@ func test_congestion():
 	c_ME.on_click(BUTTON_LEFT, false)
 	yield(get_tree().create_timer(1), "timeout")
 	assert_true(c_ME.num_reinforcements==0)
+
+func test_phases():
+	init(["classic"])
+
+	print()
+	print("Testing the changing of phases")
+
+	yield(get_tree().create_timer(1), "timeout")
+	main.remove_reroll_and_start_butttons()
+	print("Starting game")
+	
+	print("Checking the the current player has a sword above them and " +\
+	"the next player has nothing above them.")
+	assert_true("sword" in get_phase_symbol(main.curr_player).texture.load_path and\
+	not get_phase_symbol(main.get_next_player()).visible)
+	
+	print("Checking the the current player has a shield above them and " +\
+	"the next player has nothing above them.")
+	main.Phase.end_attack1(true)
+	yield(get_tree().create_timer(1), "timeout")
+	assert_true("shield" in get_phase_symbol(main.curr_player).texture.load_path and\
+	not get_phase_symbol(main.get_next_player()).visible)
+	
+	print("Checking the the current player has a sword above them and " +\
+	"the next player has nothing above them.")
+	main.Phase.end_reinforcement1(true)
+	yield(get_tree().create_timer(1), "timeout")
+	assert_true("sword" in get_phase_symbol(main.curr_player).texture.load_path and\
+	not get_phase_symbol(main.get_next_player()).visible)
+	
+	print("Checking the the current player has a shield above them and " +\
+	"the next player has nothing above them.")
+	main.Phase.end_attack1(true)
+	yield(get_tree().create_timer(1), "timeout")
+	assert_true("shield" in get_phase_symbol(main.curr_player).texture.load_path and\
+	not get_phase_symbol(main.get_next_player()).visible)
+
+func get_phase_symbol(player):
+	return main.get_node("CanvasLayer/Game Info/" + player.color + "/VBoxContainer/Status")
