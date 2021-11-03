@@ -1,14 +1,14 @@
 extends Node2D
 
 var num_troops: int = 0
-signal set_num_troops(num_troops)
+signal set_num_troops()
 func set_num_troops(_num_troops):
 	if Game_Manager:
 		if "congestion" in Game_Manager.game_modes:
 			if _num_troops > max_troops:
 				return false
 	num_troops = _num_troops
-	emit_signal("set_num_troops", num_troops)
+	emit_signal("set_num_troops")
 	return true
 
 var belongs_to = null
@@ -18,10 +18,10 @@ var Game_Manager = null
 var Visual = null
 
 var max_troops = 0
-signal set_max_troops(num_troops, num_reinforcements, max_troops)
+signal set_max_troops()
 func set_max_troops(_max_troops):
 	max_troops = _max_troops
-	emit_signal("set_max_troops", num_troops, num_reinforcements, max_troops)
+	emit_signal("set_max_troops")
 
 var statused = {"resistance": false, "blitzkrieg": false, "fatigue": false}
 signal set_statused(status_name, boolean)
@@ -52,13 +52,13 @@ func reset_status():
 # This is so during reinforcement the label can show up as
 # {num_troops} + {num_reinforcements}
 var num_reinforcements: int = 0
-signal set_num_reinforcements(_num_reinforcements)
+signal set_num_reinforcements()
 func set_num_reinforcements(_num_reinforcements):
 	if "congestion" in Game_Manager.game_modes:
 		if num_troops + _num_reinforcements > max_troops:
 			return false
 	num_reinforcements = _num_reinforcements
-	emit_signal("set_num_reinforcements", num_reinforcements)
+	emit_signal("set_num_reinforcements")
 	return true
 
 # Called when the node enters the scene tree for the first time.
@@ -240,17 +240,24 @@ func on_click(event_index, is_long_press):
 					var delayed_conquer = false
 					if attacker.num_troops > num_troops:
 						var survivors = float(attacker.num_troops - num_troops)
+						# The 2 vars below are the number of troops the defender and the attacker should get respectively
+						# Of course this is subject to change with game modes, like congestion.
+						var defender_troops = 0
+						var attacker_troops = 0
 						if "diffusion" in Game_Manager.game_modes:
-							set_num_troops(int(ceil(survivors/2)))
-							attacker.set_num_troops(1+int(floor(survivors/2)))
+							defender_troops = int(ceil(survivors/2))
+							attacker_troops = 1+int(floor(survivors/2))
 						else:
-							set_num_troops(survivors)
-							attacker.set_num_troops(1)
+							defender_troops = survivors
+							attacker_troops = 1
 						
 						if "congestion" in Game_Manager.game_modes:
-							set_num_troops(min(num_troops, max_troops))
-							attacker.set_num_troops(min(attacker.num_troops, attacker.max_troops))
-							
+							set_num_troops(min(defender_troops, max_troops))
+							attacker.set_num_troops(min(attacker_troops, attacker.max_troops))
+						else:
+							set_num_troops(defender_troops)
+							attacker.set_num_troops(attacker_troops)
+						
 						change_ownership_to(attacker.belongs_to)
 						delayed_conquer = true
 					
@@ -371,8 +378,12 @@ func randomise_troops():
 		new_num_troops = 3
 	elif rand_num < 10:
 		new_num_troops = 4
-	set_num_troops(new_num_troops)
-	set_max_troops(new_num_troops*2)
+	set_initial_troops(new_num_troops)
+
+func set_initial_troops(_num_troops):
+	set_max_troops(_num_troops*2)
+	set_num_troops(_num_troops)
+
 
 func init(_x, _y, _country_name, player):
 	self.belongs_to = player

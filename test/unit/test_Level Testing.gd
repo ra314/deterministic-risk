@@ -9,6 +9,7 @@ var c_ME = null
 func _ready():
 	add_child(_root)
 	_root.visible = false
+	_root.host()
 #	$C/Test1.connect("button_down", self, "test_long_press")
 #	$C/Test2.connect("button_down", self, "test_blitz_and_drain")
 	pass # Replace with function body.
@@ -23,7 +24,6 @@ func after_all():
 
 func init(game_modes = ["classic"]):
 	_root.visible = true
-	_root.host()
 	_root.game_modes = game_modes
 	_root.rpc("load_level", "Levels/Level Main", "Our World",  _root.game_modes)
 	
@@ -182,3 +182,71 @@ func no_lines_in(arr):
 		if node is Line2D:
 			return false
 	return true
+
+func test_congestion():
+	init(["classic", "congestion", "movement"])
+
+	print()
+	print("Testing the congestion game mode.")
+
+	yield(get_tree().create_timer(1), "timeout")
+	main.remove_reroll_and_start_butttons()
+	print("Starting game")
+
+	print("Checking that the max troops is 2 times the current")
+	var num_errors = 0
+	for country in main.all_countries.values():
+		if country.num_troops * 2 != country.max_troops:
+			num_errors += 1
+	assert_true(num_errors == 0)
+	
+	print("Checking that the first and second player have the number of troops" +\
+	"that were intended to be allocated to them.")
+	var troops = []
+	for country in main.curr_player.owned_countries:
+		troops.append(country.num_troops)
+	assert_true(troops.count(2)==2 and troops.count(3)==1)
+	troops = []
+	for country in main.get_next_player().owned_countries:
+		troops.append(country.num_troops)
+	assert_true(troops.count(1)==1 and troops.count(2)==2 and troops.count(3)==1)
+	
+	print("Checking that the max and current value of the progress bar match" +\
+	"with max troops and num_troops + num_reinforcements.")
+	num_errors = 0
+	for country in main.all_countries.values():
+		var progress_bar = country.Visual.get_node("Status/ProgressBar")
+		if progress_bar.max_value != country.max_troops or\
+		progress_bar.value != country.num_troops+country.num_reinforcements:
+			num_errors += 1
+	assert_true(num_errors == 0)
+	
+	print("Checking that attacking a country with more than it's max results in the extra troops being lost")
+	c_IND.change_ownership_to(main.curr_player)
+	c_IND.set_initial_troops(8)
+	c_ME.change_ownership_to(main.get_next_player())
+	c_ME.set_initial_troops(2)
+	c_NA.change_ownership_to(main.curr_player)
+	c_NA.set_initial_troops(5)
+	yield(get_tree().create_timer(5), "timeout")
+	
+	# Giving IND extra troops, attacking ME and ensuring that troops don't overflow max
+	c_IND.on_click(BUTTON_LEFT, false)
+	c_ME.on_click(BUTTON_LEFT, false)
+	yield(get_tree().create_timer(1), "timeout")
+	assert_true(c_IND.num_troops==1 and c_ME.num_troops == 4)
+	
+	print("Checking the movement doesn't allow the provision of troops beyond the max.")
+	main.Phase.end_attack1(true)
+	
+	# Trying to move troops from NA to ME, while ME is already at max troops
+	c_NA.on_click(BUTTON_LEFT, false)
+	c_ME.on_click(BUTTON_LEFT, false)
+	yield(get_tree().create_timer(1), "timeout")
+	assert_true(c_NA.num_troops==5 and c_ME.num_reinforcements==0 and no_lines_in(c_NA.get_children()))
+	
+	print("Checking the extra reinforcements can't directly be provided that result in going beyond max")
+	main.Phase.end_movement1()
+	c_ME.on_click(BUTTON_LEFT, false)
+	yield(get_tree().create_timer(1), "timeout")
+	assert_true(c_ME.num_reinforcements==0)

@@ -30,7 +30,9 @@ func init():
 			P.connect("set_statused", self, "show_statused")
 			break
 	if "congestion" in Game_Manager.game_modes:
-		P.connect("set_max_troops", self, "show_congestion")
+		P.connect("set_num_troops", self, "update_congestion")
+		P.connect("set_num_reinforcements", self, "update_congestion")
+		P.connect("set_max_troops", self, "update_congestion")
 
 func change_mask_color(color):
 	# Performance hack
@@ -84,10 +86,10 @@ func create_mask_sprite():
 ####################
 # Signals
 
-func show_num_troops(num_troops):
-	$"Active Troops/Label".text = str(num_troops)
+func show_num_troops():
+	$"Active Troops/Label".text = str(P.num_troops)
 
-func show_pandemic_status(num_troops):
+func show_pandemic_status():
 	var num_deaths = P.calc_pandemic_deaths()
 	$"Status/Num Pandemic".visible = num_deaths > 0
 	$"Status/Pandemic".visible = num_deaths > 0
@@ -96,18 +98,22 @@ func show_pandemic_status(num_troops):
 func show_statused(status_name, boolean):
 	get_node("Status/" + status_name).visible = boolean
 
-func show_congestion(num_troops, num_reinforcements, max_troops):
-	$"Status/ProgressBar".max_value = max_troops
-	$"Status/ProgressBar".value = num_troops+num_reinforcements
+func update_congestion():
+	$"Status/ProgressBar".max_value = P.max_troops
+	$"Status/ProgressBar".value = P.num_troops+P.num_reinforcements
+	# Updating the denominator
+	show_congestion_denominator(denominator_showing)
 
-func show_num_reinforcements(num_reinforcements):
-	$"Reinforcements".visible = num_reinforcements > 0
-	$"Reinforcements/Label".text = "+" + str(num_reinforcements)
+func show_num_reinforcements():
+	$"Reinforcements".visible = P.num_reinforcements > 0
+	$"Reinforcements/Label".text = "+" + str(P.num_reinforcements)
 
 # Signals
 ####################
 
+var denominator_showing = false
 func show_congestion_denominator(show_denominator_boolean):
+	denominator_showing = show_denominator_boolean
 	if show_denominator_boolean:
 		$"Active Troops/Label".text = str(P.num_troops) + "/" + str(P.max_troops)
 	else:

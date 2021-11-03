@@ -15,6 +15,10 @@ func _ready():
 	connect("ending_attack", self, "update_player_status")
 	connect("ending_reinforcement", self, "update_player_status")
 	connect("ending_movement", self, "update_player_status")
+	# Deselecting selected country
+	connect("ending_attack", P, "set_selected_country", [null])
+	connect("ending_reinforcement", P, "set_selected_country", [null])
+	connect("ending_movement", P, "set_selected_country", [null])
 
 func change_to_next_player():
 	P.curr_player_index = (P.curr_player_index+1)%P.num_players
@@ -70,8 +74,6 @@ remotesync func end_reinforcement2():
 			notify()
 	else:
 		P.show_end_attack(true)
-
-	P.set_selected_country(null) 
 	
 	P.round_number += 1
 	change_to_next_player()
@@ -96,7 +98,6 @@ func end_attack1(surity_bool=false):
 # end_attack1. There's no way to buttons to trigger a remote sync function all,
 # Hence the need of a separate end_attack2
 remotesync func end_attack2():
-	P.set_selected_country(null) 
 	P.curr_level.stop_flashing()
 	# Modifying the visibility of the end attack and end reinforcement buttons
 	if P.is_current_player() or not P._root.online_game:
@@ -112,7 +113,6 @@ remotesync func start_movement2():
 func end_movement1():
 	rpc("end_movement2")
 remotesync func end_movement2():
-	P.set_selected_country(null) 
 	if P.is_current_player() or not P._root.online_game:
 		P.show_end_movement(false)
 	emit_signal("ending_movement")

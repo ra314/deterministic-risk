@@ -24,12 +24,12 @@ func spawn_and_allocate():
 	# Assigning the owned countries with a predetermined spread:
 	var troops_to_assign = [2,2,3]
 	for country in P.curr_player.owned_countries:
-		country.set_num_troops(P.select_random(troops_to_assign))
+		country.set_initial_troops(P.select_random(troops_to_assign))
 		troops_to_assign.erase(country.num_troops)
 	
 	troops_to_assign = [2,3,1,2]
 	for country in P.get_next_player().owned_countries:
-		country.set_num_troops(P.select_random(troops_to_assign))
+		country.set_initial_troops(P.select_random(troops_to_assign))
 		troops_to_assign.erase(country.num_troops)
 	
 	# Checking if all player owned countries have a country they can attack
