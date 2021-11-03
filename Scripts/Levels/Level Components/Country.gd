@@ -3,8 +3,13 @@ extends Node2D
 var num_troops: int = 0
 signal set_num_troops(num_troops)
 func set_num_troops(_num_troops):
+	if Game_Manager:
+		if "congestion" in Game_Manager.game_modes:
+			if _num_troops > max_troops:
+				return false
 	num_troops = _num_troops
 	emit_signal("set_num_troops", num_troops)
+	return true
 
 var belongs_to = null
 var connected_countries = []
@@ -54,7 +59,6 @@ func set_num_reinforcements(_num_reinforcements):
 			return false
 	num_reinforcements = _num_reinforcements
 	emit_signal("set_num_reinforcements", num_reinforcements)
-	print(get_stack())
 	return true
 
 # Called when the node enters the scene tree for the first time.
@@ -89,9 +93,10 @@ func _ready():
 	Game_Manager.Phase.connect("ending_attack", self, "reset_status")
 	# Reset reinforcements and move troops from reinforcement into active duty
 	Game_Manager.Phase.connect("ending_reinforcement", self, "move_troops_to_active_duty")
+	# Apply donations at the end of the movement phase
 	if "movement" in Game_Manager.game_modes:
 		Game_Manager.Phase.connect("ending_movement", self, "move_troops_to_active_duty")
-		Game_Manager.Phase.connect("ending_movement", Visual, "remove_all_lines")
+		Game_Manager.Phase.connect("ending_movement", self, "destroy_donations")
 	# Show a progressbar in congestion mode indiciating the max number of troops
 	if "congestion" in Game_Manager.game_modes:
 		$"Visual/Status/ProgressBar".visible = true
@@ -99,7 +104,6 @@ func _ready():
 func move_troops_to_active_duty():
 	set_num_troops(num_troops + num_reinforcements)
 	set_num_reinforcements(0)
-	donations = {}
 
 func change_ownership_to(player):
 	# Transfer of Ownership
@@ -217,7 +221,7 @@ func on_click(event_index, is_long_press):
 		return
 	
 	# Deselecting behaviour
-	if Game_Manager.selected_country == self:
+	if (Game_Manager.selected_country == self) and not is_long_press:
 		Game_Manager.set_selected_country(null) 
 		return
 	
@@ -285,8 +289,8 @@ func on_click(event_index, is_long_press):
 		"movement":
 			if belongs_to != Game_Manager.curr_player:
 				return
-			if is_long_press and Game_Manager.selected_country == null:
-				reset_donations()
+			if is_long_press and Game_Manager.selected_country == self:
+				takeback_donations()
 			else:
 				if Game_Manager.selected_country == null:
 					Game_Manager.set_selected_country(self)
@@ -324,23 +328,29 @@ func donate_to(country):
 	# You can only donate if you have mroe than 1 troops
 	if num_troops <= 1:
 		return false
+	# Moving the troops
+	if not country.set_num_reinforcements(country.num_reinforcements+1):
+		return false
+	set_num_troops(num_troops - 1)
 	# Drawing the line and providing donations
 	if not country in donations:
 		donations[country] = 1
 		Visual.draw_line_to_country(country)
 	else:
 		donations[country] += 1
-	# Moving the troops
-	country.set_num_reinforcements(country.num_reinforcements+1)
-	set_num_troops(num_troops - 1)
 	return true
-func reset_donations():
+func takeback_donations():
 	var troop_total = 0
 	for country in donations:
+		# Take the donation away
 		country.set_num_reinforcements(country.num_reinforcements - donations[country])
+		# Keeping score of the donations taken back
 		troop_total += donations[country]
-		Visual.remove_line_to_country(country)
+	# Putting all donations taken back, back into deployment
 	set_num_troops(num_troops + troop_total)
+	destroy_donations()
+func destroy_donations():
+	Visual.remove_all_lines()
 	donations = {}
 
 func add_connection(country):

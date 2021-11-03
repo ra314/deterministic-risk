@@ -120,7 +120,7 @@ func draw_line_to_country(selected_country):
 	# Adding the line to the scene
 	var new_line = Line2D.new()
 	new_line.width = 2
-	add_child(new_line)
+	P.add_child(new_line)
 	new_line.z_index = 10
 	
 	# Storing the drawn line
@@ -134,7 +134,7 @@ func remove_line_to_country(selected_country):
 	if not selected_country in lines:
 		return false
 	lines[selected_country][0].remove_child(lines[selected_country][1])
-	lines[selected_country][1].queue_free()
+	lines[selected_country][1].free()
 	print(lines[selected_country][0].get_children())
 	
 	# Removing the line node from storage
@@ -143,7 +143,7 @@ func remove_line_to_country(selected_country):
 	
 	return true
 func remove_all_lines():
-	for country in lines:
+	for country in lines.keys():
 		remove_line_to_country(country)
 
 func move_to_location_with_duration(location, duration):
