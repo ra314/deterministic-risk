@@ -81,6 +81,7 @@ remotesync func end_reinforcement2():
 	
 	P.phase = "attack"
 	emit_signal("ending_reinforcement")
+	P.emit_signal("save")
 	
 	# Automatically end the attack phase if in checkers mode and no attacks are available
 	if "checkers" in P.game_modes and P.is_attack_over():

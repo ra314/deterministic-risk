@@ -5,7 +5,6 @@ onready var _root: Main = get_tree().get_root().get_node("Main")
 # var a = 2
 # var b = "text"
 
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	get_node("Return To Game").connect("button_down", self, "_load_scene")
@@ -16,6 +15,8 @@ func _ready():
 	# Connect the game mode buttons to display rules about the selected game mode
 	for child in $"VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes".get_children():
 		child.connect("button_down", self, "show_item", [child.name, $"VBoxContainer/Menu Display/Game Modes/Control"])
+		
+	$"VBoxContainer/Menu Display/Settings/Load Save".connect("button_down", self, "load_save")
 
 func show_item(item_name, container):
 	for child in container.get_children():
@@ -34,3 +35,11 @@ func show_item(item_name, container):
 
 func _load_scene():
 	_root.scene_manager.load_saved_scene()
+
+func load_save():
+	_load_scene()
+	var file = File.new()
+	file.open("user://save_game.dat", File.READ)
+	var content = parse_json(file.get_as_text())
+	file.close()
+	_root.load_save(content)

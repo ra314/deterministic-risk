@@ -15,7 +15,7 @@ func synchronize(network_id):
 	
 	# Synchrosing the game in terms of player information
 	for player in P.players.values():
-		rpc_id(network_id, "synchronise_player", player.save())
+		rpc_id(network_id, "synchronise_player", player.color, player.network_id, player.num_reinforcements)
 	
 	# Synchronising meta information
 	rpc_id(network_id, "synchronise_meta_info", P.curr_player_index, \
@@ -28,10 +28,10 @@ remote func synchronise_country(country_name, num_troops, num_reinforcements, co
 	P.all_countries[country_name].synchronise(num_troops, num_reinforcements, \
 		P.players[color], statused, max_troops)
 
-remote func synchronise_player(player_info):
-	var curr_player = P.players[player_info["color"]]
-	curr_player.network_id = player_info["network_id"]
-	curr_player.num_reinforcements = player_info["num_reinforcements"]
+remote func synchronise_player(color, network_id, num_reinforcements):
+	var curr_player = P.players[color]
+	curr_player.network_id = network_id
+	curr_player.num_reinforcements = num_reinforcements
 
 remote func synchronise_meta_info(_curr_player_index, _round_number, _game_started, _game_modes):
 	P.game_modes = _game_modes

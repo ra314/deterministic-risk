@@ -417,6 +417,17 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Load Save" type="Button" parent="VBoxContainer/Menu Display/Settings"]
+margin_top = 57.0
+margin_right = 218.0
+margin_bottom = 125.0
+custom_fonts/font = ExtResource( 3 )
+toggle_mode = true
+text = "Load save"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Return To Game" type="Button" parent="."]
 margin_left = 1495.0
 margin_right = 1919.0

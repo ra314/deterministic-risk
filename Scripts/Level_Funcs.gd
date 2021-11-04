@@ -46,7 +46,7 @@ func export_level(save_name):
 	print(arr)
 	arr.sort_custom(self, "country_comparator")
 	for country in arr:
-		save_game.store_line(to_json(country.save()))
+		save_game.store_line(to_json(country.save_level_creator()))
 	save_game.close()
 
 func country_comparator(c1, c2):

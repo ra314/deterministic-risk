@@ -402,7 +402,7 @@ func synchronise(_num_troops, _num_reinforcements, _belongs_to, _statused, _max_
 	if belongs_to != _belongs_to:
 		change_ownership_to(_belongs_to)
 
-func save():
+func save_level_creator():
 	var save_dict = {}
 	save_dict["name"] = country_name
 	save_dict["troops"] = num_troops
@@ -411,4 +411,13 @@ func save():
 	save_dict["connections"] = []
 	for country in connected_countries:
 		save_dict["connections"].append(country.country_name)
+	return save_dict
+
+func save():
+	var save_dict = {}
+	save_dict["name"] = country_name
+	save_dict["troops"] = num_troops
+	save_dict["max_troops"] = max_troops
+	save_dict["status"] = statused
+	save_dict["owner_color"] = belongs_to.color
 	return save_dict

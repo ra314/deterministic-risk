@@ -6,9 +6,10 @@ var network_id = null
 
 func save():
 	var save_dict = {}
-	save_dict["network_id"] = network_id
 	save_dict["color"] = color
-	save_dict["num_reinforcements"] = num_reinforcements
+	save_dict["owned_countries"] = []
+	for country in owned_countries:
+		save_dict["owned_countries"].append(country.country_name)
 	return save_dict
 
 func reset():

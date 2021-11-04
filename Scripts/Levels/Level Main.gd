@@ -118,12 +118,37 @@ func _ready():
 	if "raze" in game_modes:
 		connect("country_selected", self, "show_raze")
 	
+	# Saving the game
+	connect("save", self, "save")
+	
 	# If you're the guest _root.game_modes is empty since the host picks them out
 	# However load_level() in main syncs up the game mdoe with the level main scene
 	# So we're just pushing these game modes back to the root
 	# This is necessary so that the asterisks show up next to the selected game modes on the help screen
 	_root.game_modes = game_modes
 #	print(game_modes)
+
+signal save()
+# The save is assumed to take place right at the start of the attack phase
+func save():
+	var save_dict = {}
+	# Saving countries
+	save_dict["countries"] = []
+	for country in all_countries.values():
+		save_dict["countries"].append(country.save())
+	# Saving players
+	save_dict["players"] = []
+	for player in players.values():
+		save_dict["players"].append(player.save())
+	# Saving game data
+	save_dict["game_modes"] = game_modes
+	save_dict["map"] = world_str
+	save_dict["curr_player_color"] = curr_player.color
+	
+	var file = File.new()
+	file.open("user://save_game.dat", File.WRITE)
+	file.store_string(to_json(save_dict))
+	file.close()
 
 func show_help_menu():
 	var scene = _root.scene_manager._load_scene("UI/Help Menu")

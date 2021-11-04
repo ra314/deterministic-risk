@@ -74,3 +74,35 @@ func guest(server_IP):
 	# Adding yourself to the list of players 
 	register_player(player_name, get_tree().get_network_unique_id())
 	print(server_IP)
+
+func load_save(save_dict):
+	# Setting up the game
+	game_modes = save_dict["game_modes"]
+	rpc("load_level", "Levels/Level Main", save_dict["map"],  game_modes)
+	
+	# Setting up curr_player and curr_player_index
+	var main = get_children()[0]
+	main.curr_player = main.players[save_dict["curr_player_color"]]
+	# Finding the current player index
+	var players_colors = []
+	for player in main.players.values():
+		players_colors.append(player.color)
+	main.curr_player_index = players_colors.find(save_dict["curr_player_color"])
+	
+	# Assigning all countries their saved properties
+	for country_dict in save_dict["countries"]:
+		var country = main.all_countries[country_dict["name"]]
+		country.set_max_troops(country_dict["max_troops"])
+		country.set_num_troops(country_dict["troops"])
+		for status in country_dict["status"]:
+			country.set_statused(status, country_dict["status"][status])
+	
+	# Assigning ownership of countries to players
+	for player_dict in save_dict["players"]:
+		var player = main.players[player_dict["color"]]
+		player.reset()
+		for country_name in player_dict["owned_countries"]:
+			main.all_countries[country_name].change_ownership_to(player)
+	
+	main.update_labels()
+	main.Phase.update_player_status()
