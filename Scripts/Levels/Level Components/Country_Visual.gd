@@ -92,7 +92,7 @@ func show_num_troops():
 func show_pandemic_status():
 	var num_deaths = P.calc_pandemic_deaths()
 	$"Status/Num Pandemic".visible = num_deaths > 0
-	$"Status/Pandemic".visible = num_deaths > 0
+	$"Status/pandemic".visible = num_deaths > 0
 	$"Status/Num Pandemic".text = str(num_deaths)
 
 func show_statused(status_name, boolean):

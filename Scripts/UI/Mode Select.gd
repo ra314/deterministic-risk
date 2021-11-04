@@ -20,8 +20,13 @@ func randomise_modes():
 	# Edge cases
 	grid.get_node("Classic").pressed = true	
 	if not grid.get_node("Drain").pressed:
+		# Congestion is here because most of the spawns end in unwinnable matches due to the max troops limit
+		# One example is a country with a max cap of 2 surrounded by enemy countries that also have a max cap of 2
+		# Since all ti's neighbours have a max cap of 2, it can never be conquered, hence the game can never end
 		grid.get_node("Congestion").pressed = false
 		grid.get_node("Blitzkrieg").pressed = false
+	if not grid.get_node("Diffusion").pressed:
+		grid.get_node("Fatigue").pressed = false
 	if not grid.get_node("Fatigue") and not grid.get_node("Resistance"):
 		grid.get_node("Raze").pressed = false
 
