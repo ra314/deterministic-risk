@@ -33,7 +33,6 @@ func change_to_next_player():
 # Update status to attack or defend
 remote func update_player_status():
 	var color = P.curr_player.color
-	var attacking = P.phase == "attack"
 	
 	# Reset existing player statuses
 	P.get_node("CanvasLayer/Game Info/red/VBoxContainer/Status").visible = false
@@ -42,10 +41,13 @@ remote func update_player_status():
 	# Selecting attack or defend for player status
 	var curr_player_status = P.get_node("CanvasLayer/Game Info/" + color + "/VBoxContainer/Status")
 	curr_player_status.visible = true
-	if attacking:
-		curr_player_status.texture = load("res://Assets/Icons/sword.svg")
-	else:
-		curr_player_status.texture = load("res://Assets/Icons/shield.svg")
+	match P.phase:
+		"attack":
+			curr_player_status.texture = load("res://Assets/Icons/sword.svg")
+		"reinforcement":
+			curr_player_status.texture = load("res://Assets/Icons/shield.svg")
+		"movement":
+			curr_player_status.texture = load("res://Assets/Icons/plane.svg")
 
 
 func start_reinforcement1():
@@ -55,6 +57,7 @@ remotesync func start_reinforcement2():
 	P.phase = "reinforcement"
 	if P.is_current_player() or not P._root.online_game:
 		P.show_end_reinforcement(true)
+	update_player_status()
 func end_reinforcement1(surity_bool=false):
 	# When the surity bool is true, you get to skip the confirmation menu
 	if not surity_bool and P.curr_player.num_reinforcements > 0:
@@ -111,6 +114,7 @@ remotesync func start_movement2():
 	P.phase = "movement"
 	if P.is_current_player() or not P._root.online_game:
 		P.show_end_movement(true)
+	update_player_status()
 func end_movement1():
 	rpc("end_movement2")
 remotesync func end_movement2():

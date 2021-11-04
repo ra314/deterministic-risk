@@ -292,7 +292,7 @@ func test_congestion():
 	assert_true(c_ME.num_reinforcements==0)
 
 func test_phases():
-	init(["classic"])
+	init(["classic", "movement"])
 
 	print()
 	print("Testing the changing of phases")
@@ -306,9 +306,16 @@ func test_phases():
 	assert_true("sword" in get_phase_symbol(main.curr_player).texture.load_path and\
 	not get_phase_symbol(main.get_next_player()).visible)
 	
-	print("Checking the the current player has a shield above them and " +\
+	print("Checking the the current player has a plane above them and " +\
 	"the next player has nothing above them.")
 	main.Phase.end_attack1(true)
+	yield(get_tree().create_timer(1), "timeout")
+	assert_true("plane" in get_phase_symbol(main.curr_player).texture.load_path and\
+	not get_phase_symbol(main.get_next_player()).visible)
+	
+	print("Checking the the current player has a shield above them and " +\
+	"the next player has nothing above them.")
+	main.Phase.end_movement1()
 	yield(get_tree().create_timer(1), "timeout")
 	assert_true("shield" in get_phase_symbol(main.curr_player).texture.load_path and\
 	not get_phase_symbol(main.get_next_player()).visible)
@@ -320,9 +327,16 @@ func test_phases():
 	assert_true("sword" in get_phase_symbol(main.curr_player).texture.load_path and\
 	not get_phase_symbol(main.get_next_player()).visible)
 	
-	print("Checking the the current player has a shield above them and " +\
+	print("Checking the the current player has a plane above them and " +\
 	"the next player has nothing above them.")
 	main.Phase.end_attack1(true)
+	yield(get_tree().create_timer(1), "timeout")
+	assert_true("plane" in get_phase_symbol(main.curr_player).texture.load_path and\
+	not get_phase_symbol(main.get_next_player()).visible)
+	
+	print("Checking the the current player has a shield above them and " +\
+	"the next player has nothing above them.")
+	main.Phase.end_movement1()
 	yield(get_tree().create_timer(1), "timeout")
 	assert_true("shield" in get_phase_symbol(main.curr_player).texture.load_path and\
 	not get_phase_symbol(main.get_next_player()).visible)
