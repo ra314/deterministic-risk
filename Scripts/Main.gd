@@ -104,5 +104,7 @@ func load_save(save_dict):
 		for country_name in player_dict["owned_countries"]:
 			main.all_countries[country_name].change_ownership_to(player)
 	
+	if online_game:
+		main.Sync.synchronize(players["guest"])
 	main.update_labels()
 	main.Phase.update_player_status()
