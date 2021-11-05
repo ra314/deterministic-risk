@@ -17,8 +17,6 @@ var phase = "attack"
 var curr_level = self
 
 var round_number = 1
-const max_rounds = 10
-
 var round_number_label = null
 
 var curr_player = null
@@ -113,6 +111,7 @@ func _ready():
 		get_node("CanvasLayer/Show").connect("button_down", self, "toggle_denominator_visibility")
 		get_node("CanvasLayer/Show").visible = true
 		toggle_denominator_visibility()
+		Phase.connect("ending_reinforcement", self, "round_max_end_game")
 	
 	# Button to raze a country in raze mode
 	if "raze" in game_modes:
@@ -278,6 +277,16 @@ func resign():
 		rpc("end_game", loser_color)
 	else:
 		rpc("end_game", curr_player.color)
+
+const round_max = 10
+func round_max_end_game():
+	if round_number <= round_max:
+		return
+	var num_countries = []
+	for player in players.values():
+		num_countries.append(len(player.owned_countries))
+	var loser_color =  players.keys()[num_countries.find(num_countries.min())]
+	rpc("end_game", loser_color)
 
 remotesync func end_game(loser_color):
 	# Hiding buttons to prevent further gameplay and allowing game restart

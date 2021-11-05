@@ -2,8 +2,8 @@ extends Control
 
 onready var _root: Main = get_tree().get_root().get_node("Main")
 var mode_connections = [["Diffusion", "Fatigue"], ["Fatigue", "Raze"],\
-	["Resistance", "Raze"], ["Drain", "Blitzkrieg"], ["Drain", "Congestion"],\
-	["Classic", "Movement"], ["Movement", "Pandemic"], ["Pandemic", "Checkers"]]
+	["Resistance", "Raze"], ["Drain", "Blitzkrieg"], ["Drain", "Congestion"]]
+#	["Classic", "Movement"], ["Movement", "Pandemic"], ["Pandemic", "Checkers"]]
 
 # Called when the node enters the scene tree for the first time.
 func _ready(): 
@@ -123,7 +123,7 @@ func get_all_children(object):
 	return output
 	
 func get_modes():
-	var container = $CenterContainer/VBoxContainer
+	var container = $VBoxContainer/Control
 	var game_modes = []
 	for child in get_all_children(container):
 		if child is CheckBox:

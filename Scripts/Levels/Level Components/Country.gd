@@ -78,6 +78,7 @@ func _ready():
 	# Turn on resistance when a country is conquered
 	if "resistance" in Game_Manager.game_modes:
 		connect("conquered", self, "set_statused", ["resistance", true])
+		pass
 	# Turn on fatigue when a country is attacking
 	if "fatigue" in Game_Manager.game_modes:
 		connect("attacking", self, "set_statused", ["fatigue", true])
@@ -85,7 +86,9 @@ func _ready():
 	# Turn on blitz when a country is attacked
 	if "blitzkrieg" in Game_Manager.game_modes:
 		connect("conquered", self, "set_statused", ["blitzkrieg", false])
+		print(is_connected("conquered", self, "set_statused"))
 		connect("attacked", self, "set_statused", ["blitzkrieg", true])
+	print(get_signal_connection_list("conquered"))
 	# Apply pandemic deaths when a turn is ended
 	if "pandemic" in Game_Manager.game_modes:
 		Game_Manager.Phase.connect("ending_reinforcement", self, "apply_pandemic_deaths")
