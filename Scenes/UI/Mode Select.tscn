@@ -95,9 +95,9 @@ __meta__ = {
 }
 
 [node name="Drain" type="CheckBox" parent="VBoxContainer/Control"]
-margin_left = 960.0
+margin_left = 1088.0
 margin_top = 264.0
-margin_right = 1371.0
+margin_right = 1499.0
 margin_bottom = 395.0
 rect_scale = Vector2( 0.5, 0.5 )
 custom_icons/checked = ExtResource( 5 )
@@ -109,10 +109,25 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Blitzkrieg" type="CheckBox" parent="VBoxContainer/Control"]
+[node name="Deadline" type="CheckBox" parent="VBoxContainer/Control"]
 margin_left = 704.0
+margin_top = 264.0
+margin_right = 1290.0
+margin_bottom = 395.0
+rect_scale = Vector2( 0.5, 0.5 )
+custom_icons/checked = ExtResource( 5 )
+custom_icons/unchecked = ExtResource( 6 )
+custom_fonts/font = ExtResource( 3 )
+text = "Deadline"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Blitzkrieg" type="CheckBox" parent="VBoxContainer/Control"]
+margin_left = 1088.0
 margin_top = 392.0
-margin_right = 1315.0
+margin_right = 1699.0
 margin_bottom = 523.0
 rect_scale = Vector2( 0.5, 0.5 )
 custom_icons/checked = ExtResource( 5 )
@@ -199,9 +214,9 @@ __meta__ = {
 }
 
 [node name="Congestion" type="CheckBox" parent="VBoxContainer/Control"]
-margin_left = 1088.0
+margin_left = 704.0
 margin_top = 392.0
-margin_right = 1802.0
+margin_right = 1418.0
 margin_bottom = 523.0
 rect_scale = Vector2( 0.5, 0.5 )
 custom_icons/checked = ExtResource( 5 )

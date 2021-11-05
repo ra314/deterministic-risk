@@ -162,6 +162,15 @@ custom_fonts/font = ExtResource( 1 )
 text = "Drain"
 flat = true
 
+[node name="Deadline" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
+margin_top = 133.0
+margin_right = 637.0
+margin_bottom = 262.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "Deadline"
+flat = true
+
 [node name="Blitzkrieg" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
 margin_left = 641.0
 margin_top = 133.0
@@ -296,6 +305,20 @@ You can drain a country if you have at least 2 units. This counts as an attack.
 If a 3 attacks a 7
     - 1 will remain in the attacking country
     - 5 will remain in the defending country"
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Deadline" type="Label" parent="VBoxContainer/Menu Display/Game Modes/Control"]
+visible = false
+margin_right = 1920.0
+margin_bottom = 477.0
+size_flags_horizontal = 3
+custom_styles/normal = ExtResource( 4 )
+custom_fonts/font = ExtResource( 3 )
+text = "Deadline:
+The player with the most countries at the end of round 10 wins. The first player wins in the case of a tie."
 autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false

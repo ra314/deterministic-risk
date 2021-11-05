@@ -2,7 +2,7 @@ extends Control
 
 onready var _root: Main = get_tree().get_root().get_node("Main")
 var mode_connections = [["Diffusion", "Fatigue"], ["Fatigue", "Raze"],\
-	["Resistance", "Raze"], ["Drain", "Blitzkrieg"], ["Drain", "Congestion"]]
+	["Resistance", "Raze"], ["Drain", "Blitzkrieg"], ["Drain", "Congestion"], ["Deadline", "Congestion"]]
 #	["Classic", "Movement"], ["Movement", "Pandemic"], ["Pandemic", "Checkers"]]
 
 # Called when the node enters the scene tree for the first time.

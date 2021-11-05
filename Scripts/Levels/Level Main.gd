@@ -111,6 +111,7 @@ func _ready():
 		get_node("CanvasLayer/Show").connect("button_down", self, "toggle_denominator_visibility")
 		get_node("CanvasLayer/Show").visible = true
 		toggle_denominator_visibility()
+	if "deadline" in game_modes:
 		Phase.connect("ending_reinforcement", self, "round_max_end_game")
 	
 	# Button to raze a country in raze mode
@@ -258,7 +259,7 @@ func set_host_color(color):
 		print("changing local button")
 		show_end_attack(true)
 	else:
-		print("changing other guyss button")
+		print("changing other guys button")
 		rpc_id(curr_player.network_id, "show_end_attack", true)
 	
 func is_attack_over():
@@ -278,7 +279,7 @@ func resign():
 	else:
 		rpc("end_game", curr_player.color)
 
-const round_max = 10
+const round_max = 2
 func round_max_end_game():
 	if round_number <= round_max:
 		return
