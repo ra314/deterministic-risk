@@ -309,7 +309,7 @@ size_flags_horizontal = 3
 custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
 text = "Fatigue:
-Only a single attack is allowed per turn per country."
+Only a single attack is allowed per turn per country unless razed."
 autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false
@@ -403,7 +403,8 @@ size_flags_horizontal = 3
 custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
 text = "Raze:
-Deplete half a countries troops to remove all status conditions."
+Deplete half a countries troops to remove all status conditions.
+Eg: Fatigue, Resistance, Blitz"
 autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false
