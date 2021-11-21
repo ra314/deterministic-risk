@@ -163,8 +163,9 @@ text = "Drain"
 flat = true
 
 [node name="Deadline" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
+margin_left = 641.0
 margin_top = 133.0
-margin_right = 637.0
+margin_right = 1278.0
 margin_bottom = 262.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 1 )
@@ -172,9 +173,9 @@ text = "Deadline"
 flat = true
 
 [node name="Blitzkrieg" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
-margin_left = 641.0
+margin_left = 1282.0
 margin_top = 133.0
-margin_right = 1278.0
+margin_right = 1919.0
 margin_bottom = 262.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 1 )
@@ -182,18 +183,18 @@ text = "Blitzkrieg"
 flat = true
 
 [node name="Pandemic" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
-margin_left = 1282.0
-margin_top = 133.0
-margin_right = 1919.0
-margin_bottom = 262.0
+margin_top = 266.0
+margin_right = 637.0
+margin_bottom = 395.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 1 )
 text = "Pandemic"
 flat = true
 
 [node name="Raze" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
+margin_left = 641.0
 margin_top = 266.0
-margin_right = 637.0
+margin_right = 1278.0
 margin_bottom = 395.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 1 )
@@ -201,9 +202,9 @@ text = "Raze"
 flat = true
 
 [node name="Diffusion" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
-margin_left = 641.0
+margin_left = 1282.0
 margin_top = 266.0
-margin_right = 1278.0
+margin_right = 1919.0
 margin_bottom = 395.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 1 )
@@ -211,18 +212,18 @@ text = "Diffusion"
 flat = true
 
 [node name="Checkers" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
-margin_left = 1282.0
-margin_top = 266.0
-margin_right = 1919.0
-margin_bottom = 395.0
+margin_top = 399.0
+margin_right = 637.0
+margin_bottom = 528.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 1 )
 text = "Checkers"
 flat = true
 
 [node name="Fatigue" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
+margin_left = 641.0
 margin_top = 399.0
-margin_right = 637.0
+margin_right = 1278.0
 margin_bottom = 528.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 1 )
@@ -230,9 +231,9 @@ text = "Fatigue"
 flat = true
 
 [node name="Congestion" type="Button" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes"]
-margin_left = 641.0
+margin_left = 1282.0
 margin_top = 399.0
-margin_right = 1278.0
+margin_right = 1919.0
 margin_bottom = 528.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 1 )
@@ -426,7 +427,7 @@ size_flags_horizontal = 3
 custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
 text = "Raze:
-Deplete half a countries troops to remove all status conditions.
+Deplete half (rounded down) of a countries troops to remove all status conditions.
 Eg: Fatigue, Resistance, Blitz"
 autowrap = true
 __meta__ = {
