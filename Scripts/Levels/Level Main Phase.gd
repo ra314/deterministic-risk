@@ -19,15 +19,15 @@ func _ready():
 	connect("ending_attack", P, "set_selected_country", [null])
 	connect("ending_reinforcement", P, "set_selected_country", [null])
 	connect("ending_movement", P, "set_selected_country", [null])
+	# Reducing number of reinforcements to 0
+	connect("ending_reinforcement", self, "update_num_reinforcements")
+
+func update_num_reinforcements():
+	P.curr_player.num_reinforcements = 0
 
 func change_to_next_player():
 	P.curr_player_index = (P.curr_player_index+1)%P.num_players
 	P.curr_player = P.players.values()[P.curr_player_index]
-	# We're synchronizing the current player because after the change 
-	# the current player is no longer the instance this function was called on
-#	if P._root.online_game:
-#		P.get_node("Sync").synchronize(P.curr_player.network_id)
-#		rpc_id(P.curr_player.network_id, "update_player_status")
 	update_player_status()
 
 # Update status to attack or defend

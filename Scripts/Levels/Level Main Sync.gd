@@ -10,8 +10,7 @@ func synchronize(network_id):
 	# Synchronising the countries in terms of colors and troops
 	for country in P.all_countries.values():
 		rpc_id(network_id, "synchronise_country", country.country_name, \
-			country.num_troops, country.num_reinforcements, \
-			country.belongs_to.color, country.statused, country.max_troops)
+			country.num_troops, country.belongs_to.color, country.statused, country.max_troops)
 	
 	# Synchrosing the game in terms of player information
 	for player in P.players.values():

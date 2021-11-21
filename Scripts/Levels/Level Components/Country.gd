@@ -53,10 +53,20 @@ func reset_status():
 # {num_troops} + {num_reinforcements}
 var num_reinforcements: int = 0
 signal set_num_reinforcements()
-func set_num_reinforcements(_num_reinforcements):
+# When check_player_reinforcements is false, we don't check if the player has enough reinforcements
+# This is intended to be used for the movement phase, when it's not actually a reinforcement
+func set_num_reinforcements(_num_reinforcements, check_player_reinforcements):
+	if _num_reinforcements < 0:
+		return false
 	if "congestion" in Game_Manager.game_modes:
 		if num_troops + _num_reinforcements > max_troops:
 			return false
+	if check_player_reinforcements:
+		# Checking if the player doesn't have enough reinforcements
+		if _num_reinforcements > (belongs_to.num_reinforcements + num_reinforcements):
+			return false
+		# Changing the number of reinforcements the player has
+		belongs_to.num_reinforcements += num_reinforcements - _num_reinforcements
 	num_reinforcements = _num_reinforcements
 	emit_signal("set_num_reinforcements")
 	return true
@@ -74,6 +84,10 @@ func _ready():
 		var player_neutral = Player.instance().init("gray")
 		belongs_to = player_neutral
 		return
+	
+	# Updating labels when number of troops change
+	connect("set_num_troops", Game_Manager, "update_labels")
+	connect("set_num_reinforcements", Game_Manager, "update_labels")
 	
 	# Turn on resistance when a country is conquered
 	if "resistance" in Game_Manager.game_modes:
@@ -106,7 +120,7 @@ func _ready():
 
 func move_troops_to_active_duty():
 	set_num_troops(num_troops + num_reinforcements)
-	set_num_reinforcements(0)
+	set_num_reinforcements(0, false)
 
 func change_ownership_to(player):
 	# Transfer of Ownership
@@ -310,25 +324,15 @@ func on_click(event_index, is_long_press):
 		"reinforcement":
 			if belongs_to != Game_Manager.curr_player:
 				return
+			# Remove all reinforcements
 			if is_long_press:
-				# Remove all reinforcements
-				if num_reinforcements > 0:
-					Game_Manager.curr_player.num_reinforcements += num_reinforcements
-					set_num_reinforcements(0)
+				set_num_reinforcements(0, true)
 			# Add a reinforcement
 			elif event_index == BUTTON_LEFT:
-				# Check that the player has reinforcements available to allocate
-				if Game_Manager.curr_player.num_reinforcements > 0:
-					if set_num_reinforcements(num_reinforcements+1):
-						Game_Manager.curr_player.num_reinforcements -= 1
+				set_num_reinforcements(num_reinforcements+1, true)
 			# Remove a reinforcement
 			elif event_index == BUTTON_RIGHT:
-				# Check that a reinforcement has been previously added to this country
-				if num_reinforcements > 0:
-					set_num_reinforcements(num_reinforcements-1)
-					Game_Manager.curr_player.num_reinforcements += 1
-			
-			Game_Manager.update_labels()
+				set_num_reinforcements(num_reinforcements-1, true)
 		
 		"game over":
 			pass
@@ -339,7 +343,7 @@ func donate_to(country):
 	if num_troops <= 1:
 		return false
 	# Moving the troops
-	if not country.set_num_reinforcements(country.num_reinforcements+1):
+	if not country.set_num_reinforcements(country.num_reinforcements+1, false):
 		return false
 	set_num_troops(num_troops - 1)
 	# Drawing the line and providing donations
@@ -353,7 +357,7 @@ func takeback_donations():
 	var troop_total = 0
 	for country in donations:
 		# Take the donation away
-		country.set_num_reinforcements(country.num_reinforcements - donations[country])
+		country.set_num_reinforcements(country.num_reinforcements - donations[country], false)
 		# Keeping score of the donations taken back
 		troop_total += donations[country]
 	# Putting all donations taken back, back into deployment
@@ -396,9 +400,8 @@ func init(_x, _y, _country_name, player):
 	return self
 
 # Synchronise the country over network
-func synchronise(_num_troops, _num_reinforcements, _belongs_to, _statused, _max_troops):
+func synchronise(_num_troops, _belongs_to, _statused, _max_troops):
 	set_num_troops(_num_troops)
-	set_num_reinforcements(_num_reinforcements)
 	for key in _statused:
 		set_statused(key, _statused[key])
 	set_max_troops(_max_troops)
