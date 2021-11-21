@@ -24,6 +24,12 @@ func synchronize(network_id):
 remote func synchronize_country_click(country_name, event, is_long_press):
 	P.all_countries[country_name].on_click(event, is_long_press)
 
+func synchronize_raze1(country_name):
+	rpc("synchronize_raze2", country_name)
+
+remotesync func synchronize_raze2(country_name):
+	P.all_countries[country_name].raze()
+
 remote func synchronise_country(country_name, num_troops, num_reinforcements, color, statused, max_troops):
 	P.all_countries[country_name].synchronise(num_troops, num_reinforcements, \
 		P.players[color], statused, max_troops)

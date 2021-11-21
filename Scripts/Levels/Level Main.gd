@@ -156,18 +156,20 @@ func show_help_menu():
 	_root.add_child(scene)
 
 func show_raze():
-	if not selected_country: return
+	if not is_current_player() or not selected_country:
+		return
+	# Disconnect all previous connections of the raze button
 	disconnect_all("button_down", $CanvasLayer/Raze)
+	# Show the raze button if the selected country can be razed
 	if selected_country.is_statused():
 		$CanvasLayer/Raze.visible = true
-		$CanvasLayer/Raze.connect("button_down", selected_country, "raze")
+		# Connect the raze button with the razing of the country
+		$CanvasLayer/Raze.connect("button_down", $Sync, "synchronize_raze1", [selected_country.country_name])
+		# Connect the raze button with making itself invisible after it's been pressed
 		$CanvasLayer/Raze.connect("button_down", $CanvasLayer/Raze, "set_visible", [false])
+		
 	else:
 		$CanvasLayer/Raze.visible = false
-	# Show the raze button if the selected country can be razed
-	# Disconnect all previous connections of the raze button
-	# Connect the raze button with the razing of the country
-	# Connect the raze button with determining it's visibility if the country can be razed
 
 var show_denominator = true
 func toggle_denominator_visibility():
@@ -389,8 +391,6 @@ func is_current_player():
 	else:
 		return _root.players[_root.player_name] == curr_player.network_id
 
-const sync_period = 2
-var time_since_sync = 0
 const input_frequency = 0.05
 var time_since_last_input = 0
 

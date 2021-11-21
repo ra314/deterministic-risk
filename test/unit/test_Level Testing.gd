@@ -49,7 +49,7 @@ func test_blitz_and_drain():
 	c_ME.set_num_troops(3)
 	c_IND.set_num_troops(2)
 	c_NA.set_num_troops(2)
-	print("Giving the middle east 3 troops, and giving india and north africa troops")
+	print("Giving the middle east 3 troops, and giving india and north africa 2 troops")
 	
 	yield(get_tree().create_timer(1), "timeout")
 	c_ME.change_ownership_to(main.get_next_player())
@@ -343,3 +343,40 @@ func test_phases():
 
 func get_phase_symbol(player):
 	return main.get_node("CanvasLayer/Game Info/" + player.color + "/VBoxContainer/Status")
+
+func test_raze_and_resistance():
+	init(["classic", "resistance","raze"])
+	
+	print()
+	print("Testing if the resistance icon shows upon conquer and that the icon goes away upon being razed")
+	
+	yield(get_tree().create_timer(1), "timeout")
+	main.remove_reroll_and_start_butttons()
+	print("Starting game")
+	
+	yield(get_tree().create_timer(1), "timeout")
+	c_ME.set_num_troops(1)
+	c_IND.set_num_troops(1)
+	c_NA.set_num_troops(5)
+	print("Give north africa 5 troops, and give the middle east and india 1 troop")
+	
+	yield(get_tree().create_timer(1), "timeout")
+	c_ME.change_ownership_to(main.get_next_player())
+	c_IND.change_ownership_to(main.get_next_player())
+	c_NA.change_ownership_to(main.curr_player)
+	print("Giving north africa to the current player, and the middle east and india to the next player")
+	
+	yield(get_tree().create_timer(1), "timeout")
+	c_NA.on_click(BUTTON_LEFT, false)
+	c_ME.on_click(BUTTON_LEFT, false)
+	print("Checking that ME has the resistance status and icon after being conquered")
+	assert_true(c_ME.statused["resistance"] and\
+		c_ME.get_node("Visual/Status/resistance").visible == true)
+	
+	yield(get_tree().create_timer(1), "timeout")
+	c_ME.on_click(BUTTON_LEFT, false)
+	main.get_node("CanvasLayer/Raze").emit_signal("button_down")
+	print("Checking that ME is no longer in resistance after being razed and has 2 troops")
+	assert_true(not c_ME.statused["resistance"] and\
+		not c_ME.get_node("Visual/Status/resistance").visible and\
+		c_ME.num_troops == 2)
