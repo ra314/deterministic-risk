@@ -380,3 +380,19 @@ func test_raze_and_resistance():
 	assert_true(not c_ME.statused["resistance"] and\
 		not c_ME.get_node("Visual/Status/resistance").visible and\
 		c_ME.num_troops == 2)
+
+func test_deadline():
+	init(["classic", "deadline"])
+	
+	print()
+	print("Testing if the game ends after 10 rounds in the deadline game mode.")
+	
+	yield(get_tree().create_timer(1), "timeout")
+	main.remove_reroll_and_start_butttons()
+	print("Starting game")
+	
+	for round_number in range(20):
+		main.Phase.end_attack1(true)
+		main.Phase.end_reinforcement1(true)
+	
+	assert_true(main.phase == "game over" and main.round_number == 21)

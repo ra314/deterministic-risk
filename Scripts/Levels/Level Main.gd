@@ -281,7 +281,7 @@ func resign():
 	else:
 		rpc("end_game", curr_player.color)
 
-const round_max = 2
+const round_max = 20
 func round_max_end_game():
 	if round_number <= round_max:
 		return
@@ -347,7 +347,7 @@ func update_labels():
 	blue.get_node("Countries").text = str(len(players["blue"].owned_countries))
 	
 	# Update Round info
-	get_node("CanvasLayer/Game Info/Round Info/HBoxContainer/Round").text = "Round: " + str(round_number)
+	get_node("CanvasLayer/Game Info/Round Info/HBoxContainer/Round").text = "Round: " + str(ceil(float(round_number)/2))
 	var curr_texture = colors["gray"]
 	if curr_player:
 		curr_texture = colors[curr_player.color]
