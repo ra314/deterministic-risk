@@ -1,9 +1,12 @@
 extends Control
 
 onready var _root: Main = get_tree().get_root().get_node("Main")
-var mode_connections = [["Diffusion", "Fatigue"], ["Fatigue", "Raze"],\
-	["Resistance", "Raze"], ["Drain", "Blitzkrieg"], ["Drain", "Congestion"], ["Deadline", "Congestion"]]
-#	["Classic", "Movement"], ["Movement", "Pandemic"], ["Pandemic", "Checkers"]]
+# The connection can be "mandatory" or "at least one"
+# At least one means that at least one of the childs parents must be true
+var mode_connections = [\
+	["Diffusion", "Fatigue", "mandatory"], ["Fatigue", "Raze", "at least one"],\
+	["Resistance", "Raze", "at least one"], ["Drain", "Blitzkrieg", "mandatory"],\
+	["Drain", "Congestion", "mandatory"], ["Deadline", "Congestion", "mandatory"]]
 
 # Called when the node enters the scene tree for the first time.
 func _ready(): 
@@ -19,8 +22,9 @@ func _ready():
 	for mode_connection in mode_connections:
 		var node1 = container.get_node(mode_connection[0])
 		var node2 = container.get_node(mode_connection[1])
-		draw_connection(container, node1, node2)
-	# Connecting up those dependencies
+		var connnection_type = mode_connection[2]
+		draw_connection(container, node1, node2, connnection_type)
+	# Connecting up those dependencies, the dictionary is created for O(1) membership check
 	var modes_with_dependencies = {}
 	for mode_connection in mode_connections:
 		modes_with_dependencies[mode_connection[0]] = true
@@ -28,6 +32,16 @@ func _ready():
 	for child in container.get_children():
 		if child is CheckBox and child.name in modes_with_dependencies:
 			child.connect("button_down", self, "press_mode", [child.name])
+	
+	# Drawing the legend
+	var label1 = $VBoxContainer/Control/Label
+	var pos1 = label1.rect_position + Vector2(-10, label1.rect_size[1]/2)
+	for child in (custom_draw_line(pos1, pos1 - Vector2(300, 0), true)):
+		container.add_child(child)
+	
+	var label2 = $VBoxContainer/Control/Label2
+	pos1 = label2.rect_position + Vector2(-10, label2.rect_size[1]/2)
+	container.add_child(custom_draw_line(pos1, pos1 - Vector2(300, 0), false))
 
 func get_parent_dependencies(mode):
 	var parents = []
@@ -73,14 +87,39 @@ func sync_child_dependencies(mode):
 			container.get_node(child_dependency).set_pressed(false)
 
 # Adding lines to show graph
-func draw_connection(container, node1, node2):
-	# Connect Diffusion and fatigue
-	var line = Line2D.new()
-	line.add_point(node1.rect_position + Vector2(node1.rect_size[0]/2/2, node1.rect_size[1]/2))
-	line.add_point(node2.rect_position + Vector2(node2.rect_size[0]/2/2, 0))
-	line.begin_cap_mode = Line2D.LINE_CAP_ROUND
-	line.end_cap_mode = Line2D.LINE_CAP_ROUND
-	container.add_child(line)
+func draw_connection(container, node1, node2, connection_type):
+	var pos1 = (node1.rect_position + Vector2(node1.rect_size[0]/2/2, node1.rect_size[1]/2))
+	var pos2 = (node2.rect_position + Vector2(node2.rect_size[0]/2/2, 0))
+	
+	# Move the end points away from the exact center of the mode labels.
+	# This is to avoid connecting the lines and implying something
+	var new_pos1 = pos1.linear_interpolate(pos2, 0.95)
+	var new_pos2 = pos2.linear_interpolate(pos1, 0.95)
+	
+	match connection_type:
+		"mandatory":
+			container.add_child(custom_draw_line(new_pos1, new_pos2, false))
+		"at least one":
+			for line in custom_draw_line(new_pos1, new_pos2, true):
+				container.add_child(line)
+
+func custom_draw_line(pos1, pos2, bool_dashed):
+	if not bool_dashed:
+		var line = Line2D.new()
+		line.add_point(pos1)
+		line.add_point(pos2)
+		line.begin_cap_mode = Line2D.LINE_CAP_ROUND
+		line.end_cap_mode = Line2D.LINE_CAP_ROUND
+		line.width = 5
+		return line
+	else:
+		var lines = []
+		for i in range(9):
+			if i%2: continue
+			var new_pos1 = pos1.linear_interpolate(pos2, float(i)/9)
+			var new_pos2 = pos1.linear_interpolate(pos2, (float(i)/9) + (0.1))
+			lines.append(custom_draw_line(new_pos1, new_pos2, false))
+		return lines
 
 func randomise_modes():
 	randomize()

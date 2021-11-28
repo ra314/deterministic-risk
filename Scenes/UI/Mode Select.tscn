@@ -95,10 +95,10 @@ __meta__ = {
 }
 
 [node name="Drain" type="CheckBox" parent="VBoxContainer/Control"]
-margin_left = 1088.0
-margin_top = 264.0
-margin_right = 1499.0
-margin_bottom = 395.0
+margin_left = 1152.0
+margin_top = 8.0
+margin_right = 1563.0
+margin_bottom = 139.0
 rect_scale = Vector2( 0.5, 0.5 )
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
@@ -110,10 +110,10 @@ __meta__ = {
 }
 
 [node name="Deadline" type="CheckBox" parent="VBoxContainer/Control"]
-margin_left = 704.0
-margin_top = 264.0
-margin_right = 1290.0
-margin_bottom = 395.0
+margin_left = 768.0
+margin_top = 8.0
+margin_right = 1354.0
+margin_bottom = 139.0
 rect_scale = Vector2( 0.5, 0.5 )
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
@@ -125,10 +125,10 @@ __meta__ = {
 }
 
 [node name="Blitzkrieg" type="CheckBox" parent="VBoxContainer/Control"]
-margin_left = 1088.0
-margin_top = 392.0
-margin_right = 1699.0
-margin_bottom = 523.0
+margin_left = 1152.0
+margin_top = 136.0
+margin_right = 1763.0
+margin_bottom = 267.0
 rect_scale = Vector2( 0.5, 0.5 )
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
@@ -136,7 +136,7 @@ custom_fonts/font = ExtResource( 3 )
 text = "Blitzkrieg"
 align = 1
 __meta__ = {
-"_edit_use_anchors_": false
+"_edit_use_anchors_": true
 }
 
 [node name="Pandemic" type="CheckBox" parent="VBoxContainer/Control"]
@@ -214,16 +214,38 @@ __meta__ = {
 }
 
 [node name="Congestion" type="CheckBox" parent="VBoxContainer/Control"]
-margin_left = 704.0
-margin_top = 392.0
-margin_right = 1418.0
-margin_bottom = 523.0
+margin_left = 768.0
+margin_top = 136.0
+margin_right = 1482.0
+margin_bottom = 267.0
 rect_scale = Vector2( 0.5, 0.5 )
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
 custom_fonts/font = ExtResource( 3 )
 text = "Congestion"
 align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="VBoxContainer/Control"]
+margin_left = 320.0
+margin_top = 392.0
+margin_right = 1169.0
+margin_bottom = 454.0
+custom_fonts/font = ExtResource( 8 )
+text = "At least 1 parent modes is needed."
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label2" type="Label" parent="VBoxContainer/Control"]
+margin_left = 320.0
+margin_top = 456.0
+margin_right = 1057.0
+margin_bottom = 518.0
+custom_fonts/font = ExtResource( 8 )
+text = "All parent modes are needed."
 __meta__ = {
 "_edit_use_anchors_": false
 }
