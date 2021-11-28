@@ -21,7 +21,6 @@ var Game_Manager = null
 func init():
 	P = get_parent()
 	Game_Manager = P.Game_Manager
-	P.connect("set_num_troops", self, "show_num_troops")
 	P.connect("set_num_reinforcements", self, "show_num_reinforcements")
 	if "pandemic" in Game_Manager.game_modes:
 		P.connect("set_num_troops", self, "show_pandemic_status")
@@ -33,6 +32,9 @@ func init():
 		P.connect("set_num_troops", self, "update_congestion")
 		P.connect("set_num_reinforcements", self, "update_congestion")
 		P.connect("set_max_troops", self, "update_congestion")
+	# This is show show_num_troops doesn't interfere with update_congestion
+	else:
+		P.connect("set_num_troops", self, "show_num_troops")
 
 func change_mask_color(color):
 	# Performance hack
