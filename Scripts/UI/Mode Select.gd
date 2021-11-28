@@ -31,7 +31,7 @@ func _ready():
 		modes_with_dependencies[mode_connection[1]] = true
 	for child in container.get_children():
 		if child is CheckBox and child.name in modes_with_dependencies:
-			child.connect("button_down", self, "press_mode", [child.name])
+			child.connect("button_up", self, "press_mode", [child.name])
 	
 	# Drawing the legend
 	var label1 = $VBoxContainer/Control/Label
@@ -54,23 +54,26 @@ func get_child_dependencies(mode):
 	var children = []
 	for mode_connection in mode_connections:
 		if mode_connection[0] == mode:
-			children.append(mode_connection[1])
+			children.append([mode_connection[1],mode_connection[2]])
 	return children
 
-func get_num_pressed_modes(modes):
+func get_num_pressed_voluntary_modes(mode):
 	var num = 0
 	var container = $VBoxContainer/Control
-	for mode in modes:
-		num += int(container.get_node(mode).pressed)
+	for mode_connection in mode_connections:
+		if mode_connection[1] == mode and\
+			mode_connection[2] == "at least one" and \
+			container.get_node(mode_connection[0]).pressed:
+			num += 1
 	return num
 
 func press_mode(mode):
 	var container = $VBoxContainer/Control
 	# Only execute if the button is being turned on by a user click
-	if not container.get_node(mode).pressed:
+	if container.get_node(mode).pressed:
 		sync_parent_dependencies(mode)
 	# Only execute if the button is being turned off by a user click
-	if container.get_node(mode).pressed:
+	if not container.get_node(mode).pressed:
 		sync_child_dependencies(mode)
 
 func sync_parent_dependencies(mode):
@@ -81,10 +84,17 @@ func sync_parent_dependencies(mode):
 
 func sync_child_dependencies(mode):
 	var container = $VBoxContainer/Control
-	for child_dependency in get_child_dependencies(mode):
-		if get_num_pressed_modes(get_parent_dependencies(child_dependency)) == 1:
-			sync_child_dependencies(child_dependency)
+	for data in get_child_dependencies(mode):
+		var child_dependency = data[0]
+		var connection_type = data[1]
+		if connection_type == "mandatory":
 			container.get_node(child_dependency).set_pressed(false)
+			sync_child_dependencies(child_dependency)
+		else:
+			# If none of the voluntary (at least one) modes are on, then turn off the child
+			if get_num_pressed_voluntary_modes(child_dependency) == 0:
+				container.get_node(child_dependency).set_pressed(false)
+				sync_child_dependencies(child_dependency)
 
 # Adding lines to show graph
 func draw_connection(container, node1, node2, connection_type):
