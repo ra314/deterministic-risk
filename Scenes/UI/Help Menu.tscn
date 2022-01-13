@@ -447,8 +447,18 @@ margin_top = 57.0
 margin_right = 218.0
 margin_bottom = 125.0
 custom_fonts/font = ExtResource( 3 )
-toggle_mode = true
 text = "Load save"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Ping Host" type="Button" parent="VBoxContainer/Menu Display/Settings"]
+margin_left = 264.0
+margin_top = 57.0
+margin_right = 524.0
+margin_bottom = 125.0
+custom_fonts/font = ExtResource( 3 )
+text = "Ping Host"
 __meta__ = {
 "_edit_use_anchors_": false
 }

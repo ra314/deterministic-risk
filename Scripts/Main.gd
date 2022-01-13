@@ -40,16 +40,29 @@ func _player_connected(id):
 # Register a player to a dictionary that contains player names and player ids
 remote func register_player(player_name, id):	
 	players[player_name] = id
-	notify_player_connection(player_name)
-
-func notify_player_connection(connecting_player_name):
-	var notification = Label.new()
-	notification.text = connecting_player_name + " has connected"
-	notification.add_font_override("font", load("res://Assets/Fonts/Font_50.tres"))
-	get_children()[0].add_child(notification)
-	
+	create_notification(player_name + " has connected")
 	# Remove the back button for the host once the guest has connected
 	get_children()[0].get_node("TextureButton").visible = false
+
+# General purpose notification system
+####### 
+var notifications = []
+
+func create_notification(notification_str):
+	var notification = Label.new()
+	notification.text = notification_str
+	notification.add_font_override("font", load("res://Assets/Fonts/Font_50.tres"))
+	add_child(notification)
+	notifications.append(notification)
+	get_tree().create_timer(2).connect("timeout", self, "delete_last_notification")
+	print(str(notifications) + " being created")
+
+func delete_last_notification():
+	print(str(notifications) + "being deleted")
+	var notification = notifications.pop_back()
+	remove_child(notification)
+	notification.queue_free()
+#######
 
 # Create a server and set the network peer to the peer you created
 func host():
@@ -108,3 +121,34 @@ func load_save(save_dict):
 		main.Sync.synchronize(players["guest"])
 	main.update_labels()
 	main.Phase.update_player_status()
+
+# PING SYSTEM
+#######
+# Send the current unix time and wait to receive it back 
+# to confirm that the ping is successful
+var ping_unique_response = 0
+
+func ping_send(id):
+	var unix_time = OS.get_unix_time()
+	rpc_id(id, "ping_respond", unix_time)
+	yield(get_tree().create_timer(2), "timeout")
+	return (ping_unique_response == unix_time)
+
+remote func ping_respond(ping_response):
+	rpc_id(get_tree().get_rpc_sender_id(), "set_ping_unique_response", ping_response)
+
+remote func set_ping_unique_response(ping_reponse):
+	ping_unique_response = ping_reponse
+
+func ping_host():
+	if player_name == "host":
+		return true
+	else:
+		return ping_send(players["host"])
+
+func ping_host_with_notification():
+	if ping_host():
+		create_notification("Successfully pinged host")
+	else:
+		create_notification("Unable to ping host")
+#######
