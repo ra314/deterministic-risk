@@ -143,7 +143,10 @@ func ping_host():
 		return ping_send(players["host"])
 
 func ping_host_with_notification():
-	if ping_host():
+	var boolean = ping_host()
+	if boolean is GDScriptFunctionState:
+		boolean = yield(boolean, "completed")
+	if boolean:
 		create_notification("Successfully pinged host")
 	else:
 		create_notification("Unable to ping host")
