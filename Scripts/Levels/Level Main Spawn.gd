@@ -48,8 +48,6 @@ func spawn_and_allocate():
 					print("BAD spawn, I have " + str(defender.num_troops) + " units and am " + defender.belongs_to.color + " and can be attacked")
 					return false
 	
-#	print("The first player is " + curr_player.color)
-#	print(curr_player.color)
 	P.update_labels()
 	P.Phase.update_player_status()
 	print("Found good spawn")

@@ -45,7 +45,6 @@ func change_mask_color(color):
 			return
 		else:
 			create_mask_sprite()
-			#print(str(create_mask_sprite()) + "ms")
 
 	var shader = mask_sprite.get_material()
 	shader.set_shader_param("u_highlight_color", mask_colors[color])
@@ -143,7 +142,6 @@ func remove_line_to_country(selected_country):
 		return false
 	lines[selected_country][0].remove_child(lines[selected_country][1])
 	lines[selected_country][1].free()
-	print(lines[selected_country][0].get_children())
 	
 	# Removing the line node from storage
 	lines.erase(selected_country)

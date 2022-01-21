@@ -126,7 +126,6 @@ func _ready():
 	# So we're just pushing these game modes back to the root
 	# This is necessary so that the asterisks show up next to the selected game modes on the help screen
 	_root.game_modes = game_modes
-#	print(game_modes)
 
 signal save()
 # The save is assumed to take place right at the start of the attack phase
@@ -258,10 +257,8 @@ func set_host_color(color):
 	rpc("show_resign_button")
 	
 	if curr_player.network_id == _root.players[_root.player_name]:
-		print("changing local button")
 		show_end_attack(true)
 	else:
-		print("changing other guys button")
 		rpc_id(curr_player.network_id, "show_end_attack", true)
 	
 func is_attack_over():
@@ -378,8 +375,6 @@ remotesync func click_country(map_click_position, event_index, is_long_press):
 	var country_name = str(get_color_in_mask(map_click_position))
 	if country_name in all_countries:
 		all_countries[country_name].on_click(event_index, is_long_press)
-	
-	print(country_name)
 
 func stop_flashing():
 	for country in all_countries.values():

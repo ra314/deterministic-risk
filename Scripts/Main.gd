@@ -55,10 +55,8 @@ func create_notification(notification_str):
 	add_child(notification)
 	notifications.append(notification)
 	get_tree().create_timer(2).connect("timeout", self, "delete_last_notification")
-	print(str(notifications) + " being created")
 
 func delete_last_notification():
-	print(str(notifications) + "being deleted")
 	var notification = notifications.pop_back()
 	remove_child(notification)
 	notification.queue_free()
@@ -68,7 +66,6 @@ func delete_last_notification():
 func host():
 	peer = NetworkedMultiplayerENet.new()
 	peer.create_server(SERVER_PORT, MAX_PLAYERS)
-	print(get_tree())
 	get_tree().network_peer = peer
 	
 	# Adding yourself to the list of players
@@ -86,7 +83,6 @@ func guest(server_IP):
 	
 	# Adding yourself to the list of players 
 	register_player(player_name, get_tree().get_network_unique_id())
-	print(server_IP)
 
 func load_save(save_dict):
 	# Setting up the game

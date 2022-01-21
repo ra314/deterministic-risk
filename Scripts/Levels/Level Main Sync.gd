@@ -5,14 +5,13 @@ func _ready():
 	P = get_parent()
 
 func synchronize(network_id):
-	print("syncing")
-	
 	# Synchronising the countries in terms of colors and troops
 	for country in P.all_countries.values():
 		rpc_id(network_id, "synchronise_country", country.country_name, \
-			country.num_troops, country.belongs_to.color, country.statused, country.max_troops)
+			country.num_troops, country.num_reinforcements, \
+			country.belongs_to.color, country.statused, country.max_troops)
 	
-	# Synchrosing the game in terms of player information
+	# Synchronising the game in terms of player information
 	for player in P.players.values():
 		rpc_id(network_id, "synchronise_player", player.color, player.network_id, player.num_reinforcements)
 	

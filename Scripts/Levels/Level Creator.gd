@@ -83,9 +83,7 @@ func toggle_lines():
 		.remove_lines_between_countries()
 	else:
 		.draw_lines_between_countries()
-	print(lines_drawn)
 	lines_drawn = not lines_drawn
-	print(lines_drawn)
 
 func update_labels():
 	match phase:

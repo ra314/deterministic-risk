@@ -43,7 +43,6 @@ func export_level(save_name):
 	save_game.open("res://" + save_name + ".save", File.WRITE)
 	# Converting each country to a json and dumping them all
 	var arr = all_countries.values()
-	print(arr)
 	arr.sort_custom(self, "country_comparator")
 	for country in arr:
 		save_game.store_line(to_json(country.save_level_creator()))

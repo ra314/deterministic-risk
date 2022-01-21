@@ -100,9 +100,7 @@ func _ready():
 	# Turn on blitz when a country is attacked
 	if "blitzkrieg" in Game_Manager.game_modes:
 		connect("conquered", self, "set_statused", ["blitzkrieg", false])
-		print(is_connected("conquered", self, "set_statused"))
 		connect("attacked", self, "set_statused", ["blitzkrieg", true])
-	print(get_signal_connection_list("conquered"))
 	# Apply pandemic deaths when a turn is ended
 	if "pandemic" in Game_Manager.game_modes:
 		Game_Manager.Phase.connect("ending_reinforcement", self, "apply_pandemic_deaths")
@@ -400,11 +398,12 @@ func init(_x, _y, _country_name, player):
 	return self
 
 # Synchronise the country over network
-func synchronise(_num_troops, _belongs_to, _statused, _max_troops):
+func synchronise(_num_troops, _num_reinforcements, _belongs_to, _statused, _max_troops):
 	set_num_troops(_num_troops)
 	for key in _statused:
 		set_statused(key, _statused[key])
 	set_max_troops(_max_troops)
+	set_num_reinforcements(_num_reinforcements, false)
 	if belongs_to != _belongs_to:
 		change_ownership_to(_belongs_to)
 
