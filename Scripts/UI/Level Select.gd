@@ -18,9 +18,9 @@ func _ready():
 
 func back():
 	# Removing the current scene from history
-	_root.loaded_scene_history.pop_back()
+	_root.scene_manager.loaded_scene_history.pop_back()
 	# Removing the previous scene from history since we're going to load it again
-	var prev_scene_str = _root.loaded_scene_history.pop_back()
+	var prev_scene_str = _root.scene_manager.loaded_scene_history.pop_back()
 	# Reverting side effects
 	_root.game_modes = []
 	# Loading the previous scene

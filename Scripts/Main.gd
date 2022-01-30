@@ -7,9 +7,10 @@ var scene_manager: SceneManager = SceneManager.new(self)
 var online_game = false
 var player_name = ""
 var network_data = {}
-var loaded_scene_history = []
 var game_modes = []
 var stored_IP = ""
+var game_started: bool = false
+var disconnection_container = null
 
 var peer = null
 const SERVER_PORT = 9658
@@ -24,18 +25,16 @@ remotesync func load_level(scene_str, world_str, game_modes):
 	scene.game_modes = game_modes
 	scene.world_str = world_str
 	scene_manager._replace_scene(scene)
+	game_started = true
 
 func _ready():
 	# The event that triggers when a player connects to this instance of the game
 	get_tree().connect("network_peer_connected", self, "_player_connected")
+	get_tree().connect("network_peer_disconnected", self, "_player_disconnected")
+	get_tree().connect("server_disconnected", self, "_server_disconnected")
 	
 	var scene = scene_manager._load_scene("UI/Local Online")
 	scene_manager._replace_scene(scene)
-
-# Callback from SceneTree.
-func _player_connected(id):
-	# Registering the new player that connected
-	rpc_id(id, "register_player", player_name, get_tree().get_network_unique_id())
 
 # Register a player to a dictionary that contains player names and player ids
 remote func register_player(player_name, id):	
@@ -150,4 +149,54 @@ func ping_host_with_notification():
 		create_notification("Successfully pinged host")
 	else:
 		create_notification("Unable to ping host")
+#######
+
+# NETWORKING CALLBACKS
+#######
+# Callback from SceneTree.
+func _player_connected(id):
+	# Registering the new player that connected
+	rpc_id(id, "register_player", player_name, get_tree().get_network_unique_id())
+
+# Callback from SceneTree, only for clients (not server).
+func _server_disconnected():
+	disconnection_routine("The guest has disconnected.\nStart a new game.\nOr start a new game and load the last save.")
+
+# Callback from SceneTree.
+func _player_disconnected(id):
+	disconnection_routine("The host has disconnected.\nStart a new game.\nOr start a new game and load the last save.")
+
+func disconnection_routine(message_str):
+	var notification = Label.new()
+	notification.text = message_str
+	notification.add_font_override("font", load("res://Assets/Fonts/Font_50.tres"))
+	notification.add_stylebox_override("normal", load("res://Assets/label_background.tres"))
+	
+	var button = Button.new()
+	button.text = "Start a new game"
+	button.connect("button_down", self, "hard_reboot") 
+	button.add_font_override("font", load("res://Assets/Fonts/Font_50.tres"))
+	
+	disconnection_container = CanvasLayer.new()
+	add_child(disconnection_container)
+	
+	var centerbox = CenterContainer.new()
+	centerbox.rect_size = Vector2(1920,1080)
+	disconnection_container.add_child(centerbox)
+	
+	var vbox = VBoxContainer.new()
+	centerbox.add_child(vbox)
+	vbox.add_child(notification)
+	vbox.add_child(button)
+	
+	if game_started:
+		scene_manager._get_curr_scene().stop_game()
+
+func hard_reboot():
+	scene_manager.reset()
+	var scene = scene_manager._load_scene("UI/Local Online")
+	scene_manager._replace_scene(scene)
+	remove_child(disconnection_container)
+	disconnection_container.queue_free()
+	disconnection_container = null
 #######

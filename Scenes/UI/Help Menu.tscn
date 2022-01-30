@@ -60,14 +60,6 @@ custom_fonts/font = ExtResource( 3 )
 toggle_mode = true
 text = "Objective"
 
-[node name="Settings" type="Button" parent="VBoxContainer/Menu Options"]
-margin_left = 827.0
-margin_right = 1045.0
-margin_bottom = 68.0
-custom_fonts/font = ExtResource( 3 )
-toggle_mode = true
-text = "Settings"
-
 [node name="Menu Display" type="Control" parent="VBoxContainer"]
 margin_top = 199.0
 margin_right = 1920.0
@@ -434,80 +426,12 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Settings" type="Control" parent="VBoxContainer/Menu Display"]
-visible = false
-margin_right = 40.0
-margin_bottom = 40.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Load Save" type="Button" parent="VBoxContainer/Menu Display/Settings"]
-margin_top = 57.0
-margin_right = 218.0
-margin_bottom = 125.0
-custom_fonts/font = ExtResource( 3 )
-text = "Load save"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Ping Host" type="Button" parent="VBoxContainer/Menu Display/Settings"]
-margin_left = 264.0
-margin_top = 57.0
-margin_right = 524.0
-margin_bottom = 125.0
-custom_fonts/font = ExtResource( 3 )
-text = "Ping Host"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="Return To Game" type="Button" parent="."]
 margin_left = 1495.0
 margin_right = 1919.0
 margin_bottom = 68.0
 custom_fonts/font = ExtResource( 3 )
 text = "Return To Game"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Label2" type="Label" parent="."]
-visible = false
-margin_top = 33215.0
-margin_right = 1920.0
-margin_bottom = 34967.0
-rect_min_size = Vector2( 1920, 0 )
-size_flags_horizontal = 3
-custom_fonts/font = ExtResource( 3 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "Winning:
-You win when your opponent has no countries left in their possession.
-
-Attacking:
-Each turn is split into an attack and a reinforce phase. 
-Suppose you want to attack country A with country B to conquer it.
-This is only possible if B has more units than A, and B is adjacent to A.
-Adjacency across oceans is represented with dashed white lines.
-After the attack, B is left with 1 unit, and A is left with B-A units.
-A is now under your ownership.
-
-Reinforcing:
-The reinforce phase automatically starts when you have no attacks to make or when you click on the \"end attack\" button. 
-During the reinforce phase the number of reinforcements you get is the number of countries you own halved, then rounded up. 
-
-Controls:
-In general:
-    Click and drag to pan the map.
-During attack:
-    Click to select a country that you own.
-    Click again to attack a country that you don't own.
-During reinforcement:
-    Left click to add a reinforcement.
-    Right click  (or long press) to remove a reinforcement.
-    You cannot remove more reinforcements than you have added."
-autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false
 }

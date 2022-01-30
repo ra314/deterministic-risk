@@ -300,3 +300,14 @@ text = "Help"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Load Save" type="Button" parent="."]
+margin_left = 1656.0
+margin_top = 64.0
+margin_right = 1923.0
+margin_bottom = 132.0
+custom_fonts/font = ExtResource( 8 )
+text = "Load Save"
+__meta__ = {
+"_edit_use_anchors_": false
+}

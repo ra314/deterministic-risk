@@ -289,13 +289,7 @@ func round_max_end_game():
 	rpc("end_game", loser_color)
 
 remotesync func end_game(loser_color):
-	# Hiding buttons to prevent further gameplay and allowing game restart
-	get_node("CanvasLayer/End Attack").visible = false
-	get_node("CanvasLayer/End Reinforcement").visible = false
-	get_node("CanvasLayer/Resign").visible = false
-	get_node("CanvasLayer/Restart").visible = true
-	phase = "game over"
-	stop_flashing()
+	stop_game()
 	
 	# Finding out who the winner is
 	var players_without_loser = players.keys()
@@ -315,14 +309,23 @@ remotesync func end_game(loser_color):
 	loser_icon.visible = true
 	loser_icon.texture = load("res://Assets/Icons/Lose.svg")
 
+func stop_game():
+	# Hiding buttons to prevent further gameplay and allowing game restart
+	get_node("CanvasLayer/End Attack").visible = false
+	get_node("CanvasLayer/End Reinforcement").visible = false
+	get_node("CanvasLayer/Resign").visible = false
+	get_node("CanvasLayer/Restart").visible = true
+	phase = "game over"
+	stop_flashing()
+
 func restart():
 	back()
 
 func back():
 	# Removing the current scene from history
-	_root.loaded_scene_history.pop_back()
+	_root.scene_manager.loaded_scene_history.pop_back()
 	# Removing the previous scene from history since we're going to load it again
-	var prev_scene_str = _root.loaded_scene_history.pop_back()
+	var prev_scene_str = _root.scene_manager.loaded_scene_history.pop_back()
 	# Reverting side effects
 	# There were none
 	# Loading the previous scene

@@ -15,6 +15,7 @@ func _ready():
 	$TextureButton.connect("button_down", self, "back")
 	# Button to go to help menu
 	get_node("Help").connect("button_down", self, "show_help_menu")
+	get_node("Load Save").connect("button_down", self, "load_save")
 	container.get_node("HBoxContainer/Random").connect("button_down", self, "randomise_modes")
 	
 	# Connecting game mode dependencies
@@ -151,9 +152,9 @@ func show_help_menu():
 
 func back():
 	# Removing the current scene from history
-	_root.loaded_scene_history.pop_back()
+	_root.scene_manager.loaded_scene_history.pop_back()
 	# Removing the previous scene from history since we're going to load it again
-	var prev_scene_str = _root.loaded_scene_history.pop_back()
+	var prev_scene_str = _root.scene_manager.loaded_scene_history.pop_back()
 	# Reverting side effects
 	if _root.online_game:
 		_root.player_name = ""
@@ -170,7 +171,7 @@ func get_all_children(object):
 		output.append(child)
 		output.append_array(get_all_children(child))
 	return output
-	
+
 func get_modes():
 	var container = $VBoxContainer/Control
 	var game_modes = []
