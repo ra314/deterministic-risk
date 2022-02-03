@@ -143,6 +143,7 @@ static func can_attack(attacker, defender, game_modes):
 	# Attack not possible if currently in resistance or fatigued
 	if attacker.statused['resistance'] or attacker.statused['fatigue']:
 		return false
+	
 	# Check if the defender and attacker are connected
 	if defender in attacker.connected_countries:
 		# Check if the defender and attacker had different owners
@@ -160,6 +161,12 @@ func get_attackable_countries(game_modes):
 
 # Countries that can be attacked after performing a raze
 func get_raze_and_attackable_countries(game_modes):
+	# No countries can be attacked if the right game modes aren't selected
+	if not ('raze' in game_modes):
+		return []
+	if (not ('resistance' in game_modes)) and (not ('fatigue' in game_modes)):
+		return []
+	
 	var raze_and_attackable_countries = []
 	
 	# Perform a temporary raze

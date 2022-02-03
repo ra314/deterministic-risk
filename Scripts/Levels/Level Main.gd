@@ -378,7 +378,6 @@ remotesync func click_country(map_click_position, event_index, is_long_press):
 	var country_name = str(get_color_in_mask(map_click_position))
 	if country_name in all_countries:
 		all_countries[country_name].on_click(event_index, is_long_press)
-		all_countries[country_name].on_click(event_index, is_long_press)
 
 func stop_flashing():
 	for country in all_countries.values():
