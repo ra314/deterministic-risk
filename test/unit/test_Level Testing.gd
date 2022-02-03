@@ -28,6 +28,10 @@ func init(game_modes = ["classic"]):
 	_root.rpc("load_level", "Levels/Level Main", "Our World",  _root.game_modes)
 	
 	main = _root.get_children()[0]
+	
+	main.curr_player.reset()
+	main.get_next_player().reset()
+		
 	c_ME = main.all_countries["ff646464"]
 	c_IND = main.all_countries["ff696969"]
 	c_NA = main.all_countries["ff414141"]
@@ -421,9 +425,38 @@ func test_end_attack_confirmation():
 	
 	print("Checking that the current player doesnt get a prompt to confirm end attack")
 	assert_true(main.Phase.end_attack1(false))
-	
 	print("Giving the middle east 7 troops.")
 	c_ME.set_num_troops(7)
 	
 	print("Checking that the current player gets a prompt to confirm end attack")
 	assert_false(main.Phase.end_attack1(false))
+
+func test_movement_no_action():
+	init(["classic", "movement"])
+	
+	print()
+	print("Testing if the movement phase skips to the reinforcement phase if the player can't make any movement actions")
+	
+	yield(get_tree().create_timer(1), "timeout")
+	main.remove_reroll_and_start_butttons()
+	print("Starting game")
+	
+	yield(get_tree().create_timer(1), "timeout")
+	c_IND.set_num_troops(2)
+	c_ME.set_num_troops(1)
+	c_NA.set_num_troops(1)
+	print("Give 2 troops to india, and give the north africa and middle east 1 troop")
+	
+	yield(get_tree().create_timer(1), "timeout")
+	c_IND.change_ownership_to(main.get_next_player())
+	c_ME.change_ownership_to(main.curr_player)
+	c_NA.change_ownership_to(main.curr_player)
+	print("Giving india to the next player, and middle east and north africa to the current plyer")
+	
+	print("Check if the current player cannot make a movement action")
+	assert_false(main.Phase.start_movement1())
+	
+	main.Phase.end_reinforcement1(true)
+	
+	print("Check if the next player cannot make a movement action")
+	assert_false(main.Phase.start_movement1())
