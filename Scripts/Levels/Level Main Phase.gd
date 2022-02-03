@@ -60,7 +60,7 @@ remotesync func start_reinforcement2():
 	update_player_status()
 func end_reinforcement1(surity_bool=false):
 	# When the surity bool is true, you get to skip the confirmation menu
-	if not surity_bool and P.curr_player.num_reinforcements > 0:
+	if (not surity_bool) and P.curr_player.num_reinforcements > 0:
 		P.show_confirmation_menu("You have a reinforcement left to place on the map.\nAre you sure you want to end reinforcement?",\
 							 "end_reinforcement1", [true], self)
 		return false
@@ -94,7 +94,7 @@ remotesync func end_reinforcement2():
 
 func end_attack1(surity_bool=false):
 	# When the surity bool is true, you get to skip the confirmation menu
-	if not surity_bool and P.is_attack_over():
+	if (not surity_bool) and (not P.is_attack_over()):
 		P.show_confirmation_menu("You have an attack left.\nAre you sure you want to end attacks?",\
 							 "end_attack1", [true], self)
 		return false
