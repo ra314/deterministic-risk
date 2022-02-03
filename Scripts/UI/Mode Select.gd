@@ -185,3 +185,10 @@ func _load_scene(scene_str):
 	_root.game_modes = get_modes()
 	var scene = _root.scene_manager._load_scene(scene_str)
 	_root.scene_manager._replace_scene(scene)
+
+func load_save():
+	var file = File.new()
+	file.open("user://save_game.dat", File.READ)
+	var content = parse_json(file.get_as_text())
+	file.close()
+	_root.load_save(content)
