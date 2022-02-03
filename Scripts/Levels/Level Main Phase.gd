@@ -118,9 +118,10 @@ func start_movement1():
 	# I need a country that has more than one unit and a nearby ally
 	for country in P.curr_player.owned_countries:
 		if country.num_troops <= 1:
-			continue;
+			continue
 			
 		for neighbour in country.connected_countries:
+			# check if the neighbour shares the same player as me
 			if neighbour.belongs_to == country.belongs_to:
 				can_move = true
 				break

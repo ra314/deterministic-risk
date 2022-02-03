@@ -28,6 +28,10 @@ func init(game_modes = ["classic"]):
 	_root.rpc("load_level", "Levels/Level Main", "Our World",  _root.game_modes)
 	
 	main = _root.get_children()[0]
+	
+	main.curr_player.reset()
+	main.get_next_player().reset()
+		
 	c_ME = main.all_countries["ff646464"]
 	c_IND = main.all_countries["ff696969"]
 	c_NA = main.all_countries["ff414141"]

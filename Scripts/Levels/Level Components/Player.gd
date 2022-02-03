@@ -13,6 +13,10 @@ func save():
 	return save_dict
 
 func reset():
+	#Ownership of the old country goes to player_nuetral
+	for country in owned_countries:
+		country.change_ownership_to(country.game_manager.main.player_neutral)
+	
 	owned_countries = []
 	num_reinforcements = 0
 	network_id = null
