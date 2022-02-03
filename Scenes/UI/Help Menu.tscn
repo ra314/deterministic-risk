@@ -60,6 +60,14 @@ custom_fonts/font = ExtResource( 3 )
 toggle_mode = true
 text = "Objective"
 
+[node name="Contact" type="Button" parent="VBoxContainer/Menu Options"]
+margin_left = 827.0
+margin_right = 1115.0
+margin_bottom = 68.0
+custom_fonts/font = ExtResource( 3 )
+toggle_mode = true
+text = "Contact Us"
+
 [node name="Menu Display" type="Control" parent="VBoxContainer"]
 margin_top = 199.0
 margin_right = 1920.0
@@ -421,6 +429,17 @@ custom_fonts/font = ExtResource( 3 )
 text = "Raze:
 Deplete half (rounded down) of a countries troops to remove all status conditions.
 Eg: Fatigue, Resistance, Blitz"
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Contact" type="Label" parent="VBoxContainer/Menu Display"]
+visible = false
+margin_right = 1920.0
+margin_bottom = 201.0
+custom_fonts/font = ExtResource( 3 )
+text = "If you have any suggestions, feedback, or simply want to share your appreciation of the game, you can contact me at debianlovestux@gmail.com"
 autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false
