@@ -321,7 +321,8 @@ func on_click(event_index, is_long_press):
 						Game_Manager.Phase.end_attack1(true)
 					# Check if the opponent has any troops left
 					if Game_Manager.get_next_player().get_num_troops() == 0:
-						Game_Manager.end_game(belongs_to.color)
+						if not Game_Manager.running_unit_tests:
+							Game_Manager.end_game(belongs_to.color)
 
 		"movement":
 			if belongs_to != Game_Manager.curr_player:

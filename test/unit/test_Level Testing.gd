@@ -4,6 +4,7 @@ var main = null
 var c_IND = null
 var c_NA = null
 var c_ME = null
+var c_FR = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -22,19 +23,22 @@ func after_all():
 	if main:
 		main.free()
 
-func init(game_modes = ["classic"]):
+func init(game_modes = ["classic"], reset_players = true):
 	_root.visible = true
 	_root.game_modes = game_modes
 	_root.rpc("load_level", "Levels/Level Main", "Our World",  _root.game_modes)
 	
 	main = _root.get_children()[0]
 	
-	main.curr_player.reset()
-	main.get_next_player().reset()
-		
+	main.running_unit_tests = true
+	if reset_players:
+		main.curr_player.reset()
+		main.get_next_player().reset()
+	
 	c_ME = main.all_countries["ff646464"]
 	c_IND = main.all_countries["ff696969"]
 	c_NA = main.all_countries["ff414141"]
+	c_FR = main.all_countries["ff505050"]
 
 func clean():
 	_root.scene_manager._replace_scene(Node2D.new())
@@ -81,6 +85,9 @@ func test_long_press():
 	
 	print()
 	print("Testing if a long press removes all reinforcements")
+	
+	print("Giving India to the current player.")
+	c_IND.change_ownership_to(main.curr_player)
 
 	yield(get_tree().create_timer(1), "timeout")
 	main.remove_reroll_and_start_butttons()
@@ -225,7 +232,7 @@ func no_lines_in(arr):
 	return true
 
 func test_congestion():
-	init(["classic", "congestion", "movement"])
+	init(["classic", "congestion", "movement"], false)
 
 	print()
 	print("Testing the congestion game mode.")
@@ -297,13 +304,27 @@ func test_congestion():
 
 func test_phases():
 	init(["classic", "movement"])
-
+	
 	print()
 	print("Testing the changing of phases")
 
 	yield(get_tree().create_timer(1), "timeout")
 	main.remove_reroll_and_start_butttons()
 	print("Starting game")
+	
+	yield(get_tree().create_timer(1), "timeout")
+	print("Give north africa and france 5 troops, and give the middle east and india 3 troops")
+	c_ME.set_num_troops(3)
+	c_IND.set_num_troops(3)
+	c_NA.set_num_troops(5)
+	c_FR.set_num_troops(5)
+	
+	yield(get_tree().create_timer(1), "timeout")
+	print("Giving north africa and france to the next player, and the middle east and india to the current player")
+	c_ME.change_ownership_to(main.curr_player)
+	c_IND.change_ownership_to(main.curr_player)
+	c_NA.change_ownership_to(main.get_next_player())
+	c_FR.change_ownership_to(main.get_next_player())
 	
 	print("Checking the the current player has a sword above them and " +\
 	"the next player has nothing above them.")
@@ -454,9 +475,10 @@ func test_movement_no_action():
 	print("Giving india to the next player, and middle east and north africa to the current plyer")
 	
 	print("Check if the current player cannot make a movement action")
+	main.Phase.end_attack1(true)
 	assert_false(main.Phase.start_movement1())
-	
 	main.Phase.end_reinforcement1(true)
 	
 	print("Check if the next player cannot make a movement action")
+	main.Phase.end_attack1(true)
 	assert_false(main.Phase.start_movement1())

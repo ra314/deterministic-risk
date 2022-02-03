@@ -7,6 +7,7 @@ var input_allowed = true
 var input_pressed = false
 var time_pressed = 0
 var game_modes = []
+var running_unit_tests = false
 
 var colors = {"blue": load("res://Assets/blue-square.svg"), 
 				"red": load("res://Assets/red-pentagon.svg"),
