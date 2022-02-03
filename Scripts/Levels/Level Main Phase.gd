@@ -121,7 +121,7 @@ func start_movement1():
 			continue
 			
 		for neighbour in country.connected_countries:
-			# check if the neighbour shares the same player as me
+			# Check if the neighbour belongs to the same player as me
 			if neighbour.belongs_to == country.belongs_to:
 				can_move = true
 				break
