@@ -63,8 +63,10 @@ func end_reinforcement1(surity_bool=false):
 	if not surity_bool and P.curr_player.num_reinforcements > 0:
 		P.show_confirmation_menu("You have a reinforcement left to place on the map.\nAre you sure you want to end reinforcement?",\
 							 "end_reinforcement1", [true], self)
-		return
+		return false
 	rpc("end_reinforcement2")
+	return true
+	
 # The reason this wrapper function exists is because the buttons are connected to
 # end_reinforcement1. There's no way to buttons to trigger a remote sync function all,
 # Hence the need of a separate end_reinforcement2
@@ -92,11 +94,12 @@ remotesync func end_reinforcement2():
 
 func end_attack1(surity_bool=false):
 	# When the surity bool is true, you get to skip the confirmation menu
-	if not surity_bool:
+	if not surity_bool and P.is_attack_over():
 		P.show_confirmation_menu("You have an attack left.\nAre you sure you want to end attacks?",\
 							 "end_attack1", [true], self)
-		return
+		return false
 	rpc("end_attack2")
+	return true
 
 # The reason this wrapper function exists is because the buttons are connected to
 # end_attack1. There's no way to buttons to trigger a remote sync function all,

@@ -396,3 +396,27 @@ func test_deadline():
 		main.Phase.end_reinforcement1(true)
 	
 	assert_true(main.phase == "game over" and main.round_number == 21)
+
+func test_end_attack_confirmation():
+	init(["classic"])
+	
+	print()
+	print("Testing if the end attack button doesn't show the confirmation prompt when no attacks are available.")
+	
+	yield(get_tree().create_timer(1), "timeout")
+	main.remove_reroll_and_start_butttons()
+	print("Starting game")
+	
+	yield(get_tree().create_timer(1), "timeout")
+	c_ME.set_num_troops(1)
+	c_IND.set_num_troops(1)
+	c_NA.set_num_troops(5)
+	print("Give north africa 5 troops, and give the middle east and india 1 troop")
+	
+	yield(get_tree().create_timer(1), "timeout")
+	c_ME.change_ownership_to(main.curr_player)
+	c_IND.change_ownership_to(main.curr_player)
+	c_NA.change_ownership_to(main.get_next_player())
+	print("Giving north africa to the current player, and the middle east and india to the next player")
+	
+	assert_true(main.Phase.end_attack1(false))
