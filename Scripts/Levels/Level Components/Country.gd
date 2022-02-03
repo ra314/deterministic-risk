@@ -139,9 +139,9 @@ func calc_pandemic_deaths():
 func apply_pandemic_deaths():
 	set_num_troops(num_troops - calc_pandemic_deaths())
 
-static func can_attack(attacker, defender, game_modes, check_tiredness):
+static func can_attack(attacker, defender, game_modes):
 	# Attack not possible if currently in resistance or fatigued
-	if check_tiredness and (attacker.statused['resistance'] or attacker.statused['fatigue']):
+	if attacker.statused['resistance'] or attacker.statused['fatigue']:
 		return false
 	# Check if the defender and attacker are connected
 	if defender in attacker.connected_countries:
@@ -154,20 +154,28 @@ static func can_attack(attacker, defender, game_modes, check_tiredness):
 func get_attackable_countries(game_modes):
 	var attackable_countries = []
 	for country in connected_countries:
-		if can_attack(self, country, game_modes, true):
+		if can_attack(self, country, game_modes):
 			attackable_countries.append(country)
 	return attackable_countries
 
 # Countries that can be attacked after performing a raze
 func get_raze_and_attackable_countries(game_modes):
 	var raze_and_attackable_countries = []
+	
+	# Perform a temporary raze
+	var temp_statused = statused.duplicate()
+	statused['resistance'] = false
+	statused['fatigue'] = false
+	var prev_num_troops = num_troops
+	num_troops -= get_raze_deaths()
+	
 	for country in connected_countries:
-		if statused['resistance'] or statused['fatigue']:
-			var prev_num_troops = num_troops
-			num_troops -= get_raze_deaths()
-			if can_attack(self, country, game_modes, false):
-				raze_and_attackable_countries.append(country)
-			num_troops = prev_num_troops
+		if can_attack(self, country, game_modes):
+			raze_and_attackable_countries.append(country)
+	
+	# Undo the temporary raze
+	statused = temp_statused
+	num_troops = prev_num_troops
 	return raze_and_attackable_countries
 
 # The funciton below is triiggered when the collision shape is hit
@@ -250,7 +258,7 @@ func on_click(event_index, is_long_press):
 			elif Game_Manager.selected_country != null:
 				var attacker = Game_Manager.selected_country
 				# Check if this country is attackable by the attacker
-				if can_attack(attacker, self, Game_Manager.game_modes, true):
+				if can_attack(attacker, self, Game_Manager.game_modes):
 					# If the attacker has more troops
 					var delayed_conquer = false
 					if attacker.num_troops > num_troops:
