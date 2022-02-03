@@ -15,7 +15,7 @@ func save():
 func reset():
 	# Ownership of the old country goes to player_nuetral
 	for country in owned_countries:
-		country.change_ownership_to(country.game_manager.player_neutral)
+		country.change_ownership_to(country.Game_manager.player_neutral)
 	
 	owned_countries = []
 	num_reinforcements = 0
