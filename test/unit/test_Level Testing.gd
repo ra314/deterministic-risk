@@ -420,3 +420,33 @@ func test_end_attack_confirmation():
 	print("Giving north africa to the current player, and the middle east and india to the next player")
 	
 	assert_true(main.Phase.end_attack1(false))
+	
+func test_movement_no_action():
+	init(["classic", "movement"])
+	
+	print()
+	print("Testing if the movement phase skips to the reinforcement phase if the player can't make any movement actions")
+	
+	yield(get_tree().create_timer(1), "timeout")
+	main.remove_reroll_and_start_butttons()
+	print("Starting game")
+	
+	yield(get_tree().create_timer(1), "timeout")
+	c_IND.set_num_troops(2)
+	c_ME.set_num_troops(1)
+	c_NA.set_num_troops(1)
+	print("Give 2 troops to india, and give the north africa and middle east 1 troop")
+	
+	yield(get_tree().create_timer(1), "timeout")
+	c_IND.change_ownership_to(main.get_next_player())
+	c_ME.change_ownership_to(main.curr_player)
+	c_NA.change_ownership_to(main.curr_player)
+	print("Giving india to the next player, and middle east and north africa to the current plyer")
+	
+	print("Check if the current player cannot make a movement action")
+	assert_false(main.Phase.start_movement1())
+	
+	main.Phase.end_reinforcement1(true)
+	
+	print("Check if the next player cannot make a movement action")
+	assert_false(main.Phase.start_movement1())

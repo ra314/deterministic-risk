@@ -112,14 +112,35 @@ remotesync func end_attack2():
 	emit_signal("ending_attack")
 
 func start_movement1():
-	rpc("start_movement2")
+	# If no country can move, I won't start movement
+	var can_move = false
+	
+	# I need a country that has more than one unit and a nearby ally
+	for country in P.curr_player.owned_countries:
+		if country.num_troops <= 1:
+			continue;
+			
+		for neighbour in country.connected_countries:
+			if neighbour.belongs_to == country.belongs_to:
+				can_move = true
+				break
+	
+	if can_move: 
+		rpc("start_movement2")
+		return true
+	else:
+		emit_signal("ending_movement")
+		return false
+	
 remotesync func start_movement2():
 	P.phase = "movement"
 	if P.is_current_player() or not P._root.online_game:
 		P.show_end_movement(true)
 	update_player_status()
+	
 func end_movement1():
 	rpc("end_movement2")
+	
 remotesync func end_movement2():
 	if P.is_current_player() or not P._root.online_game:
 		P.show_end_movement(false)
