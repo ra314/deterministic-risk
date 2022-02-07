@@ -54,6 +54,7 @@ func start_reinforcement1():
 	rpc("start_reinforcement2")
 remotesync func start_reinforcement2():
 	P.curr_player.give_reinforcements()
+	P.update_labels()
 	P.phase = "reinforcement"
 	if P.is_current_player() or not P._root.online_game:
 		P.show_end_reinforcement(true)
@@ -81,6 +82,7 @@ remotesync func end_reinforcement2():
 		P.show_end_attack(true)
 	
 	P.round_number += 1
+	P.curr_player.num_reinforcements = 0
 	change_to_next_player()
 	P.update_labels()
 	
