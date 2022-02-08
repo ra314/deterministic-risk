@@ -1,3 +1,11 @@
+[![CI](https://github.com/ra314/deterministic-risk/actions/workflows/blank.yml/badge.svg)](https://github.com/ra314/deterministic-risk/actions/workflows/blank.yml)
+![GitHub pull request check contexts](https://img.shields.io/github/status/contexts/pulls/ra314/deterministic-risk/9)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/ra314/deterministic-risk)
+![GitHub Release Date](https://img.shields.io/github/release-date/ra314/deterministic-risk)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/ra314/deterministic-risk)
+![GitHub all releases](https://img.shields.io/github/downloads/ra314/deterministic-risk/total)
+
+
 # Deterministic Risk
 A deterministic, perfect information, version of the turn based Risk game.
 
