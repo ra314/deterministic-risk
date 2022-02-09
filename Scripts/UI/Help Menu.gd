@@ -15,6 +15,7 @@ func _ready():
 	# Connect the game mode buttons to display rules about the selected game mode
 	for child in $"VBoxContainer/Menu Display/Game Modes/ScrollContainer/Game Modes".get_children():
 		child.connect("button_down", self, "show_item", [child.name, $"VBoxContainer/Menu Display/Game Modes/Control"])
+	$"VBoxContainer/Menu Display/Game Modes/ScrollContainer".get_v_scrollbar().rect_min_size.x = 50
 
 func show_item(item_name, container):
 	for child in container.get_children():

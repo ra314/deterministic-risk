@@ -114,13 +114,16 @@ __meta__ = {
 }
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/Menu Display/Game Modes"]
-margin_right = 1920.0
+margin_right = 1932.0
 margin_bottom = 400.0
 rect_min_size = Vector2( 1920, 400 )
+scroll_horizontal_enabled = false
+scroll_vertical = 80
 
 [node name="Game Modes" type="GridContainer" parent="VBoxContainer/Menu Display/Game Modes/ScrollContainer"]
+margin_top = -80.0
 margin_right = 1920.0
-margin_bottom = 528.0
+margin_bottom = 448.0
 rect_min_size = Vector2( 1920, 0 )
 columns = 3
 __meta__ = {
@@ -242,7 +245,7 @@ flat = true
 
 [node name="Control" type="Control" parent="VBoxContainer/Menu Display/Game Modes"]
 margin_top = 404.0
-margin_right = 1920.0
+margin_right = 1932.0
 margin_bottom = 404.0
 size_flags_horizontal = 3
 
