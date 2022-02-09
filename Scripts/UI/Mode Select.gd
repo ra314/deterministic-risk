@@ -76,6 +76,7 @@ func press_mode(mode):
 	# Only execute if the button is being turned off by a user click
 	if not container.get_node(mode).pressed:
 		sync_child_dependencies(mode)
+	_root.game_modes = get_modes()
 
 func sync_parent_dependencies(mode):
 	var container = $VBoxContainer/Control
@@ -182,7 +183,6 @@ func get_modes():
 	return game_modes
 
 func _load_scene(scene_str):
-	_root.game_modes = get_modes()
 	var scene = _root.scene_manager._load_scene(scene_str)
 	_root.scene_manager._replace_scene(scene)
 
