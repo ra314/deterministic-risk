@@ -25,7 +25,8 @@ func show_item(item_name, container):
 				# "if _root" is for better unit testing
 				if _root and game_mode.name.to_lower() in _root.game_modes:
 					game_mode.text = "*" + game_mode.name
-					game_mode.add_color_override("font_color", Color(0,1,0))
+					game_mode.add_color_override("font_color", Color(0,0.5,0))
+					game_mode.add_color_override("font_color_hover", Color(0,1,0))
 	
 	# Toggle the other menu option buttons off
 	if container.name == "Menu Display":

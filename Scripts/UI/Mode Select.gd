@@ -31,8 +31,10 @@ func _ready():
 		modes_with_dependencies[mode_connection[0]] = true
 		modes_with_dependencies[mode_connection[1]] = true
 	for child in container.get_children():
-		if child is CheckBox and child.name in modes_with_dependencies:
-			child.connect("button_up", self, "press_mode", [child.name])
+		if child is CheckBox:
+			child.connect("button_up", self, "collect_modes")
+			if child.name in modes_with_dependencies:
+				child.connect("button_up", self, "press_mode", [child.name])
 	
 	# Drawing the legend
 	var label1 = $VBoxContainer/Control/Label
@@ -76,7 +78,6 @@ func press_mode(mode):
 	# Only execute if the button is being turned off by a user click
 	if not container.get_node(mode).pressed:
 		sync_child_dependencies(mode)
-	_root.game_modes = get_modes()
 
 func sync_parent_dependencies(mode):
 	var container = $VBoxContainer/Control
@@ -172,6 +173,9 @@ func get_all_children(object):
 		output.append(child)
 		output.append_array(get_all_children(child))
 	return output
+
+func collect_modes():
+	_root.game_modes = get_modes()
 
 func get_modes():
 	var container = $VBoxContainer/Control

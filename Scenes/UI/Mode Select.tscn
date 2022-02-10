@@ -57,6 +57,7 @@ rect_scale = Vector2( 0.5, 0.5 )
 custom_icons/checked = ExtResource( 5 )
 custom_icons/unchecked = ExtResource( 6 )
 custom_fonts/font = ExtResource( 3 )
+disabled = true
 pressed = true
 text = "Classic"
 align = 1
