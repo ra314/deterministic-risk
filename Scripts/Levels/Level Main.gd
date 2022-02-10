@@ -127,6 +127,9 @@ func _ready():
 	# So we're just pushing these game modes back to the root
 	# This is necessary so that the asterisks show up next to the selected game modes on the help screen
 	_root.game_modes = game_modes
+	
+	# Setup the camera (bounds and other properties)
+	$Camera2D.setup_camera(world_mask.get_size())
 
 # Save System
 #######
