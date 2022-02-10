@@ -19,6 +19,11 @@ const LOCAL_HOST = "127.0.0.1"
 # Dictionary mapping player names ("host", "guest") to network ids
 var players = {}
 
+func get_other_player_network_id():
+	var player_keys = players.keys()
+	player_keys.erase(player_name)
+	return players[player_keys[0]]
+
 remotesync func load_level(scene_str, world_str, game_modes):
 	var scene = scene_manager._load_scene(scene_str)
 	scene._root = self
@@ -113,43 +118,9 @@ func load_save(save_dict):
 			main.all_countries[country_name].change_ownership_to(player)
 	
 	if online_game:
-		main.Sync.synchronize(players["guest"])
+		main.Sync.synchronize_all(players["guest"])
 	main.update_labels()
 	main.Phase.update_player_status()
-
-# PING SYSTEM
-#######
-# Send the current unix time and wait to receive it back 
-# to confirm that the ping is successful
-var ping_unique_response = 0
-
-func ping_send(id):
-	var unix_time = OS.get_unix_time()
-	rpc_id(id, "ping_respond", unix_time)
-	yield(get_tree().create_timer(2), "timeout")
-	return (ping_unique_response == unix_time)
-
-remote func ping_respond(ping_response):
-	rpc_id(get_tree().get_rpc_sender_id(), "set_ping_unique_response", ping_response)
-
-remote func set_ping_unique_response(ping_reponse):
-	ping_unique_response = ping_reponse
-
-func ping_host():
-	if player_name == "host":
-		return true
-	else:
-		return ping_send(players["host"])
-
-func ping_host_with_notification():
-	var boolean = ping_host()
-	if boolean is GDScriptFunctionState:
-		boolean = yield(boolean, "completed")
-	if boolean:
-		create_notification("Successfully pinged host")
-	else:
-		create_notification("Unable to ping host")
-#######
 
 # NETWORKING CALLBACKS
 #######
@@ -192,6 +163,7 @@ func disconnection_routine(message_str):
 	if game_started:
 		scene_manager._get_curr_scene().stop_game()
 
+# Send the player to the first relevant UI menu and nuke game data
 func hard_reboot():
 	scene_manager.reset()
 	var scene = scene_manager._load_scene("UI/Local Online")

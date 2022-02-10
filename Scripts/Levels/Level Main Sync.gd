@@ -4,7 +4,7 @@ var P = null
 func _ready():
 	P = get_parent()
 
-func synchronize(network_id):
+func synchronize_all(network_id):
 	# Synchronising the countries in terms of colors and troops
 	for country in P.all_countries.values():
 		rpc_id(network_id, "synchronise_country", country.country_name, \
@@ -45,3 +45,19 @@ remote func synchronise_meta_info(_curr_player_index, _round_number, _game_start
 	P.curr_player = P.players.values()[P.curr_player_index]
 	P.update_labels()
 	P.Phase.update_player_status()
+
+# Verifying synchronization
+#######
+remote var other_players_hash_value = null
+
+func games_are_synced():
+	rpc_id(P._root.get_other_player_network_id(), "hash_and_return_over_network")
+	yield(get_tree().create_timer(2), "timeout")
+	return hash_game_state() == other_players_hash_value
+
+remote func hash_and_return_over_network():
+	rset_id(get_tree().get_rpc_sender_id(), "other_players_hash_value", hash_game_state())
+
+func hash_game_state():
+	return P.save().hash()
+#######

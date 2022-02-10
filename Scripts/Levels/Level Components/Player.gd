@@ -8,8 +8,11 @@ func save():
 	var save_dict = {}
 	save_dict["color"] = color
 	save_dict["owned_countries"] = []
+	var owned_countries_names = []
 	for country in owned_countries:
-		save_dict["owned_countries"].append(country.country_name)
+		owned_countries_names.append(country.country_name)
+	owned_countries_names.sort()
+	save_dict["owned_countries"].append_array(owned_countries_names)
 	return save_dict
 
 func reset():

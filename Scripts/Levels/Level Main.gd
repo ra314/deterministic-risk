@@ -61,7 +61,7 @@ func _ready():
 	while not $Spawn.spawn_and_allocate():
 		pass
 	if _root.online_game and _root.player_name == "host":
-		$Sync.synchronize(_root.players["guest"])
+		$Sync.synchronize_all(_root.players["guest"])
 	
 	# Buttons to zoom in and out
 	get_node("CanvasLayer/Zoom In").connect("pressed", get_node("Camera2D"), "zoom_in")
@@ -120,7 +120,7 @@ func _ready():
 		connect("country_selected", self, "show_raze")
 	
 	# Saving the game
-	connect("save", self, "save")
+	connect("save", self, "save_to_file")
 	
 	# If you're the guest _root.game_modes is empty since the host picks them out
 	# However load_level() in main syncs up the game mdoe with the level main scene
@@ -128,27 +128,42 @@ func _ready():
 	# This is necessary so that the asterisks show up next to the selected game modes on the help screen
 	_root.game_modes = game_modes
 
+# Save System
+#######
 signal save()
 # The save is assumed to take place right at the start of the attack phase
+func save_to_file():
+	var save_dict = save()
+	var file = File.new()
+	file.open("user://save_game.dat", File.WRITE)
+	file.store_string(to_json(save_dict))
+	file.close()
+
 func save():
 	var save_dict = {}
 	# Saving countries
 	save_dict["countries"] = []
-	for country in all_countries.values():
+	for country in dict_sorted_by_key_values(all_countries):
 		save_dict["countries"].append(country.save())
 	# Saving players
 	save_dict["players"] = []
-	for player in players.values():
+	for player in dict_sorted_by_key_values(players):
 		save_dict["players"].append(player.save())
 	# Saving game data
 	save_dict["game_modes"] = game_modes
 	save_dict["map"] = world_str
 	save_dict["curr_player_color"] = curr_player.color
 	
-	var file = File.new()
-	file.open("user://save_game.dat", File.WRITE)
-	file.store_string(to_json(save_dict))
-	file.close()
+	return save_dict
+
+func dict_sorted_by_key_values(dict):
+	var keys = dict.keys()
+	keys.sort()
+	var values = []
+	for key in keys:
+		values.append(dict[key])
+	return values
+#######
 
 func show_help_menu():
 	var scene = _root.scene_manager._load_scene("UI/Help Menu")
@@ -223,7 +238,7 @@ func reroll_spawn():
 	while not $Spawn.spawn_and_allocate():
 		pass
 	if _root.online_game:
-		$Sync.synchronize(_root.players["guest"])
+		$Sync.synchronize_all(_root.players["guest"])
 
 # Because we mod by the number of players, it doesn't matter that there' an extra player_neutral
 func get_next_player():
@@ -252,7 +267,7 @@ func set_host_color(color):
 	players[other_color].network_id = _root.players["guest"]
 	
 	game_start_event()
-	$Sync.synchronize(_root.players["guest"])
+	$Sync.synchronize_all(_root.players["guest"])
 	
 	# Changing the visibility of relevant buttons
 	rpc("show_resign_button")
@@ -293,6 +308,7 @@ remotesync func end_game(loser_color):
 	stop_game()
 	
 	# Finding out who the winner is
+	
 	var players_without_loser = players.keys()
 	players_without_loser.erase(loser_color)
 	var winner_color = players_without_loser[0]
@@ -392,6 +408,8 @@ func is_current_player():
 
 const input_frequency = 0.05
 var time_since_last_input = 0
+const sync_verification_frequency = 5
+var time_since_last_sync_verification = 0
 
 func _process(delta):
 	# Measuring time input is held down
@@ -403,3 +421,16 @@ func _process(delta):
 	if time_since_last_input > input_frequency:
 		input_allowed = true
 		time_since_last_input = 0
+	
+	# Periodic verification change
+	if _root.online_game and is_current_player():
+		time_since_last_sync_verification += delta
+		if time_since_last_sync_verification > sync_verification_frequency:
+			time_since_last_sync_verification = 0
+			var synchronized = yield(Sync.games_are_synced(), "completed")
+			if not synchronized:
+				Sync.synchronize_all(_root.get_other_player_network_id())
+				yield(get_tree().create_timer(2), "timeout")
+				var output = "Synchronization verification failed, syncing now."
+				output += "\n " + str(Sync.hash_game_state()) + " " + str(Sync.other_players_hash_value)
+				_root.create_notification(output)
