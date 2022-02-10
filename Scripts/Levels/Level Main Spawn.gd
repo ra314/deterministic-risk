@@ -6,7 +6,7 @@ func _ready():
 
 func spawn_and_allocate():
 	# Creating players
-	P.players = {"red": P.get_node("CanvasLayer/Player Red").init("red"), "blue": P.get_node("CanvasLayer/Player Blue").init("blue")}
+	P.players = {"red": P.get_node("CL/C/Player Red").init("red"), "blue": P.get_node("CL/C/Player Blue").init("blue")}
 	# Adding the neutral player
 	P.players["gray"] = P.player_neutral
 	

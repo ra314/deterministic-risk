@@ -64,53 +64,53 @@ func _ready():
 		$Sync.synchronize_all(_root.players["guest"])
 	
 	# Buttons to zoom in and out
-	get_node("CanvasLayer/Zoom In").connect("pressed", get_node("Camera2D"), "zoom_in")
-	get_node("CanvasLayer/Zoom Out").connect("pressed", get_node("Camera2D"), "zoom_out")
+	get_node("CL/C/Zoom In").connect("pressed", get_node("Camera2D"), "zoom_in")
+	get_node("CL/C/Zoom Out").connect("pressed", get_node("Camera2D"), "zoom_out")
 	
 	# Button to end attack and reinforcement phases
-	get_node("CanvasLayer/End Attack").connect("pressed", $Phase, "end_attack1")
-	get_node("CanvasLayer/End Reinforcement").connect("pressed", $Phase, "end_reinforcement1")
+	get_node("CL/C/End Attack").connect("pressed", $Phase, "end_attack1")
+	get_node("CL/C/End Reinforcement").connect("pressed", $Phase, "end_reinforcement1")
 	# Button to end movement phase
 	if "movement" in game_modes:
-		$"CanvasLayer/End Movement".connect("button_down", Phase, "end_movement1")
+		$"CL/C/End Movement".connect("button_down", Phase, "end_movement1")
 	
 	# Buttons to select if host plays as red or blue
-	get_node("CanvasLayer/Init Buttons/Online/Play Red").connect("button_down", self, "set_host_color", ["red"])
-	get_node("CanvasLayer/Init Buttons/Online/Play Blue").connect("button_down", self, "set_host_color", ["blue"])
+	get_node("CL/C/Init Buttons/Online/Play Red").connect("button_down", self, "set_host_color", ["red"])
+	get_node("CL/C/Init Buttons/Online/Play Blue").connect("button_down", self, "set_host_color", ["blue"])
 	# Don't let the guest choose who goes first
 	if not _root.online_game or _root.player_name == "guest":
-		get_node("CanvasLayer/Init Buttons/Online").queue_free()
+		get_node("CL/C/Init Buttons/Online").queue_free()
 	
 	# Button to reroll the troop allocation to the countries
-	get_node("CanvasLayer/Init Buttons/Reroll Spawn").connect("button_down", self, "reroll_spawn")
+	get_node("CL/C/Init Buttons/Reroll Spawn").connect("button_down", self, "reroll_spawn")
 	# Don't let the guest reroll the spawn.
 	if _root.online_game and _root.player_name == "guest":
-		get_node("CanvasLayer/Init Buttons").queue_free()
+		get_node("CL/C/Init Buttons").queue_free()
 	
 	# Button to start the game, when clicked it removes itself and the reroll button
 	if _root.online_game:
-		get_node("CanvasLayer/Init Buttons/Start Game").queue_free()
+		get_node("CL/C/Init Buttons/Start Game").queue_free()
 	else:
-		get_node("CanvasLayer/Init Buttons/Start Game").connect("button_down", self, "remove_reroll_and_start_butttons")
+		get_node("CL/C/Init Buttons/Start Game").connect("button_down", self, "remove_reroll_and_start_butttons")
 		
 	# Button to go to help menu
-	get_node("CanvasLayer/Help").connect("button_down", self, "show_help_menu")
+	get_node("CL/C/Help").connect("button_down", self, "show_help_menu")
 	
 	# Button to resign game
-	get_node("CanvasLayer/Resign").connect("button_down", self, "show_confirmation_menu", ["Are you sure you want to resign?", "resign", [], self])
-	get_node("CanvasLayer/Restart").connect("button_down", self, "restart")
+	get_node("CL/C/Resign").connect("button_down", self, "show_confirmation_menu", ["Are you sure you want to resign?", "resign", [], self])
+	get_node("CL/C/Restart").connect("button_down", self, "restart")
 	
 	# Confirmation buttons
 	# Hiden the confirmation menu when either yes or no is clicked
-	get_node("CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/No").\
-		connect("button_down", get_node("CanvasLayer/Confirm"), "set_visible", [false])
-	get_node("CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes").\
-		connect("button_down", get_node("CanvasLayer/Confirm"), "set_visible", [false])
+	get_node("CL/C/Confirm/VBoxContainer/CenterContainer/HBoxContainer/No").\
+		connect("button_down", get_node("CL/C/Confirm"), "set_visible", [false])
+	get_node("CL/C/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes").\
+		connect("button_down", get_node("CL/C/Confirm"), "set_visible", [false])
 	
 	# Button to toggle visibility of denominator in congestion mode
 	if "congestion" in game_modes:
-		get_node("CanvasLayer/Show").connect("button_down", self, "toggle_denominator_visibility")
-		get_node("CanvasLayer/Show").visible = true
+		get_node("CL/C/Show").connect("button_down", self, "toggle_denominator_visibility")
+		get_node("CL/C/Show").visible = true
 		toggle_denominator_visibility()
 	if "deadline" in game_modes:
 		Phase.connect("ending_reinforcement", self, "round_max_end_game")
@@ -177,17 +177,17 @@ func show_raze():
 	if not is_current_player() or not selected_country:
 		return
 	# Disconnect all previous connections of the raze button
-	disconnect_all("button_down", $CanvasLayer/Raze)
+	disconnect_all("button_down", $CL/C/Raze)
 	# Show the raze button if the selected country can be razed
 	if selected_country.is_statused():
-		$CanvasLayer/Raze.visible = true
+		$CL/C/Raze.visible = true
 		# Connect the raze button with the razing of the country
-		$CanvasLayer/Raze.connect("button_down", $Sync, "synchronize_raze1", [selected_country.country_name])
+		$CL/C/Raze.connect("button_down", $Sync, "synchronize_raze1", [selected_country.country_name])
 		# Connect the raze button with making itself invisible after it's been pressed
-		$CanvasLayer/Raze.connect("button_down", $CanvasLayer/Raze, "set_visible", [false])
+		$CL/C/Raze.connect("button_down", $CL/C/Raze, "set_visible", [false])
 		
 	else:
-		$CanvasLayer/Raze.visible = false
+		$CL/C/Raze.visible = false
 
 var show_denominator = true
 func toggle_denominator_visibility():
@@ -202,15 +202,15 @@ func disconnect_all(signal_name, object):
 		object.disconnect(connection.signal, connection.target, connection.method)
 
 func show_confirmation_menu(confirmation_text, callback, args, object):
-	get_node("CanvasLayer/Confirm/VBoxContainer/Label").text = confirmation_text
-	get_node("CanvasLayer/Confirm").visible = true
+	get_node("CL/C/Confirm/VBoxContainer/Label").text = confirmation_text
+	get_node("CL/C/Confirm").visible = true
 	# Disablign previously connected signals 
-	disconnect_all("button_down", $CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes)
+	disconnect_all("button_down", $CL/C/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes)
 	if object:
-		$CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes.\
+		$CL/C/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes.\
 			connect("button_down", object, callback, args)
-		$CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes.\
-			connect("button_down", get_node("CanvasLayer/Confirm"), "set_visible", [false])
+		$CL/C/Confirm/VBoxContainer/CenterContainer/HBoxContainer/Yes.\
+			connect("button_down", get_node("CL/C/Confirm"), "set_visible", [false])
 #######
 
 # Button Removal and Hiding Functions
@@ -222,18 +222,18 @@ func remove_reroll_and_start_butttons():
 	game_start_event()
 
 remotesync func show_resign_button():
-	get_node("CanvasLayer/Resign").visible = true
+	get_node("CL/C/Resign").visible = true
 
 remote func show_end_attack(show_boolean):
 	# Do nothing if checkers is one of the game modes since the end attack button is hidden by default
 	if not ("checkers" in game_modes):
-		get_node("CanvasLayer/End Attack").visible = show_boolean
+		get_node("CL/C/End Attack").visible = show_boolean
 
 func show_end_reinforcement(show_boolean):
-	get_node("CanvasLayer/End Reinforcement").visible = show_boolean
+	get_node("CL/C/End Reinforcement").visible = show_boolean
 
 func show_end_movement(show_boolean):
-	get_node("CanvasLayer/End Movement").visible = show_boolean
+	get_node("CL/C/End Movement").visible = show_boolean
 #######
 
 ######
@@ -256,9 +256,9 @@ func get_player_by_network_id(network_id):
 # Called when the game starts (after color selection) regardless of online or offline
 func game_start_event():
 	game_started = true
-	get_node("CanvasLayer/Init Buttons").queue_free()
+	get_node("CL/C/Init Buttons").queue_free()
 	if "checkers" in game_modes:
-		get_node("CanvasLayer/End Attack").visible = false
+		get_node("CL/C/End Attack").visible = false
 
 # This relies on an assumption that this funciton is only called in online games
 func set_host_color(color):
@@ -317,7 +317,7 @@ remotesync func end_game(loser_color):
 	var winner_color = players_without_loser[0]
 	
 	# Win screen
-	var game_info = get_node("CanvasLayer/Game Info")
+	var game_info = get_node("CL/C/Game Info")
 	
 	# Placing a crown above the icon of the winner
 	var winner_icon = game_info.get_node(winner_color + "/VBoxContainer/Status")
@@ -331,10 +331,10 @@ remotesync func end_game(loser_color):
 
 func stop_game():
 	# Hiding buttons to prevent further gameplay and allowing game restart
-	get_node("CanvasLayer/End Attack").visible = false
-	get_node("CanvasLayer/End Reinforcement").visible = false
-	get_node("CanvasLayer/Resign").visible = false
-	get_node("CanvasLayer/Restart").visible = true
+	get_node("CL/C/End Attack").visible = false
+	get_node("CL/C/End Reinforcement").visible = false
+	get_node("CL/C/Resign").visible = false
+	get_node("CL/C/Restart").visible = true
 	phase = "game over"
 	stop_flashing()
 
@@ -355,23 +355,23 @@ func back():
 
 func update_labels():
 	# Update Red labels
-	var red = get_node("CanvasLayer/Game Info/red/VBoxContainer2/HBoxContainer")
+	var red = get_node("CL/C/Game Info/red/VBoxContainer2/HBoxContainer")
 	red.get_node("Reinforcements").text = str(players["red"].num_reinforcements) + "/" + str(players["red"].get_num_reinforcements())
 	red.get_node("Units").text = str(players["red"].get_num_troops())
 	red.get_node("Countries").text = str(len(players["red"].owned_countries))
 	
 	# Update Blue labels
-	var blue = get_node("CanvasLayer/Game Info/blue/VBoxContainer2/HBoxContainer")
+	var blue = get_node("CL/C/Game Info/blue/VBoxContainer2/HBoxContainer")
 	blue.get_node("Reinforcements").text = str(players["blue"].num_reinforcements) + "/" + str(players["blue"].get_num_reinforcements())
 	blue.get_node("Units").text = str(players["blue"].get_num_troops())
 	blue.get_node("Countries").text = str(len(players["blue"].owned_countries))
 	
 	# Update Round info
-	get_node("CanvasLayer/Game Info/Round Info/HBoxContainer/Round").text = "Round: " + str(ceil(float(round_number)/2))
+	get_node("CL/C/Game Info/Round Info/HBoxContainer/Round").text = "Round: " + str(ceil(float(round_number)/2))
 	var curr_texture = colors["gray"]
 	if curr_player:
 		curr_texture = colors[curr_player.color]
-	get_node("CanvasLayer/Game Info/Round Info/HBoxContainer/Curr Player").texture = curr_texture
+	get_node("CL/C/Game Info/Round Info/HBoxContainer/Curr Player").texture = curr_texture
 
 # Used to translate a random click on the map, to translate to a click on a country
 func _input(event):

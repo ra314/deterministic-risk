@@ -35,11 +35,11 @@ remote func update_player_status():
 	var color = P.curr_player.color
 	
 	# Reset existing player statuses
-	P.get_node("CanvasLayer/Game Info/red/VBoxContainer/Status").visible = false
-	P.get_node("CanvasLayer/Game Info/blue/VBoxContainer/Status").visible = false
+	P.get_node("CL/C/Game Info/red/VBoxContainer/Status").visible = false
+	P.get_node("CL/C/Game Info/blue/VBoxContainer/Status").visible = false
 	
 	# Selecting attack or defend for player status
-	var curr_player_status = P.get_node("CanvasLayer/Game Info/" + color + "/VBoxContainer/Status")
+	var curr_player_status = P.get_node("CL/C/Game Info/" + color + "/VBoxContainer/Status")
 	curr_player_status.visible = true
 	match P.phase:
 		"attack":

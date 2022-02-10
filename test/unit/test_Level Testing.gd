@@ -367,7 +367,7 @@ func test_phases():
 	not get_phase_symbol(main.get_next_player()).visible)
 
 func get_phase_symbol(player):
-	return main.get_node("CanvasLayer/Game Info/" + player.color + "/VBoxContainer/Status")
+	return main.get_node("CL/C/Game Info/" + player.color + "/VBoxContainer/Status")
 
 func test_raze_and_resistance():
 	init(["classic", "resistance","raze"])
@@ -400,7 +400,7 @@ func test_raze_and_resistance():
 	
 	yield(get_tree().create_timer(1), "timeout")
 	c_ME.on_click(BUTTON_LEFT, false)
-	main.get_node("CanvasLayer/Raze").emit_signal("button_down")
+	main.get_node("CL/C/Raze").emit_signal("button_down")
 	print("Checking that ME is no longer in resistance after being razed and has 2 troops")
 	assert_true(not c_ME.statused["resistance"] and\
 		not c_ME.get_node("Visual/Status/resistance").visible and\

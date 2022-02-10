@@ -38,9 +38,16 @@ editor_draw_drag_margin = true
 
 [node name="Tween" type="Tween" parent="Camera2D"]
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CL" type="CanvasLayer" parent="."]
 
-[node name="Game Info" type="HBoxContainer" parent="CanvasLayer"]
+[node name="C" type="Control" parent="CL"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Game Info" type="HBoxContainer" parent="CL/C"]
 margin_right = 3840.0
 margin_bottom = 236.0
 rect_scale = Vector2( 0.5, 0.5 )
@@ -49,24 +56,24 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="blue" type="HBoxContainer" parent="CanvasLayer/Game Info"]
+[node name="blue" type="HBoxContainer" parent="CL/C/Game Info"]
 margin_left = 836.0
 margin_right = 1502.0
 margin_bottom = 236.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Game Info/blue"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CL/C/Game Info/blue"]
 margin_right = 110.0
 margin_bottom = 236.0
 alignment = 2
 
-[node name="Status" type="TextureRect" parent="CanvasLayer/Game Info/blue/VBoxContainer"]
+[node name="Status" type="TextureRect" parent="CL/C/Game Info/blue/VBoxContainer"]
 visible = false
 margin_top = 122.0
 margin_right = 110.0
 margin_bottom = 122.0
 stretch_mode = 4
 
-[node name="Blue" type="TextureRect" parent="CanvasLayer/Game Info/blue/VBoxContainer"]
+[node name="Blue" type="TextureRect" parent="CL/C/Game Info/blue/VBoxContainer"]
 margin_top = 126.0
 margin_right = 110.0
 margin_bottom = 236.0
@@ -74,27 +81,27 @@ rect_min_size = Vector2( 110, 110 )
 texture = ExtResource( 21 )
 stretch_mode = 1
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/Game Info/blue"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="CL/C/Game Info/blue"]
 margin_left = 114.0
 margin_right = 666.0
 margin_bottom = 236.0
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Game Info/blue/VBoxContainer2"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="CL/C/Game Info/blue/VBoxContainer2"]
 margin_right = 552.0
 margin_bottom = 109.0
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Game Info/blue/VBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CL/C/Game Info/blue/VBoxContainer2"]
 margin_top = 113.0
 margin_right = 552.0
 margin_bottom = 236.0
 
-[node name="Unit Icon" type="TextureRect" parent="CanvasLayer/Game Info/blue/VBoxContainer2/HBoxContainer"]
+[node name="Unit Icon" type="TextureRect" parent="CL/C/Game Info/blue/VBoxContainer2/HBoxContainer"]
 margin_right = 122.0
 margin_bottom = 123.0
 texture = ExtResource( 19 )
 
-[node name="Units" type="Label" parent="CanvasLayer/Game Info/blue/VBoxContainer2/HBoxContainer"]
+[node name="Units" type="Label" parent="CL/C/Game Info/blue/VBoxContainer2/HBoxContainer"]
 margin_left = 126.0
 margin_right = 183.0
 margin_bottom = 123.0
@@ -102,13 +109,13 @@ size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 22 )
 text = "2"
 
-[node name="Reinforcement Icon" type="TextureRect" parent="CanvasLayer/Game Info/blue/VBoxContainer2/HBoxContainer"]
+[node name="Reinforcement Icon" type="TextureRect" parent="CL/C/Game Info/blue/VBoxContainer2/HBoxContainer"]
 margin_left = 187.0
 margin_right = 310.0
 margin_bottom = 123.0
 texture = ExtResource( 18 )
 
-[node name="Reinforcements" type="Label" parent="CanvasLayer/Game Info/blue/VBoxContainer2/HBoxContainer"]
+[node name="Reinforcements" type="Label" parent="CL/C/Game Info/blue/VBoxContainer2/HBoxContainer"]
 margin_left = 314.0
 margin_right = 371.0
 margin_bottom = 123.0
@@ -116,13 +123,13 @@ size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 22 )
 text = "2"
 
-[node name="Country Icon" type="TextureRect" parent="CanvasLayer/Game Info/blue/VBoxContainer2/HBoxContainer"]
+[node name="Country Icon" type="TextureRect" parent="CL/C/Game Info/blue/VBoxContainer2/HBoxContainer"]
 margin_left = 375.0
 margin_right = 491.0
 margin_bottom = 123.0
 texture = ExtResource( 17 )
 
-[node name="Countries" type="Label" parent="CanvasLayer/Game Info/blue/VBoxContainer2/HBoxContainer"]
+[node name="Countries" type="Label" parent="CL/C/Game Info/blue/VBoxContainer2/HBoxContainer"]
 margin_left = 495.0
 margin_right = 552.0
 margin_bottom = 123.0
@@ -130,36 +137,36 @@ size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 22 )
 text = "2"
 
-[node name="Whitespace2" type="TextureRect" parent="CanvasLayer/Game Info"]
+[node name="Whitespace2" type="TextureRect" parent="CL/C/Game Info"]
 modulate = Color( 1, 1, 1, 0 )
 margin_left = 1506.0
 margin_right = 1629.0
 margin_bottom = 236.0
 texture = ExtResource( 18 )
 
-[node name="Round Info" type="VBoxContainer" parent="CanvasLayer/Game Info"]
+[node name="Round Info" type="VBoxContainer" parent="CL/C/Game Info"]
 margin_left = 1633.0
 margin_right = 2207.0
 margin_bottom = 236.0
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Game Info/Round Info"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="CL/C/Game Info/Round Info"]
 margin_right = 574.0
 margin_bottom = 104.0
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Game Info/Round Info"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CL/C/Game Info/Round Info"]
 margin_top = 108.0
 margin_right = 574.0
 margin_bottom = 236.0
 
-[node name="Curr Player" type="TextureRect" parent="CanvasLayer/Game Info/Round Info/HBoxContainer"]
+[node name="Curr Player" type="TextureRect" parent="CL/C/Game Info/Round Info/HBoxContainer"]
 margin_right = 128.0
 margin_bottom = 128.0
 rect_min_size = Vector2( 128, 128 )
 texture = ExtResource( 21 )
 stretch_mode = 1
 
-[node name="Round" type="Label" parent="CanvasLayer/Game Info/Round Info/HBoxContainer"]
+[node name="Round" type="Label" parent="CL/C/Game Info/Round Info/HBoxContainer"]
 margin_left = 132.0
 margin_top = 2.0
 margin_right = 574.0
@@ -167,24 +174,24 @@ margin_bottom = 125.0
 custom_fonts/font = ExtResource( 22 )
 text = "Round: 2"
 
-[node name="Whitespace" type="TextureRect" parent="CanvasLayer/Game Info"]
+[node name="Whitespace" type="TextureRect" parent="CL/C/Game Info"]
 modulate = Color( 0, 0, 0, 0 )
 margin_left = 2211.0
 margin_right = 2334.0
 margin_bottom = 236.0
 texture = ExtResource( 18 )
 
-[node name="red" type="HBoxContainer" parent="CanvasLayer/Game Info"]
+[node name="red" type="HBoxContainer" parent="CL/C/Game Info"]
 margin_left = 2338.0
 margin_right = 3004.0
 margin_bottom = 236.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Game Info/red"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CL/C/Game Info/red"]
 margin_right = 110.0
 margin_bottom = 236.0
 alignment = 2
 
-[node name="Status" type="TextureRect" parent="CanvasLayer/Game Info/red/VBoxContainer"]
+[node name="Status" type="TextureRect" parent="CL/C/Game Info/red/VBoxContainer"]
 margin_top = 122.0
 margin_right = 110.0
 margin_bottom = 122.0
@@ -192,7 +199,7 @@ grow_horizontal = 2
 grow_vertical = 2
 stretch_mode = 4
 
-[node name="Red" type="TextureRect" parent="CanvasLayer/Game Info/red/VBoxContainer"]
+[node name="Red" type="TextureRect" parent="CL/C/Game Info/red/VBoxContainer"]
 margin_top = 126.0
 margin_right = 110.0
 margin_bottom = 236.0
@@ -200,27 +207,27 @@ rect_min_size = Vector2( 110, 110 )
 texture = ExtResource( 11 )
 stretch_mode = 1
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/Game Info/red"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="CL/C/Game Info/red"]
 margin_left = 114.0
 margin_right = 666.0
 margin_bottom = 236.0
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Game Info/red/VBoxContainer2"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="CL/C/Game Info/red/VBoxContainer2"]
 margin_right = 552.0
 margin_bottom = 109.0
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Game Info/red/VBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CL/C/Game Info/red/VBoxContainer2"]
 margin_top = 113.0
 margin_right = 552.0
 margin_bottom = 236.0
 
-[node name="Unit Icon" type="TextureRect" parent="CanvasLayer/Game Info/red/VBoxContainer2/HBoxContainer"]
+[node name="Unit Icon" type="TextureRect" parent="CL/C/Game Info/red/VBoxContainer2/HBoxContainer"]
 margin_right = 122.0
 margin_bottom = 123.0
 texture = ExtResource( 19 )
 
-[node name="Units" type="Label" parent="CanvasLayer/Game Info/red/VBoxContainer2/HBoxContainer"]
+[node name="Units" type="Label" parent="CL/C/Game Info/red/VBoxContainer2/HBoxContainer"]
 margin_left = 126.0
 margin_right = 183.0
 margin_bottom = 123.0
@@ -228,13 +235,13 @@ size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 22 )
 text = "2"
 
-[node name="Reinforcement Icon" type="TextureRect" parent="CanvasLayer/Game Info/red/VBoxContainer2/HBoxContainer"]
+[node name="Reinforcement Icon" type="TextureRect" parent="CL/C/Game Info/red/VBoxContainer2/HBoxContainer"]
 margin_left = 187.0
 margin_right = 310.0
 margin_bottom = 123.0
 texture = ExtResource( 18 )
 
-[node name="Reinforcements" type="Label" parent="CanvasLayer/Game Info/red/VBoxContainer2/HBoxContainer"]
+[node name="Reinforcements" type="Label" parent="CL/C/Game Info/red/VBoxContainer2/HBoxContainer"]
 margin_left = 314.0
 margin_right = 371.0
 margin_bottom = 123.0
@@ -242,13 +249,13 @@ size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 22 )
 text = "2"
 
-[node name="Country Icon" type="TextureRect" parent="CanvasLayer/Game Info/red/VBoxContainer2/HBoxContainer"]
+[node name="Country Icon" type="TextureRect" parent="CL/C/Game Info/red/VBoxContainer2/HBoxContainer"]
 margin_left = 375.0
 margin_right = 491.0
 margin_bottom = 123.0
 texture = ExtResource( 17 )
 
-[node name="Countries" type="Label" parent="CanvasLayer/Game Info/red/VBoxContainer2/HBoxContainer"]
+[node name="Countries" type="Label" parent="CL/C/Game Info/red/VBoxContainer2/HBoxContainer"]
 margin_left = 495.0
 margin_right = 552.0
 margin_bottom = 123.0
@@ -256,7 +263,7 @@ size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 22 )
 text = "2"
 
-[node name="Help" type="Button" parent="CanvasLayer"]
+[node name="Help" type="Button" parent="CL/C"]
 margin_left = 1791.0
 margin_right = 1921.0
 margin_bottom = 68.0
@@ -266,121 +273,121 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Player Red" parent="CanvasLayer" instance=ExtResource( 6 )]
+[node name="Player Red" parent="CL/C" instance=ExtResource( 6 )]
 position = Vector2( 0, 251 )
 
-[node name="Player Blue" parent="CanvasLayer" instance=ExtResource( 6 )]
+[node name="Player Blue" parent="CL/C" instance=ExtResource( 6 )]
 position = Vector2( 0, 513 )
 
-[node name="End Attack" type="Button" parent="CanvasLayer"]
+[node name="End Attack" type="Button" parent="CL/C"]
 visible = false
 anchor_left = 0.000181421
 anchor_top = 0.000925926
 anchor_right = 0.0861193
 anchor_bottom = 0.0361111
-margin_left = -0.348328
-margin_top = 63.0
-margin_right = 124.652
-margin_bottom = 93.0
+margin_left = -0.00725651
+margin_top = 63.963
+margin_right = 286.555
+margin_bottom = 130.556
 custom_fonts/font = ExtResource( 8 )
 text = "End Attack"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="End Movement" type="Button" parent="CanvasLayer"]
+[node name="End Movement" type="Button" parent="CL/C"]
 visible = false
 anchor_left = 0.000181421
 anchor_top = 0.000925926
 anchor_right = 0.0861193
 anchor_bottom = 0.0361111
-margin_left = -0.348328
-margin_top = 191.0
-margin_right = 124.652
-margin_bottom = 221.0
+margin_left = -0.00725651
+margin_top = 191.963
+margin_right = 395.555
+margin_bottom = 258.556
 custom_fonts/font = ExtResource( 8 )
 text = "End Movement"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="End Reinforcement" type="Button" parent="CanvasLayer"]
+[node name="End Reinforcement" type="Button" parent="CL/C"]
 visible = false
 anchor_left = 0.000181421
 anchor_top = 0.000925926
 anchor_right = 0.000181452
 anchor_bottom = 0.000925926
-margin_left = -0.348328
-margin_top = 126.0
-margin_right = 501.652
-margin_bottom = 194.0
+margin_left = -0.00725651
+margin_top = 126.963
+margin_right = 501.993
+margin_bottom = 194.963
 custom_fonts/font = SubResource( 1 )
 text = "End Reinforcement"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Zoom Out" type="TextureButton" parent="CanvasLayer"]
+[node name="Zoom Out" type="TextureButton" parent="CL/C"]
 anchor_left = -5.46773e-05
 anchor_top = -9.73172e-05
 anchor_right = -5.46773e-05
 anchor_bottom = -9.73172e-05
-margin_left = 1801.1
-margin_top = 958.105
-margin_right = 1920.1
-margin_bottom = 1080.11
+margin_left = 1801.0
+margin_top = 958.004
+margin_right = 1920.0
+margin_bottom = 1080.01
 texture_normal = ExtResource( 9 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Zoom In" type="TextureButton" parent="CanvasLayer"]
+[node name="Zoom In" type="TextureButton" parent="CL/C"]
 anchor_left = -5.46773e-05
 anchor_top = -9.73172e-05
 anchor_right = -5.46773e-05
 anchor_bottom = -9.73172e-05
-margin_left = 1682.1
-margin_top = 958.105
-margin_right = 1801.1
-margin_bottom = 1080.11
+margin_left = 1682.0
+margin_top = 958.004
+margin_right = 1801.0
+margin_bottom = 1080.01
 texture_normal = ExtResource( 10 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Show" type="TextureButton" parent="CanvasLayer"]
+[node name="Show" type="TextureButton" parent="CL/C"]
 visible = false
 anchor_left = -5.46773e-05
 anchor_top = -9.73172e-05
 anchor_right = -5.46773e-05
 anchor_bottom = -9.73172e-05
-margin_left = 1552.1
-margin_top = 1016.11
-margin_right = 1680.1
-margin_bottom = 1080.11
+margin_left = 1552.0
+margin_top = 1016.01
+margin_right = 1680.0
+margin_bottom = 1080.01
 texture_normal = ExtResource( 4 )
 expand = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Raze" type="TextureButton" parent="CanvasLayer"]
+[node name="Raze" type="TextureButton" parent="CL/C"]
 visible = false
 anchor_left = -5.46773e-05
 anchor_top = -9.73172e-05
 anchor_right = -5.46773e-05
 anchor_bottom = -9.73172e-05
-margin_left = 1464.1
-margin_top = 960.105
-margin_right = 1552.1
-margin_bottom = 1079.11
+margin_left = 1464.0
+margin_top = 960.004
+margin_right = 1552.0
+margin_bottom = 1079.01
 texture_normal = ExtResource( 20 )
 expand = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Resign" type="Button" parent="CanvasLayer"]
+[node name="Resign" type="Button" parent="CL/C"]
 visible = false
 margin_left = 1739.63
 margin_top = 68.0
@@ -393,14 +400,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Init Buttons" type="Control" parent="CanvasLayer"]
+[node name="Init Buttons" type="Control" parent="CL/C"]
 margin_right = 40.0
 margin_bottom = 40.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Start Game" type="Button" parent="CanvasLayer/Init Buttons"]
+[node name="Start Game" type="Button" parent="CL/C/Init Buttons"]
 margin_left = 0.0701532
 margin_top = 1012.03
 margin_right = 298.07
@@ -411,7 +418,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Reroll Spawn" type="Button" parent="CanvasLayer/Init Buttons"]
+[node name="Reroll Spawn" type="Button" parent="CL/C/Init Buttons"]
 margin_left = 0.0701532
 margin_top = 932.034
 margin_right = 341.07
@@ -422,14 +429,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Online" type="Control" parent="CanvasLayer/Init Buttons"]
+[node name="Online" type="Control" parent="CL/C/Init Buttons"]
 margin_right = 40.0
 margin_bottom = 40.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Play Red" type="Button" parent="CanvasLayer/Init Buttons/Online"]
+[node name="Play Red" type="Button" parent="CL/C/Init Buttons/Online"]
 margin_left = 0.0701532
 margin_top = 716.034
 margin_right = 449.07
@@ -440,7 +447,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Play Blue" type="Button" parent="CanvasLayer/Init Buttons/Online"]
+[node name="Play Blue" type="Button" parent="CL/C/Init Buttons/Online"]
 margin_left = 0.0701532
 margin_top = 796.034
 margin_right = 464.07
@@ -451,7 +458,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Confirm" type="CenterContainer" parent="CanvasLayer"]
+[node name="Confirm" type="CenterContainer" parent="CL/C"]
 visible = false
 margin_right = 1920.0
 margin_bottom = 1080.0
@@ -459,25 +466,25 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Confirm"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CL/C/Confirm"]
 margin_left = 551.0
 margin_top = 473.0
 margin_right = 1369.0
 margin_bottom = 607.0
 
-[node name="Label" type="Label" parent="CanvasLayer/Confirm/VBoxContainer"]
+[node name="Label" type="Label" parent="CL/C/Confirm/VBoxContainer"]
 margin_right = 818.0
 margin_bottom = 62.0
 custom_styles/normal = ExtResource( 13 )
 custom_fonts/font = ExtResource( 8 )
 text = "Are you sure you want to resign?"
 
-[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Confirm/VBoxContainer"]
+[node name="CenterContainer" type="CenterContainer" parent="CL/C/Confirm/VBoxContainer"]
 margin_top = 66.0
 margin_right = 818.0
 margin_bottom = 134.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Confirm/VBoxContainer/CenterContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CL/C/Confirm/VBoxContainer/CenterContainer"]
 margin_left = 316.0
 margin_right = 502.0
 margin_bottom = 68.0
@@ -485,7 +492,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Yes" type="Button" parent="CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer"]
+[node name="Yes" type="Button" parent="CL/C/Confirm/VBoxContainer/CenterContainer/HBoxContainer"]
 margin_right = 98.0
 margin_bottom = 68.0
 custom_fonts/font = ExtResource( 8 )
@@ -494,7 +501,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="No" type="Button" parent="CanvasLayer/Confirm/VBoxContainer/CenterContainer/HBoxContainer"]
+[node name="No" type="Button" parent="CL/C/Confirm/VBoxContainer/CenterContainer/HBoxContainer"]
 margin_left = 102.0
 margin_right = 186.0
 margin_bottom = 68.0
@@ -504,10 +511,10 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Restart" type="TextureButton" parent="CanvasLayer"]
+[node name="Restart" type="TextureButton" parent="CL/C"]
 visible = false
-margin_right = 40.0
-margin_bottom = 40.0
+margin_right = 122.0
+margin_bottom = 118.0
 texture_normal = ExtResource( 12 )
 __meta__ = {
 "_edit_use_anchors_": false
