@@ -2,13 +2,17 @@ extends Camera2D
 
 var mouse_start_pos
 var screen_start_position
+
 var map_size
+
+# How far the player can drag the map beyond the bounds (Pixels)
+const safe_margins = 100
 
 # Level 1 Zoom is 1x, Level 2 = 2x, Level 3 = 4x...
 var zoom_level = 1
 
 # The amount of time zooms take to tween into
-const zoom_tween_duration = 0.5
+const zoom_tween_duration = 0.8
 
 var dragging = false
 
@@ -24,10 +28,10 @@ func setup_camera(camera_bounds):
 	drag_margin_v_enabled = true
 	
 	# Camera_bounds is divided by two because of thats the size of the $Camera2D node
-	set_limit(MARGIN_LEFT, 0)
-	set_limit(MARGIN_RIGHT, camera_bounds.x/2)
-	set_limit(MARGIN_TOP, 0)
-	set_limit(MARGIN_BOTTOM, camera_bounds.y/2)
+	set_limit(MARGIN_LEFT, 0 - safe_margins)
+	set_limit(MARGIN_RIGHT, camera_bounds.x/2 + safe_margins)
+	set_limit(MARGIN_TOP, 0 - safe_margins)
+	set_limit(MARGIN_BOTTOM, camera_bounds.y/2 + safe_margins)
 	
 	# Setup the drag margins
 	set_drag_margin(MARGIN_LEFT, 1)
@@ -52,6 +56,10 @@ func zoom_out():
 		zoom_level -= 1
 		tween_zoom(get_zoom_vector())
 
+func tween_zoom(new_zoom):
+	fix_drag_camera()
+	zoom_to_level_with_duration(new_zoom, zoom_tween_duration)
+	
 func zoom_to_level_with_duration(new_zoom, duration):
 	# If a tween was active, stop the animation
 	if ($Tween.is_active()):
@@ -59,13 +67,9 @@ func zoom_to_level_with_duration(new_zoom, duration):
 	
 	var new_center_pos = (position - get_camera_screen_center()) * (new_zoom / zoom) + get_camera_screen_center()
 
-	$Tween.interpolate_property(self, "zoom", zoom, new_zoom, duration, Tween.TRANS_SINE, Tween.EASE_OUT)
-	$Tween.interpolate_property(self, "position", position, new_center_pos, duration, Tween.TRANS_SINE, Tween.EASE_OUT)
+	$Tween.interpolate_property(self, "zoom", zoom, new_zoom, duration, Tween.TRANS_CIRC, Tween.EASE_OUT)
+	$Tween.interpolate_property(self, "position", position, new_center_pos, duration, Tween.TRANS_CIRC, Tween.EASE_OUT)
 	$Tween.start()
-	
-func tween_zoom(new_zoom):
-	fix_drag_camera()
-	zoom_to_level_with_duration(new_zoom, zoom_tween_duration)
 
 func _input(event):
 	if event is InputEventMouseButton:
@@ -89,12 +93,17 @@ func _input(event):
 func fix_drag_camera():
 	var viewport_size = get_viewport().size
 	
-	if (position.x < 0): 
-		position.x = 0
-	elif (position.x > map_size.x/2 - (viewport_size * zoom).x):
-		position.x = map_size.x/2 - (viewport_size * zoom).x
+	var x_lower_bounds = 0 - safe_margins
+	var y_lower_bounds = 0 - safe_margins
+	var x_upper_bounds = map_size.x/2 - (viewport_size * zoom).x + safe_margins
+	var y_upper_bounds = map_size.y/2 - (viewport_size * zoom).y + safe_margins
 	
-	if (position.y < 0):
-		position.y = 0
-	elif (position.y > map_size.y/2  - (viewport_size * zoom).y):
-		position.y = map_size.y/2 - (viewport_size * zoom).y
+	if (position.x < x_lower_bounds): 
+		position.x = x_lower_bounds
+	elif (position.x > x_upper_bounds):
+		position.x = x_upper_bounds
+	
+	if (position.y < y_lower_bounds):
+		position.y = y_lower_bounds
+	elif (position.y > y_upper_bounds):
+		position.y = y_upper_bounds
