@@ -138,14 +138,15 @@ func randomise_modes():
 	randomize()
 	var grid = get_node("VBoxContainer/Control")
 	for child in grid.get_children():
-		if child is CheckBox:
+		if child is CheckBox and child.name != "Classic":
 			child.set_pressed(false)
 	for child in grid.get_children():
 		if child is CheckBox:
 			var new_bool = bool(randi()%2)
-			if new_bool != child.pressed:
-				child.emit_signal("button_down")
-				child.set_pressed(new_bool)
+			if new_bool:
+				child.set_pressed(true)
+				press_mode(child.name)
+	collect_modes()
 
 func show_help_menu():
 	var scene = _root.scene_manager._load_scene("UI/Help Menu")
