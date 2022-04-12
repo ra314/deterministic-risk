@@ -18,23 +18,25 @@ const origin_movement_duration = 0.4
 var P = null
 var Game_Manager = null
 
+#UUI = Update User Interface
 func init():
 	P = get_parent()
 	Game_Manager = P.Game_Manager
-	P.connect("set_num_reinforcements", self, "show_num_reinforcements")
+	P.connect("set_num_reinforcements", self, "UUI_num_reinforcements")
 	if "pandemic" in Game_Manager.game_modes:
-		P.connect("set_num_troops", self, "show_pandemic_status")
+		P.connect("set_num_reinforcements", self, "UUI_pandemic")
+		P.connect("set_num_troops", self, "UUI_pandemic")
 	for status in P.statused:
 		if status in Game_Manager.game_modes:
 			P.connect("set_statused", self, "show_statused")
 			break
 	if "congestion" in Game_Manager.game_modes:
-		P.connect("set_num_troops", self, "update_congestion")
-		P.connect("set_num_reinforcements", self, "update_congestion")
-		P.connect("set_max_troops", self, "update_congestion")
-	# This is show show_num_troops doesn't interfere with update_congestion
+		P.connect("set_num_troops", self, "UUI_congestion")
+		P.connect("set_num_reinforcements", self, "UUI_congestion")
+		P.connect("set_max_troops", self, "UUI_congestion")
+	# This is show UUI_num_troops doesn't interfere with UUI_congestion
 	else:
-		P.connect("set_num_troops", self, "show_num_troops")
+		P.connect("set_num_troops", self, "UUI_num_troops")
 
 func change_mask_color(color):
 	# Performance hack
@@ -87,10 +89,10 @@ func create_mask_sprite():
 ####################
 # Signals
 
-func show_num_troops():
+func UUI_num_troops():
 	$"Active Troops/Label".text = str(P.num_troops)
 
-func show_pandemic_status():
+func UUI_pandemic():
 	var num_deaths = P.calc_pandemic_deaths()
 	$"Status/Num Pandemic".visible = num_deaths > 0
 	$"Status/pandemic".visible = num_deaths > 0
@@ -99,13 +101,13 @@ func show_pandemic_status():
 func show_statused(status_name, boolean):
 	get_node("Status/" + status_name).visible = boolean
 
-func update_congestion():
+func UUI_congestion():
 	$"Status/ProgressBar".max_value = P.max_troops
 	$"Status/ProgressBar".value = P.num_troops+P.num_reinforcements
 	# Updating the denominator
 	show_congestion_denominator(denominator_showing)
 
-func show_num_reinforcements():
+func UUI_num_reinforcements():
 	$"Reinforcements".visible = P.num_reinforcements > 0
 	$"Reinforcements/Label".text = "+" + str(P.num_reinforcements)
 
