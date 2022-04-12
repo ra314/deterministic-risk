@@ -12,10 +12,10 @@ var mode_connections = [\
 func _ready(): 
 	var container = $VBoxContainer
 	container.get_node("HBoxContainer/Next/Button").connect("button_down", self, "_load_scene", ["UI/Level Select"])
-	$TextureButton.connect("button_down", self, "back")
+	$VBoxContainer/HBoxContainer2/TextureButton.connect("button_down", self, "back")
 	# Button to go to help menu
-	get_node("Help").connect("button_down", self, "show_help_menu")
-	get_node("Load Save").connect("button_down", self, "load_save")
+	$VBoxContainer/HBoxContainer2/VBoxContainer/Help.connect("button_down", self, "show_help_menu")
+	$"VBoxContainer/HBoxContainer2/VBoxContainer/Load Save".connect("button_down", self, "load_save")
 	container.get_node("HBoxContainer/Random").connect("button_down", self, "randomise_modes")
 	
 	# Connecting game mode dependencies
