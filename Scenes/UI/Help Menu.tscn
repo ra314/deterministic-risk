@@ -9,9 +9,6 @@
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 margin_right = 1920.0
@@ -253,15 +250,15 @@ visible = false
 margin_right = 1920.0
 margin_bottom = 482.0
 size_flags_horizontal = 3
-custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
+custom_styles/normal = ExtResource( 4 )
 text = "Classic:
 You can conquer a country if it has less units than you.
 
 If a 7 attacks a 3
     - 1 will remain in the attacking country
     - 4 (7-3) will be at the defending country
-    - You conquer defending country"
+    - You will conquer the defending country"
 autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false
@@ -272,8 +269,8 @@ visible = false
 margin_right = 1920.0
 margin_bottom = 482.0
 size_flags_horizontal = 3
-custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
+custom_styles/normal = ExtResource( 4 )
 text = "Movement:
 You can move units from one country to another."
 autowrap = true
@@ -286,8 +283,8 @@ visible = false
 margin_right = 1920.0
 margin_bottom = 482.0
 size_flags_horizontal = 3
-custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
+custom_styles/normal = ExtResource( 4 )
 text = "Resistance:
 When you conquer a new country, it cannot attack on the same turn unless razed."
 autowrap = true
@@ -300,8 +297,8 @@ visible = false
 margin_right = 1920.0
 margin_bottom = 477.0
 size_flags_horizontal = 3
-custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
+custom_styles/normal = ExtResource( 4 )
 text = "Drain:
 You can drain a country if you have at least 2 units. This counts as an attack.
 
@@ -318,8 +315,8 @@ visible = false
 margin_right = 1920.0
 margin_bottom = 477.0
 size_flags_horizontal = 3
-custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
+custom_styles/normal = ExtResource( 4 )
 text = "Deadline:
 The player with the most countries at the end of round 10 wins. The first player wins in the case of a tie."
 autowrap = true
@@ -332,8 +329,8 @@ visible = false
 margin_right = 1920.0
 margin_bottom = 482.0
 size_flags_horizontal = 3
-custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
+custom_styles/normal = ExtResource( 4 )
 text = "Fatigue:
 Only a single attack is allowed per turn per country unless razed."
 autowrap = true
@@ -346,8 +343,8 @@ visible = false
 margin_right = 1920.0
 margin_bottom = 482.0
 size_flags_horizontal = 3
-custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
+custom_styles/normal = ExtResource( 4 )
 text = "Blitzkrieg:
 If a country has been drained on a given turn, successive drains on the same turn deal +1 damage."
 autowrap = true
@@ -360,8 +357,8 @@ visible = false
 margin_right = 1920.0
 margin_bottom = 482.0
 size_flags_horizontal = 3
-custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
+custom_styles/normal = ExtResource( 4 )
 text = "Pandemic:
 If a country after reinforcement has 4 or more units, it loses 1 unit for every 3 units higher than the threshold (4) every turn at the end of reinforcement.
 
@@ -378,8 +375,8 @@ visible = false
 margin_right = 1920.0
 margin_bottom = 482.0
 size_flags_horizontal = 3
-custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
+custom_styles/normal = ExtResource( 4 )
 text = "Diffusion:
 When conquering, half the surviving units (round down) remain in the attacker. Half the surving units (round up) end up in the defender.
 
@@ -396,8 +393,8 @@ visible = false
 margin_right = 1920.0
 margin_bottom = 482.0
 size_flags_horizontal = 3
-custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
+custom_styles/normal = ExtResource( 4 )
 text = "Congestion:
 The maximum number of troops a country can have is 2x its starting amount.
 
@@ -412,8 +409,8 @@ visible = false
 margin_right = 1920.0
 margin_bottom = 482.0
 size_flags_horizontal = 3
-custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
+custom_styles/normal = ExtResource( 4 )
 text = "Checkers:
 If you can make an attack, you must perform the attack."
 autowrap = true
@@ -426,8 +423,8 @@ visible = false
 margin_right = 1920.0
 margin_bottom = 482.0
 size_flags_horizontal = 3
-custom_styles/normal = ExtResource( 4 )
 custom_fonts/font = ExtResource( 3 )
+custom_styles/normal = ExtResource( 4 )
 text = "Raze:
 Deplete half (rounded down) of a countries troops to remove all status conditions.
 Eg: Fatigue, Resistance, Blitz"

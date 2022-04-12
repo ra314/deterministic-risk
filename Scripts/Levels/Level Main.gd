@@ -434,6 +434,6 @@ func _process(delta):
 			if not synchronized:
 				Sync.synchronize_all(_root.get_other_player_network_id())
 				yield(get_tree().create_timer(2), "timeout")
-				var output = "Synchronization verification failed, syncing now."
-				output += "\n " + str(Sync.hash_game_state()) + " " + str(Sync.other_players_hash_value)
-				_root.create_notification(output)
+				# var output = "Synchronization verification failed, syncing now."
+				# output += "\n " + str(Sync.hash_game_state()) + " " + str(Sync.other_players_hash_value)
+				# _root.create_notification(output)
