@@ -14,6 +14,7 @@ func set_num_troops(_num_troops):
 var belongs_to = null
 var connected_countries = []
 var country_name = null
+var is_fake: bool = false
 var Game_Manager = null
 var Visual = null
 
@@ -71,28 +72,24 @@ func set_num_reinforcements(_num_reinforcements, check_player_reinforcements):
 	emit_signal("set_num_reinforcements")
 	return true
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	Game_Manager = get_parent()
+func initialise_visuals():
 	Visual = $Visual
 	Visual.init()
 	Visual.change_color_to(belongs_to.color)
 	
-	# The chunk below is for when the Country scene is called in isolation
-	if Game_Manager.name == "Level Creator":
-		var Player = load("res://Scenes/Levels/Level Components/Player.tscn")
-		var player_neutral = Player.instance().init("gray")
-		belongs_to = player_neutral
-		return
-	
+	# Show a progressbar in congestion mode indiciating the max number of troops
+	if "congestion" in Game_Manager.game_modes:
+		$"Visual/Status/ProgressBar".visible = true
 	# Updating labels when number of troops change
 	connect("set_num_troops", Game_Manager, "update_labels")
 	connect("set_num_reinforcements", Game_Manager, "update_labels")
-	
+
+# These are connections that change data values
+# None of these are purely cosmetic
+func initialise_critical_connections():
 	# Turn on resistance when a country is conquered
 	if "resistance" in Game_Manager.game_modes:
 		connect("conquered", self, "set_statused", ["resistance", true])
-		pass
 	# Turn on fatigue when a country is attacking
 	if "fatigue" in Game_Manager.game_modes:
 		connect("attacking", self, "set_statused", ["fatigue", true])
@@ -112,9 +109,28 @@ func _ready():
 	if "movement" in Game_Manager.game_modes:
 		Game_Manager.Phase.connect("ending_movement", self, "move_troops_to_active_duty")
 		Game_Manager.Phase.connect("ending_movement", self, "destroy_donations")
-	# Show a progressbar in congestion mode indiciating the max number of troops
-	if "congestion" in Game_Manager.game_modes:
-		$"Visual/Status/ProgressBar".visible = true
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	Game_Manager = get_parent()
+	
+	if Game_Manager.name == "AI":
+		is_fake = true
+		initialise_critical_connections()
+		return
+	
+	# The chunk below is for when the Country scene is called in isolation
+	elif Game_Manager.name == "Level Creator":
+		var Player = load("res://Scenes/Levels/Level Components/Player.tscn")
+		var player_neutral = Player.instance().init("gray")
+		belongs_to = player_neutral
+		initialise_visuals()
+		return
+	
+	else:
+		initialise_visuals()
+		initialise_critical_connections()
+		return
 
 func move_troops_to_active_duty():
 	set_num_troops(num_troops + num_reinforcements)

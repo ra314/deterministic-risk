@@ -46,7 +46,7 @@ remote func register_player(player_name, id):
 	players[player_name] = id
 	create_notification(player_name + " has connected")
 	# Remove the back button for the host once the guest has connected
-	get_children()[0].get_node("TextureButton").visible = false
+	#get_children()[0].get_node("TextureButton").visible = false
 
 # General purpose notification system
 ####### 
